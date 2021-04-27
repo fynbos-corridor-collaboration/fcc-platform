@@ -1,0 +1,26 @@
+version: "3.1"
+
+services:  
+  db:
+    image: postgis/postgis:13-master
+    container_name: fcc_db
+    environment:
+       POSTGRES_HOST_AUTH_METHOD: trust
+       POSTGRES_PASSWORD: postgres
+       POSTGRES_USER: postgres
+       POSTGRES_DB: fcc
+  adminer:
+    image: adminer:4.7.7
+    ports:
+      - 8080:8080
+    container_name: fcc_adminer
+  web:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:7777
+    volumes:
+      - .:/src
+    ports:
+      - 7777:7777
+    depends_on:
+      - db
+    container_name: fcc_web

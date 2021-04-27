@@ -1,0 +1,2 @@
+sudo docker exec -it fcc_web python manage.py makemigrations
+sudo docker exec -it fcc_web python manage.py migrate
