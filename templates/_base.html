@@ -24,6 +24,7 @@
   {% endif %}
 
   {% if load_map %}
+
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
@@ -35,6 +36,8 @@
   {% if load_leaflet_legend %}
     <link href="{% static 'css/leaflet.legend.css' %}" rel="stylesheet" />
   {% endif %}
+
+  <link rel="stylesheet" href="{% static 'css/fcc.css' %}" />
 
   {% block css %}{% endblock %}
   {% block head %}{% endblock %}

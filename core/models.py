@@ -33,6 +33,8 @@ class Document(models.Model):
     url = models.CharField(max_length=255, null=True, blank=True)
     content = models.TextField(null=True, blank=True)
     color = models.CharField(max_length=50, null=True, blank=True)
+    meta_data = models.JSONField(null=True, blank=True)
+    active = models.BooleanField(default=True, db_index=True)
 
     class Type(models.IntegerChoices):
         UNKNOWN = 0, "Unknown"
@@ -46,6 +48,13 @@ class Document(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def get_dataviz(self):
+        if self.meta_data and "dataviz" in self.meta_data:
+            return self.meta_data["dataviz"]
+        else:
+            return {}
 
     content = models.TextField(null=True, blank=True)
 

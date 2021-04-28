@@ -13,6 +13,19 @@ def p(text):
     print(text)
     print("----------------------")
 
+COLOR_SCHEMES = {
+    "moc": ["#144d58","#a6cee3","#33a02c","#b2df8a","#e31a1c","#fb9a99","#ff7f00","#fdbf6f","#6a3d9a","#cab2d6","#b15928","#ffff99"],
+    "accent": ["#7fc97f","#beaed4","#fdc086","#ffff99","#386cb0","#f0027f","#bf5b17","#666666"],
+    "dark": ["#1b9e77","#d95f02","#7570b3","#e7298a","#66a61e","#e6ab02","#a6761d","#666666"],
+    "pastel": ["#fbb4ae","#b3cde3","#ccebc5","#decbe4","#fed9a6","#ffffcc","#e5d8bd","#fddaec","#f2f2f2"],
+    "set": ["#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"],
+    "dozen": ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"],
+    "green": ["#005824", "#238b45", "#41ae76", "#66c2a4", "#99d8c9", "#ccece6", "#e5f5f9", "#f7fcfd"],
+    "blue": ["#084594", "#2171b5", "#4292c6", "#6baed6", "#9ecae1", "#c6dbef", "#deebf7","#f7fbff"],
+    "purple": ["#3f007d", "#54278f", "#6a51a3", "#807dba", "#9e9ac8", "#bcbddc", "#dadaeb", "#efedf5", "#fcfbfd"],
+    "red": ["#7f0000", "#b30000", "#d7301f", "#ef6548", "#fc8d59", "#fdbb84", "#fdd49e", "#fee8c8", "#fff7ec"],
+}
+
 def index(request):
     context = {}
     return render(request, "core/index.html", context)
@@ -48,7 +61,7 @@ def map(request, id):
     count = 0
     legend = {}
     show_individual_colors = False
-    properties = {} # Get data viz
+    properties = info.get_dataviz
     if "color_type" in properties:
         if properties["color_type"] == "single":
             # One single color for everything on the map
@@ -112,6 +125,10 @@ def map(request, id):
         "load_map": True,
         "load_leaflet_item": True,
         "data": data,
+        "properties": properties,
+        "show_individual_colors": show_individual_colors,
+        "colors": colors,
+        "features": features,
     }
     return render(request, "core/map.html", context)
 
@@ -127,7 +144,7 @@ def maps(request):
         hits[e] = []
         type_list[e] = each.label
 
-    documents = Document.objects.all().order_by("type")
+    documents = Document.objects.filter(active=True).order_by("type")
     for each in documents:
         t = each.type
         hits[t].append(each)

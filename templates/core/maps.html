@@ -4,8 +4,6 @@
 
 {% block head %}
 
-  <link rel="stylesheet" href="{% static 'css/fcc.css' %}" />
-
   <style>
     .leaflet-map {
       height: 80vh;
@@ -80,6 +78,16 @@
 
   <div id="map" class="leaflet-map"></div>
 
+  <h3>Browse maps</h3>
+
+  {% for each in maps %}
+    {% ifchanged each.type %}
+      </ul>
+      <h4>{{ each.get_type_display }}</h4>
+      <ul>
+    {% endifchanged %}
+    <li><a href="{% url "map" each.id %}">{{ each }}</a></li>
+  {% endfor %}
 
 {% endblock %}
 
