@@ -1,0 +1,46 @@
+Procedure:
+
+- Load into MOC
+- Process them
+- Go to reference spaces, filter for source_id >= XXXXX
+- Export SQL
+- Go to records, filter for id >= XXXXX and meta_data IS NOT NULL
+- Export SQL
+
+- Copy files to media/import
+
+------------------
+
+INSERT INTO core_referencespace (id,name,geometry, temp_source_id)
+SELECT record_ptr_id, 'temp', geometry, source_id FROM stafdb_referencespace;
+
+UPDATE core_referencespace r
+  SET name = s.name
+FROM core_record s
+WHERE r.id = s.id AND r.name = 'temp';
+
+INSERT INTO core_document (id, name, type)
+SELECT id, name, 0 FROM core_record WHERE id IN (SELECT temp_source_id FROM core_referencespace);
+
+UPDATE core_referencespace SET source_id = temp_source_id;
+
+------------------
+
+For the first batch, use this to get the types right:
+
+UPDATE "core_document" SET "type" = '1' WHERE "id" = '983057';
+UPDATE "core_document" SET "type" = '2' WHERE "id" = '983097';
+UPDATE "core_document" SET "type" = '2' WHERE "id" = '983134';
+UPDATE "core_document" SET "type" = '5' WHERE "id" = '983157';
+UPDATE "core_document" SET "type" = '1' WHERE "id" = '983172';
+UPDATE "core_document" SET "type" = '1' WHERE "id" = '983211';
+UPDATE "core_document" SET "type" = '5' WHERE "id" = '983239';
+UPDATE "core_document" SET "type" = '5' WHERE "id" = '983285';
+UPDATE "core_document" SET "type" = '5' WHERE "id" = '983304';
+UPDATE "core_document" SET "type" = '2' WHERE "id" = '983342';
+UPDATE "core_document" SET "type" = '1' WHERE "id" = '983356';
+UPDATE "core_document" SET "type" = '2' WHERE "id" = '983382';
+UPDATE "core_document" SET "type" = '4' WHERE "id" = '983409';
+UPDATE "core_document" SET "type" = '4' WHERE "id" = '983426';
+UPDATE "core_document" SET "type" = '4' WHERE "id" = '983479';
+UPDATE "core_document" SET "type" = '4' WHERE "id" = '983491';

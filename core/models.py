@@ -27,20 +27,34 @@ class Garden(models.Model):
     def __str__(self):
         return self.name
 
-class Shapefile(models.Model):
+class Document(models.Model):
     name = models.CharField(max_length=255, db_index=True)
-    content = models.TextField(null=True, blank=True)
-    geometry = models.GeometryField(null=True, blank=True)
-    source = models.CharField(max_length=255, null=True, blank=True)
     author = models.CharField(max_length=255, null=True, blank=True)
+    url = models.CharField(max_length=255, null=True, blank=True)
+    content = models.TextField(null=True, blank=True)
 
     class Type(models.IntegerChoices):
+        UNKNOWN = 0, "Unknown"
         NATURE = 1, "Nature"
         CONNECTOR = 2, "Connector layers"
         TRANSPORT = 3, "Transport"
         POTENTIAL = 4, "Potential sites"
+        CONTEXT = 5, "Context"
 
-    type = models.IntegerField(choices=Type.choices, db_index=True)
+    type = models.IntegerField(choices=Type.choices, db_index=True, default=0)
+
+    def __str__(self):
+        return self.name
+
+    content = models.TextField(null=True, blank=True)
+
+class ReferenceSpace(models.Model):
+    name = models.CharField(max_length=255, db_index=True)
+    content = models.TextField(null=True, blank=True)
+    geometry = models.GeometryField(null=True, blank=True)
+    photo = models.ForeignKey("Photo", on_delete=models.CASCADE, null=True, blank=True, related_name="referencespace")
+    source = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True)
+    temp_source_id = models.IntegerField(null=True, blank=True, help_text="Only used when importing data")
 
     def __str__(self):
         return self.name

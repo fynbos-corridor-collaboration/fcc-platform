@@ -1,0 +1,18 @@
+CREATE TABLE "public"."core_record" (
+    "id" integer DEFAULT nextval('core_record_id_seq') NOT NULL,
+    "name" character varying(255) NOT NULL,
+    "description" text,
+    "image" character varying(100),
+    "is_deleted" boolean NOT NULL,
+    "old_id" integer,
+    "date_created" timestamptz NOT NULL,
+    "is_public" boolean NOT NULL,
+    "meta_data" jsonb,
+    "description_html" text
+) WITH (oids = false);
+
+CREATE TABLE "public"."stafdb_referencespace" (
+    "record_ptr_id" integer NOT NULL,
+    "geometry" geometry(Geometry,4326),
+    "source_id" integer,
+) WITH (oids = false);
