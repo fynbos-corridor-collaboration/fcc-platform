@@ -7,4 +7,5 @@ urlpatterns = [
     path("maps/", views.maps, name="maps"),
     path("maps/<int:id>/", views.map, name="map"),
     path("geojson/<int:id>/", views.geojson, name="geojson"),
+    path("report/", views.report, name="report"),
 ]

@@ -1,5 +1,19 @@
 {% extends "_base.html" %}
 
 {% block content %}
-  Content goes here
+  <h1>Welcome!</h1>
+  <form action="/report/">
+    Latitude:
+    <input type="text" name="lat" value="-33.9641" />
+    <br>
+    Longitude:
+    <input type="text" name="lat" value="18.5113" />
+    <br>
+    <button type="submit">Generate report</button>
+  </form>
+
+  <ul>
+    <li><a href="/report/?lat=-33.954139&lng=18.473788">Arundel</a></li>
+    <li><a href="/report/?lat=-34.070078&lng=18.571595">Strandfontein</a></li>
+  </ul>
 {% endblock %}

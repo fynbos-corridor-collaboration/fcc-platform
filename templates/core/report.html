@@ -1,0 +1,178 @@
+{% extends "_base.html" %}
+
+{% block css %}
+
+  <style>
+    #map {
+      height: 500px;
+      margin-bottom: 30px;
+    }
+    .largeicon {
+      font-size: 5rem;
+    }
+
+  </style>
+{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""/>
+{% endblock %}
+
+{% block content %}
+  
+  <h1>Report</h1>
+
+    <div class="mt-2 alert alert-dark text-center">
+      <i class="fa fa-map-marker-alt"></i>
+      Coordinates: {{ center}}<br>
+      <a href="http://www.openstreetmap.org/?mlat={{ info.get_lat }}&amp;mlon={{ info.get_lng }}&amp;zoom=12">View on OpenStreetMap</a> | 
+      <a href="https://www.google.com/maps/search/?api=1&query={{ info.get_lat }},{{ info.get_lng }}">View on Google Maps</a>
+      <br>
+    </div>
+
+    <div class="mt-2 alert alert-success text-center">
+      Your vegetation type is: <strong><a href="http://">{{ veg }}</a></strong>
+    </div>
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <div class="leaflet-map">
+          {{ map|safe }}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="leaflet-map">
+          {{ satmap|safe }}
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-4">
+
+      <h3>Remnants in your area</h3>
+      <div class="alert alert-warning">
+        We found {{ remnants.count }} remnants within 3 km distance.
+      </div>
+
+      {% if remnants.count %}
+        <div class="row mb-2">
+          <div class="col-md-9">
+            <div class="leaflet-map">
+              {{ remnantmap|safe }}
+            </div>
+          </div>
+          <div class="col-md-3">
+            <ul>
+              {% for each in remnants %}
+                <li><a href="http://">{{ each }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+
+    </section>
+
+    <section class="mt-4">
+
+      <h3>Parks in your area</h3>
+      <div class="alert alert-warning">
+        We found {{ parks.count }} parks in your area.
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-md-9">
+          <div class="leaflet-map">
+            {{ parkmap|safe }}
+          </div>
+        </div>
+        <div class="col-md-3">
+          <ul>
+            {% for each in parks %}
+              <li><a href="http://">{{ each }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="mt-4">
+
+      <h3>Rivers in your area</h3>
+      <div class="alert alert-warning">
+        We found {{ rivers.count }} rivers in your area.
+      </div>
+
+      {% if rivers.count %}
+        <div class="row mb-2">
+          <div class="col-md-9">
+            <div class="leaflet-map">
+              {{ rivermap|safe }}
+            </div>
+          </div>
+          <div class="col-md-3">
+            <ul>
+              {% for each in rivers %}
+                <li><a href="http://">{{ each }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+
+    </section>
+
+    <section class="mt-4">
+
+      <h3>Schools in your area</h3>
+      <div class="alert alert-warning">
+        We found {{ schools.count }} schools in your area.
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-md-9">
+          <div class="leaflet-map">
+            {{ schoolmap|safe }}
+          </div>
+        </div>
+        <div class="col-md-3">
+          <ul>
+            {% for each in schools %}
+              <li><a href="http://">{{ each }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="mt-4">
+
+      <h3>Cemeteries in your area</h3>
+      <div class="alert alert-warning">
+        We found {{ cemeteries.count }} cemeteries in your area.
+      </div>
+
+      {% if cemeteries.count %}
+        <div class="row mb-2">
+          <div class="col-md-9">
+            <div class="leaflet-map">
+              {{ cemeteriesmap|safe }}
+            </div>
+          </div>
+          <div class="col-md-3">
+            <ul>
+              {% for each in cemeteries %}
+                <li><a href="http://">{{ each }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+
+    </section>
+
+{% endblock %}

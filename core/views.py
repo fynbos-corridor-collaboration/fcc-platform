@@ -5,6 +5,8 @@ from django.http import JsonResponse, HttpResponse
 import urllib.request, json 
 from django.contrib import messages
 from django.utils.safestring import mark_safe
+import folium
+from folium.plugins import Fullscreen
 
 # Quick debugging, sometimes it's tricky to locate the PRINT in all the Django 
 # output in the console, so just using a simply function to highlight it better
@@ -12,6 +14,12 @@ def p(text):
     print("----------------------")
     print(text)
     print("----------------------")
+
+# Also defined in context_processor for templates, but we need it sometimes in the Folium map configuration
+MAPBOX_API_KEY = "pk.eyJ1IjoiY29tbXVuaXRyZWUiLCJhIjoiY2lzdHZuanl1MDAwODJvcHR1dzU5NHZrbiJ9.0ETJ3fXYJ_biD7R7FiwAEg"
+SATELLITE_TILES = "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.png?access_token=" + MAPBOX_API_KEY
+STREET_TILES = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=" + MAPBOX_API_KEY
+LIGHT_TILES = "https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token=" + MAPBOX_API_KEY
 
 COLOR_SCHEMES = {
     "moc": ["#144d58","#a6cee3","#33a02c","#b2df8a","#e31a1c","#fb9a99","#ff7f00","#fdbf6f","#6a3d9a","#cab2d6","#b15928","#ffff99"],
@@ -171,6 +179,194 @@ def maps(request):
         }
     }
     return render(request, "core/maps.html", context)
+
+def report(request):
+    info = get_object_or_404(ReferenceSpace, pk=988911)
+    schools = get_object_or_404(Document, pk=983409)
+    cemeteries = get_object_or_404(Document, pk=983426)
+    parks = get_object_or_404(Document, pk=983479)
+    rivers = get_object_or_404(Document, pk=983382)
+    remnants = get_object_or_404(Document, pk=983097)
+    vegetation = get_object_or_404(Document, pk=983356)
+
+    try:
+        lat = float(request.GET["lat"])
+        lng = float(request.GET["lng"])
+    except:
+        lat = -33.9641
+        lng = 18.5113
+
+    from django.contrib.gis import geos
+    center = geos.Point(lng, lat)
+
+    radius = 0.01
+    circle = center.buffer(radius)
+
+    map = folium.Map(
+        location=[lat,lng],
+        zoom_start=14,
+        scrollWheelZoom=False,
+        tiles=STREET_TILES,
+        attr="Mapbox",
+    )
+
+    folium.GeoJson(
+        circle.geojson,
+        name="geojson",
+    ).add_to(map)
+
+    if info.geometry.geom_type != "Point":
+        # For a point we want to give some space around it, but polygons should be
+        # an exact fit
+        map.fit_bounds(map.get_bounds())
+
+    Fullscreen().add_to(map)
+
+    satmap = folium.Map(
+        location=[lat,lng],
+        zoom_start=17,
+        scrollWheelZoom=False,
+        tiles=SATELLITE_TILES,
+        attr="Mapbox",
+    )
+
+    folium.GeoJson(
+        circle.geojson,
+        name="geojson",
+    ).add_to(satmap)
+
+    if True:
+        # For a point we want to give some space around it, but polygons should be
+        # an exact fit, and we also want to show the outline of the polygon on the
+        # satellite image
+        satmap.fit_bounds(map.get_bounds())
+        def style_function(feature):
+            return {
+                "fillOpacity": 0,
+                "weight": 4,
+            }
+        folium.GeoJson(
+            info.geometry.geojson,
+            name="geojson",
+            style_function=style_function,
+        ).add_to(satmap)
+    Fullscreen().add_to(satmap)
+
+    parkmap = folium.Map(
+        location=[lat,lng],
+        zoom_start=15,
+        scrollWheelZoom=False,
+        tiles=LIGHT_TILES,
+        attr="Mapbox",
+    )
+    folium.GeoJson(
+        circle.geojson,
+        name="geojson",
+    ).add_to(parkmap)
+    parks = parks.spaces.filter(geometry__within=circle)
+    for each in parks:
+        folium.GeoJson(
+            each.geometry.geojson,
+            name="geojson",
+        ).add_to(parkmap)
+
+    cemeteriesmap = folium.Map(
+        location=[lat,lng],
+        zoom_start=15,
+        scrollWheelZoom=False,
+        tiles=LIGHT_TILES,
+        attr="Mapbox",
+    )
+    folium.GeoJson(
+        circle.geojson,
+        name="geojson",
+    ).add_to(cemeteriesmap)
+    cemeteries = cemeteries.spaces.filter(geometry__within=circle)
+    for each in cemeteries:
+        folium.GeoJson(
+            each.geometry.geojson,
+            name="geojson",
+        ).add_to(cemeteriesmap)
+
+    schoolmap = folium.Map(
+        location=[lat,lng],
+        zoom_start=15,
+        scrollWheelZoom=False,
+        tiles=LIGHT_TILES,
+        attr="Mapbox",
+    )
+    folium.GeoJson(
+        circle.geojson,
+        name="geojson",
+    ).add_to(schoolmap)
+    schools = schools.spaces.filter(geometry__within=circle)
+    for each in schools:
+        folium.GeoJson(
+            each.geometry.geojson,
+            name="geojson",
+        ).add_to(schoolmap)
+
+    remnantmap = folium.Map(
+        location=[lat,lng],
+        zoom_start=15,
+        scrollWheelZoom=False,
+        tiles=LIGHT_TILES,
+        attr="Mapbox",
+    )
+    folium.GeoJson(
+        center.geojson,
+        name="geojson",
+    ).add_to(remnantmap)
+    #remnants = remnants.spaces.filter(geometry__within=circle)
+    from django.contrib.gis.measure import D
+    remnants = remnants.spaces.filter(geometry__distance_lte=(center, D(km=3)))
+    for each in remnants:
+        folium.GeoJson(
+            each.geometry.geojson,
+            name="geojson",
+        ).add_to(remnantmap)
+
+    rivermap = folium.Map(
+        location=[lat,lng],
+        zoom_start=15,
+        scrollWheelZoom=False,
+        tiles=LIGHT_TILES,
+        attr="Mapbox",
+    )
+    folium.GeoJson(
+        circle.geojson,
+        name="geojson",
+    ).add_to(rivermap)
+    rivers = rivers.spaces.filter(geometry__overlaps=circle)
+    for each in rivers:
+        folium.GeoJson(
+            each.geometry.geojson,
+            name="geojson",
+        ).add_to(rivermap)
+
+    try:
+        veg = vegetation.spaces.filter(geometry__intersects=center)
+        veg = veg[0]
+    except:
+        veg = None
+
+    context = {
+        "map": map._repr_html_(),
+        "satmap": satmap._repr_html_(),
+        "parkmap": parkmap._repr_html_(),
+        "parks": parks,
+        "cemeteriesmap": cemeteriesmap._repr_html_(),
+        "cemeteries": cemeteries,
+        "rivermap": rivermap._repr_html_(),
+        "rivers": rivers,
+        "remnantmap": remnantmap._repr_html_(),
+        "remnants": remnants,
+        "schoolmap": schoolmap._repr_html_(),
+        "schools": schools,
+        "veg": veg,
+        "center": center,
+    }
+    return render(request, "core/report.html", context)
 
 def geojson(request, id):
     info = Document.objects.get(pk=id)

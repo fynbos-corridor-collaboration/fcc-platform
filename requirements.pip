@@ -9,3 +9,4 @@ unidecode
 numpy
 pandas
 geopandas
+folium
