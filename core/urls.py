@@ -4,9 +4,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("photos/", views.photos, name="photos"),
-    path("photos/<int:id>/", views.gallery, name="gallery"),
-    path("work/projects/", views.projects, name="projects"),
-    path("work/publications/", views.publications, name="publications"),
-    path("work/talks/", views.talks, name="talks"),
+    path("maps/", views.maps, name="maps"),
+    path("maps/<int:id>/", views.map, name="map"),
+    path("geojson/<int:id>/", views.geojson, name="geojson"),
 ]

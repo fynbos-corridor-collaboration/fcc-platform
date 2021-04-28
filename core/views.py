@@ -1,18 +1,189 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import JsonResponse, HttpResponse
 import urllib.request, json 
 from django.contrib import messages
 from django.utils.safestring import mark_safe
+
+# Quick debugging, sometimes it's tricky to locate the PRINT in all the Django 
+# output in the console, so just using a simply function to highlight it better
+def p(text):
+    print("----------------------")
+    print(text)
+    print("----------------------")
 
 def index(request):
     context = {}
     return render(request, "core/index.html", context)
 
-def maps(request):
-    context = {
-        "maps": 
+def map(request, id):
+    info = get_object_or_404(Document, pk=id)
+    spaces = info.spaces.all()
+    features = []
+    if info.spaces.all().count() == 1:
+        # If this is only associated to a single space then we show that one
+        space = info.spaces.all()[0]
+
+    if spaces.count() > 500 and "show_all_spaces" not in request.GET:
+        space_count = spaces.count()
+        spaces = spaces[:500]
+
+    map = None
+    simplify_factor = None
+    geom_type = None
+
+    size = 0
+    # If the file is larger than 3MB, then we simplify
+    if not "show_full" in request.GET:
+        if size > 1024*1024*20:
+            simplify_factor = 0.05
+        elif size > 1024*1024*10:
+            simplify_factor = 0.02
+        elif size > 1024*1024*5:
+            simplify_factor = 0.001
+
+    colors = ["green", "blue", "red", "orange", "brown", "navy", "teal", "purple", "pink", "maroon", "chocolate", "gold", "ivory", "snow"]
+
+    count = 0
+    legend = {}
+    show_individual_colors = False
+    properties = {} # Get data viz
+    if "color_type" in properties:
+        if properties["color_type"] == "single":
+            # One single color for everything on the map
+            show_individual_colors = False
+        else:
+            # Each space has an individual color
+            show_individual_colors = True
+    else:
+        show_individual_colors = True
+
+    if show_individual_colors and "scheme" in properties:
+        s = properties["scheme"]
+        colors = COLOR_SCHEMES[s]
+
+    for each in spaces:
+        geom_type = each.geometry.geom_type
+        if simplify_factor:
+            geo = each.geometry.simplify(simplify_factor)
+        else:
+            geo = each.geometry
+
+        url = "https://google.com"
+
+        # If we need separate colors we'll itinerate over them one by one
+        if show_individual_colors:
+            try:
+                color = colors[count]
+                count += 1
+            except:
+                color = colors[0]
+                count = 0
+            legend[color] = each.name
+        else:
+            color = None
+
+        content = ""
+        content = content + f"<a href='{url}'>View details</a>"
+
+        try:
+            features.append({
+                "type": "Feature",
+                "geometry": json.loads(geo.json),
+                "properties": {
+                    "name": each.name,
+                    "id": each.id,
+                    "content": content,
+                    "color": color if color else "",
+                },
+            })
+        except Exception as e:
+            messages.error(request, f"We had an issue reading one of the items which had an invalid geometry ({each}). Error: {str(e)}")
+
+    data = {
+        "type":"FeatureCollection",
+        "features": features,
+        "geom_type": geom_type,
     }
 
+    context = {
+        "info": info,
+        "load_map": True,
+        "load_leaflet_item": True,
+        "data": data,
+    }
+    return render(request, "core/map.html", context)
+
+def maps(request):
+    types = Document.Type
+    parents = []
+    hits = {}
+    type_list = {}
+    getcolors = {}
+    for each in types:
+        e = int(each)
+        parents.append(e)
+        hits[e] = []
+        type_list[e] = each.label
+
+    documents = Document.objects.all().order_by("type")
+    for each in documents:
+        t = each.type
+        hits[t].append(each)
+        getcolors[each.id] = each.color
+
+    for each in parents:
+        if not hits[each]:
+            parents.remove(each)
+
+    context = {
+        "maps": documents,
+        "load_map": True,
+        "parents": parents,
+        "hits": hits,
+        "boundaries": ReferenceSpace.objects.get(pk=983170),
+        "type_list": type_list,
+        "getcolors": getcolors,
+        "icons": {
+            1: "leaf",
+            2: "draw-square",
+            3: "train",
+            4: "map-marker",
+            5: "info-circle",
+        }
+    }
+    return render(request, "core/maps.html", context)
+
+def geojson(request, id):
+    info = Document.objects.get(pk=id)
+    features = []
+    spaces = info.spaces.all()
+    if "space" in request.GET:
+        spaces = spaces.filter(id=request.GET["space"])
+    geom_type = None
+    for each in spaces:
+        if each.geometry:
+            url = "https://google.com"
+            content = ""
+            content = content + f"<a href='{url}'>View details</a>"
+            content = content + f"<br><a href='/maps/{info.id}'>View {info}</a>"
+            if not geom_type:
+                geom_type = each.geometry.geom_type
+            features.append({
+                "type": "Feature",
+                "geometry": json.loads(each.geometry.json),
+                "properties": {
+                    "name": each.name,
+                    "content": content,
+                    "id": each.id,
+                },
+            })
+
+    data = {
+        "type":"FeatureCollection",
+        "features": features,
+        "geom_type": geom_type,
+    }
+    return JsonResponse(data)
 

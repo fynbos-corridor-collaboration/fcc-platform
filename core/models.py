@@ -32,6 +32,7 @@ class Document(models.Model):
     author = models.CharField(max_length=255, null=True, blank=True)
     url = models.CharField(max_length=255, null=True, blank=True)
     content = models.TextField(null=True, blank=True)
+    color = models.CharField(max_length=50, null=True, blank=True)
 
     class Type(models.IntegerChoices):
         UNKNOWN = 0, "Unknown"
@@ -53,7 +54,7 @@ class ReferenceSpace(models.Model):
     content = models.TextField(null=True, blank=True)
     geometry = models.GeometryField(null=True, blank=True)
     photo = models.ForeignKey("Photo", on_delete=models.CASCADE, null=True, blank=True, related_name="referencespace")
-    source = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True)
+    source = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True, related_name="spaces")
     temp_source_id = models.IntegerField(null=True, blank=True, help_text="Only used when importing data")
 
     def __str__(self):

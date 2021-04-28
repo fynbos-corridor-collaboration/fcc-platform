@@ -44,3 +44,9 @@ UPDATE "core_document" SET "type" = '4' WHERE "id" = '983409';
 UPDATE "core_document" SET "type" = '4' WHERE "id" = '983426';
 UPDATE "core_document" SET "type" = '4' WHERE "id" = '983479';
 UPDATE "core_document" SET "type" = '4' WHERE "id" = '983491';
+
+-----
+
+Remove FCC - from name:
+
+UPDATE core_document SET name=substring(name, 7);
