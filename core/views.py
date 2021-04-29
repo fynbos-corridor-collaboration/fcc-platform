@@ -186,6 +186,8 @@ def report(request):
     cemeteries = get_object_or_404(Document, pk=983426)
     parks = get_object_or_404(Document, pk=983479)
     rivers = get_object_or_404(Document, pk=983382)
+    p(rivers)
+    p(rivers.spaces)
     remnants = get_object_or_404(Document, pk=983097)
     vegetation = get_object_or_404(Document, pk=983356)
 
