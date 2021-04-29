@@ -140,6 +140,67 @@ def map(request, id):
     }
     return render(request, "core/map.html", context)
 
+def space(request, id):
+    info = get_object_or_404(ReferenceSpace, pk=id)
+    geo = info.geometry
+    map = folium.Map(
+        location=[info.geometry.centroid[1], info.geometry.centroid[0]],
+        zoom_start=14,
+        scrollWheelZoom=False,
+        tiles=STREET_TILES,
+        attr="Mapbox",
+    )
+
+    folium.GeoJson(
+        geo.geojson,
+        name="geojson",
+    ).add_to(map)
+
+    if info.geometry.geom_type != "Point":
+        # For a point we want to give some space around it, but polygons should be
+        # an exact fit
+        map.fit_bounds(map.get_bounds())
+
+    Fullscreen().add_to(map)
+
+    satmap = folium.Map(
+        location=[info.geometry.centroid[1], info.geometry.centroid[0]],
+        zoom_start=17,
+        scrollWheelZoom=False,
+        tiles=SATELLITE_TILES,
+        attr="Mapbox",
+    )
+
+    folium.GeoJson(
+        geo.geojson,
+        name="geojson",
+    ).add_to(satmap)
+
+    if True:
+        # For a point we want to give some space around it, but polygons should be
+        # an exact fit, and we also want to show the outline of the polygon on the
+        # satellite image
+        satmap.fit_bounds(map.get_bounds())
+        def style_function(feature):
+            return {
+                "fillOpacity": 0,
+                "weight": 4,
+            }
+        folium.GeoJson(
+            info.geometry.geojson,
+            name="geojson",
+            style_function=style_function,
+        ).add_to(satmap)
+    Fullscreen().add_to(satmap)
+
+    context = {
+        "info": info,
+        "map": map._repr_html_(),
+        "satmap": satmap._repr_html_(),
+    }
+    return render(request, "core/space.html", context)
+
+
 def maps(request):
     types = Document.Type
     parents = []
@@ -186,8 +247,6 @@ def report(request):
     cemeteries = get_object_or_404(Document, pk=983426)
     parks = get_object_or_404(Document, pk=983479)
     rivers = get_object_or_404(Document, pk=983382)
-    p(rivers)
-    p(rivers.spaces)
     remnants = get_object_or_404(Document, pk=983097)
     vegetation = get_object_or_404(Document, pk=983356)
 
@@ -339,7 +398,7 @@ def report(request):
         circle.geojson,
         name="geojson",
     ).add_to(rivermap)
-    rivers = rivers.spaces.filter(geometry__overlaps=circle)
+    rivers = rivers.spaces.filter(geometry__crosses=circle)
     for each in rivers:
         folium.GeoJson(
             each.geometry.geojson,

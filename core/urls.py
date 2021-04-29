@@ -6,6 +6,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("maps/", views.maps, name="maps"),
     path("maps/<int:id>/", views.map, name="map"),
+    path("space/<int:id>/", views.space, name="space"),
     path("geojson/<int:id>/", views.geojson, name="geojson"),
     path("report/", views.report, name="report"),
 ]
