@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.utils.safestring import mark_safe
 import folium
 from folium.plugins import Fullscreen
+import random
+from django.db.models import Count
 
 # Quick debugging, sometimes it's tricky to locate the PRINT in all the Django 
 # output in the console, so just using a simply function to highlight it better
@@ -35,6 +37,87 @@ COLOR_SCHEMES = {
 }
 
 def index(request):
+    if "import_species" in request.GET:
+        import csv
+
+        Species.objects.all().delete()
+        Genus.objects.all().delete()
+        Family.objects.all().delete()
+        with open(settings.MEDIA_ROOT + "/import/species.csv", "r", encoding="utf-8-sig") as csvfile:
+            contents = csv.DictReader(csvfile)
+            items = []
+            for row in contents:
+                if not row["genus"]:
+                    a = row["name"]
+                    a = a.split(" ")
+                    row["genus"] = a[0]
+                genus = Genus.objects.filter(name=row["genus"])
+                if not genus:
+                    genus = Genus.objects.create(name=row["genus"])
+                else:
+                    genus = genus[0]
+                family = None
+                if row["family"]:
+                    f = row["family"].capitalize()
+                    f = f.strip()
+                    family = Family.objects.filter(name=f)
+                    if not family:
+                        family = Family.objects.create(name=f)
+                    else:
+                        family = family[0]
+                links = []
+                if row["link"]:
+                    links.append(row["link"])
+                if row["link_plantza"]:
+                    links.append(row["link_plantza"])
+                if row["link_wikipedia"]:
+                    links.append(row["link_wikipedia"])
+                if row["link_redlist"]:
+                    links.append(row["link_redlist"])
+                if row["link_extra"]:
+                    links.append(row["link_extra"])
+                items.append(Species(
+                    name = row["scientific_name"],
+                    common_name = row["name"],
+                    common_name_xh = row["name_isixhosa"],
+                    common_name_af = row["name_afrikaans"],
+                    description = row["description"],
+                    genus = genus,
+                    family = family,
+                    links = links,
+                    meta_data = { "original": row},
+                ))
+            Species.objects.bulk_create(items)
+
+    if "features" in request.GET:
+        species = Species.objects.all()
+        for each in species:
+            pass
+
+    if "species_images" in request.GET:
+        from django.core.files.uploadedfile import UploadedFile
+        species = Species.objects.all()
+        for each in species:
+            try:
+                credit = each.meta_data["original"]["image_credit"]
+                if each.meta_data["original"]["image_link"]:
+                    credit += " (" + each.meta_data["original"]["image_link"] + ")"
+                id = each.meta_data["original"]["id"]
+                path = settings.MEDIA_ROOT + f"/species/{id}.jpg"
+                photo = Photo.objects.create(
+                    image = UploadedFile(file=open(path, "rb")),
+                    author = credit,
+                    species = each,
+                )
+                each.photo = photo
+                each.save()
+
+            except Exception as e:
+                print(id)
+                print(each)
+                print(each.id)
+                print(e)
+
     context = {}
     return render(request, "core/index.html", context)
 
@@ -460,4 +543,40 @@ def geojson(request, id):
         "geom_type": geom_type,
     }
     return JsonResponse(data)
+
+def species_overview(request):
+    samples = [15,21,51,81,83,218,230,270,301,313]
+    context = {
+        "genus": Genus.objects.all(),
+        "family": Family.objects.all(),
+        "load_datatables": True,
+        "samples": Photo.objects.filter(pk__in=random.sample(samples, 4)),
+    }
+    return render(request, "core/species.overview.html", context)
+
+def species_list(request, genus=None, family=None):
+    species = Species.objects.all()
+    if genus:
+        genus = get_object_or_404(Genus, pk=genus)
+        species = species.filter(genus=genus)
+        full_list = Genus.objects.all()
+    if family:
+        family = get_object_or_404(Family, pk=family)
+        species = species.filter(family=family)
+        full_list = Family.objects.all()
+    full_list = full_list.annotate(total=Count("species"))
+    context = {
+        "load_datatables": True,
+        "genus": genus,
+        "family": family,
+        "species_list": species,
+        "full_list": full_list,
+    }
+    return render(request, "core/species.list.html", context)
+
+def species(request, id):
+    context = {
+        "info": get_object_or_404(Species, pk=id),
+    }
+    return render(request, "core/species.html", context)
 

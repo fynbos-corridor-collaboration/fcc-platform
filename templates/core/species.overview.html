@@ -1,0 +1,66 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <h1>{% block title %}Species{% endblock %}</h1>
+
+  <div class="card-group mb-3">
+    {% for each in samples %}
+      <div class="card">
+        <a href="{% url "species" each.species.id %}">
+          <img src="{{ each.image.medium.url }}" class="card-img-top fixed-thumb" alt="{{ each.species }}">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title"><a href="{% url "species" each.id %}">{{ each.species.common_name }}</a></h5>
+          <p><em>{{ each.species }}</em></p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h2>Browse by family</h2>
+          <table class="table table-striped datatable">
+            <thead>
+              <tr>
+                <th>Family</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for each in family %}
+              <tr>
+                <td><a href="/species/family/{{ each.id }}/">{{ each }}</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h2>Browse by genus</h2>
+          <table class="table table-striped datatable">
+            <thead>
+              <tr>
+                <th>Genus</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for each in genus %}
+              <tr>
+                <td><a href="{% url "genus" each.id %}">{{ each }}</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% for each in species_list %}
+  <div class="col-3">
+    <div class="card">
+      <a href="{% url "species" each.id %}">
+        <img src="{{ each.get_photo_medium }}" class="card-img-top fixed-thumb" alt="{{ each.species }}">
+      </a>
+      <div class="card-body">
+        <h5 class="card-title"><a href="{% url "species" each.id %}">{{ each.common_name }}</a></h5>
+        <p><em>{{ each }}</em></p>
+      </div>
+    </div>
+  </div>
+{% endfor %}

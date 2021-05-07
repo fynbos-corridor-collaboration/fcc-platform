@@ -9,4 +9,8 @@ urlpatterns = [
     path("space/<int:id>/", views.space, name="space"),
     path("geojson/<int:id>/", views.geojson, name="geojson"),
     path("report/", views.report, name="report"),
+    path("species/", views.species_overview, name="species"),
+    path("species/<int:id>/", views.species, name="species"),
+    path("species/genus/<int:genus>/", views.species_list, name="genus"),
+    path("species/family/<int:family>/", views.species_list, name="family"),
 ]

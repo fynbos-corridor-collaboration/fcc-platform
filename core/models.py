@@ -1,9 +1,10 @@
 from django.db import models
+from django.contrib.gis.db import models
 from stdimage.models import StdImageField
 from django.utils.text import slugify
 from markdown import markdown
 from django.utils.safestring import mark_safe
-from django.contrib.gis.db import models
+from django.conf import settings
 
 class Page(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -104,27 +105,11 @@ class Genus(models.Model):
     def __str__(self):
         return self.name
 
-class Redlist(models.Model):
+    class Meta:
+        ordering = ["name"]
+
+class Family(models.Model):
     name = models.CharField(max_length=255)
-    code = models.CharField(max_length=2)
-
-    def __str__(self):
-        return f"{self.name} ({self.code})"
-
-
-class Species(models.Model):
-    name = models.CharField(max_length=255, db_index=True)
-    common_name = models.CharField(max_length=255, db_index=True, null=True, blank=True)
-    redlist = models.ForeignKey(Redlist, on_delete=models.CASCADE, null=True, blank=True)
-    meta_data = models.JSONField(null=True, blank=True)
-    links = models.JSONField(null=True, blank=True)
-    animals = models.JSONField(null=True, blank=True)
-    soils = models.JSONField(null=True, blank=True)
-    properties = models.JSONField(null=True, blank=True)
-    propagation_seed = models.TextField(null=True, blank=True)
-    propagation_cutting = models.TextField(null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-    genus = models.ForeignKey(Genus, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -132,19 +117,79 @@ class Species(models.Model):
     class Meta:
         ordering = ["name"]
 
-class Photo(models.Model):
+class Redlist(models.Model):
+    name = models.CharField(max_length=255)
+    code = models.CharField(max_length=2)
+
+    def __str__(self):
+        return f"{self.name} ({self.code})"
+
+class SpeciesFeatures(models.Model):
     name = models.CharField(max_length=255, db_index=True)
+
+    class Type(models.IntegerChoices):
+        ANIMALS = 1, "Animal-friendly"
+        SITE = 2, "Tolerances/sites"
+        GROWTH = 3, "Growth features"
+        OTHER = 4, "Other"
+
+    type = models.IntegerField(choices=Type.choices, db_index=True, default=0)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
+
+class Species(models.Model):
+    name = models.CharField(max_length=255, db_index=True)
+    common_name = models.CharField(max_length=255, db_index=True, null=True, blank=True)
+    common_name_xh = models.CharField(max_length=255, db_index=True, null=True, blank=True)
+    common_name_af = models.CharField(max_length=255, db_index=True, null=True, blank=True)
+    redlist = models.ForeignKey(Redlist, on_delete=models.CASCADE, null=True, blank=True)
+    links = models.JSONField(null=True, blank=True)
+    animals = models.JSONField(null=True, blank=True)
+    soils = models.JSONField(null=True, blank=True)
+    properties = models.JSONField(null=True, blank=True)
+    propagation_seed = models.TextField(null=True, blank=True)
+    propagation_cutting = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    genus = models.ForeignKey(Genus, on_delete=models.CASCADE, related_name="species")
+    family = models.ForeignKey(Family, on_delete=models.CASCADE, null=True, blank=True, related_name="species")
+    features = models.ManyToManyField(SpeciesFeatures, blank=True)
+    photo = models.ForeignKey("Photo", on_delete=models.CASCADE, null=True, blank=True, related_name="main_species")
+    meta_data = models.JSONField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
+
+    @property
+    def get_photo_medium(self):
+        if self.photo:
+            return self.photo.image.medium.url
+        else:
+            return settings.MEDIA_URL + "/placeholder.png"
+
+class Photo(models.Model):
+    name = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     image = StdImageField(upload_to="photos", variations={"thumbnail": (350, 350), "medium": (800, 600), "large": (1280, 1024)})
-    position = models.PositiveSmallIntegerField(db_index=True)
+    position = models.PositiveSmallIntegerField(db_index=True, default=1)
     date = models.DateField(auto_now_add=True)
     upload_date = models.DateTimeField(auto_now_add=True)
+    author = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     garden = models.ForeignKey(Garden, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
     event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
     species = models.ForeignKey(Species, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
 
     def __str__(self):
-        return self.name
+        if self.name:
+            return self.name
+        else:
+            return f"Photo {self.id}"
 
     class Meta:
         ordering = ["position"]
