@@ -1,21 +1,30 @@
 {% load static %}
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-success bg-gradient">
+  <nav class="navbar navbar-expand-lg navbar-light bg-pink">
     <div class="container">
-      <a class="navbar-brand" href="/"><img src="{% static 'img/logo.png' %}" alt="" /></a>
+      <a class="navbar-brand" href="/"><img class="pe-3" src="{% static 'img/logo.png' %}" alt="" /></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link {% if menu == "home" %}active{% endif %}" aria-current="page" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url "maps" %}">Maps</a>
+            <a class="nav-link {% if menu == "resources" %}active{% endif %}" href="{% url "maps" %}">Resources</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url "report" %}">Report</a>
+            <a class="nav-link {% if menu == "maps" %}active{% endif %}" href="{% url "maps" %}">Maps</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if menu == "strategy" %}active{% endif %}" href="{% url "maps" %}">Strategy</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if menu == "network" %}active{% endif %}" href="{% url "maps" %}">Garden network</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if menu == "report" %}active{% endif %}" href="{% url "report" %}">Report</a>
           </li>
         </ul>
         <form class="d-flex">

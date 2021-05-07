@@ -1,7 +1,54 @@
 {% extends "_base.html" %}
 
 {% block content %}
-  <h1>Welcome!</h1>
+  <h1>FCC Website 2.0</h1>
+
+  <p>
+    While the strategy is being developed, the FCC is featuring a temporary project website 
+    that can share the ongoing work. However, work is underway to prepare the next version 
+    of this website. This report highlights some of this work.
+  </p>
+
+  <h2>Rationale</h2>
+
+  <p>
+    There are two key reasons why we are setting up a different website. Firstly, we believe
+    that an interactive website that comes with some useful tools that are specific to 
+    restoration of fynbos in Cape Town can really benefit other organisations and groups
+    that are wanting to do similar work. The current website is set up primarily as an informational
+    website and we need some structural changes to embed more advanced tools. Secondly, 
+    the current website of Communitree features a number of tools around mapping, tracking 
+    of species origin, nursery management, and other tools that would be useful to share 
+    with FCC. Communitree has decided to work on integration of these tools in the FCC 
+    website, and to donate the required programming work in order to do so. In order to take
+    full advantage of these various tools and increased capacity we are therefore 
+    developing a new platform for FCC, to be launched some time in 2021.
+  </p>
+
+  <h2>Technology</h2>
+
+  <p>The following technologies are used to develop the website. All of these technologies
+  are open source:</p>
+
+    <ul>
+    <li>Django 3</li>
+    <li>Python 3</li>
+    <li>PostgreSQL</li>
+    <li>PostGIS</li>
+    <li>Docker</li>
+  </ul>
+
+  <h2>Licensing</h2>
+
+  <p>
+    The new FCC platform will be made available as open source software, allowing other parties 
+    to freely use the source code, and making it easier for other people to contribute to this
+    project as well. All code will be published under an MIT license (see:
+    https://opensource.org/licenses/MIT). Code will be made available through the open source
+    repository of Github.
+  </p>
+  
+  <h2>Create report</h2>
   <form action="/report/">
     Latitude:
     <input type="text" name="lat" value="-33.9641" />
@@ -12,8 +59,9 @@
     <button type="submit">Generate report</button>
   </form>
 
+
+  <h2>Samples</h2>
   <ul>
-    <li><a href="/report/?lat=-33.954139&lng=18.473788">Arundel</a></li>
     <li><a href="/report/?lat=-34.070078&lng=18.571595">Strandfontein</a></li>
   </ul>
 {% endblock %}
