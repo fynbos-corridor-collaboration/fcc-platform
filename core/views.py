@@ -117,6 +117,53 @@ def index(request):
                 print(each)
                 print(each.id)
                 print(e)
+    if "clean_species" in request.GET:
+        names = ["Spinach", "Beetroot", "Onion", "Cauliflower"]
+        a = Species.objects.filter(common_name__in=names)
+        a.delete()
+
+    if "species_fix" in request.GET:
+        all = Species.objects.all()
+
+        features = {
+            'bird_friendly': 'This is a bird-friendly species',
+            'medicinal': 'It provides medicinal value',
+            'first_year': 'It is a pioneer species suitable for establishing the soil in bare areas',
+            'construction': 'It can be used as a construction material',
+            'sensitive_roots': 'Sensitive roots',
+            'wind_resistant': 'Wind resistant',
+            'fast_growing': 'Fast-growing',
+            'drought_resistant': 'Drought-resistant',
+            'fragrant': 'Fragrant',
+            'edible': 'Edible',
+            'good_potplant': 'Good potplant',
+            'pioneer': 'Pioneer species',
+            'easy_to_grow': 'Easy to grow',
+            'coastal_areas': 'Good for coastal areas',
+            'hedge': 'Can be used as a hedge',
+            'butterflies': 'Attracts butterflies',
+            'wet_sites': 'Suitable for wet sites',
+            'clay_soil': 'Suitable for clay soil',
+            'sandy_soil': 'Suitable for sandy soil',
+        }
+
+        match = {}
+        a = SpeciesFeatures.objects.all()
+        a.delete()
+        for key,value in features.items():
+            match[key] = SpeciesFeatures.objects.create(name=value)
+        for each in all:
+            for key,value in features.items():
+                if key in each.meta_data["original"] and each.meta_data["original"][key]:
+                    t = int(each.meta_data["original"][key])
+                    if t == 1:
+                        each.features.add(match[key])
+                        p(f"Yes, we found {key} in {each}")
+                        p(each.meta_data["original"][key])
+            each.save()
+            
+
+
 
     context = {}
     return render(request, "core/index.html", context)
@@ -551,6 +598,7 @@ def species_overview(request):
         "family": Family.objects.all(),
         "load_datatables": True,
         "samples": Photo.objects.filter(pk__in=random.sample(samples, 4)),
+        "all": Species.objects.all().count(),
     }
     return render(request, "core/species.overview.html", context)
 
@@ -571,6 +619,12 @@ def species_list(request, genus=None, family=None):
         "family": family,
         "species_list": species,
         "full_list": full_list,
+    }
+    return render(request, "core/species.list.html", context)
+
+def species_full_list(request):
+    context = {
+        "species_list": Species.objects.all(),
     }
     return render(request, "core/species.list.html", context)
 
