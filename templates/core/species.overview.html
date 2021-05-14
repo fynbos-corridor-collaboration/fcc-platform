@@ -22,21 +22,18 @@
     <div class="col">
       <div class="card">
         <div class="card-body">
-          <h2>Browse by family</h2>
-          <table class="table table-striped datatable">
-            <thead>
-              <tr>
-                <th>Family</th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for each in family %}
-              <tr>
-                <td><a href="/species/family/{{ each.id }}/">{{ each }}</a></td>
-              </tr>
+          <h2>Search species list</h2>
+          <form action="{% url "species_search" %}">
+            {% for each in features %}
+              <div class="form-check">
+                <input type="checkbox" name="feature" value="{{ each.id }}" id="feature_{{ each.id }}" class="form-check-input" />
+                <label class="form-check-label" for="feature_{{ each.id }}">
+                  {{ each }}
+                </label>
+              </div>
             {% endfor %}
-            </tbody>
-          </table>
+            <button type="submit" class="btn btn-primary">Filter list</button>
+          </form>
         </div>
       </div>
     </div>
@@ -75,7 +72,21 @@
     <div class="col">
       <div class="card">
         <div class="card-body">
-          <h2>Search species list</h2>
+          <h2>Browse by family</h2>
+          <table class="table table-striped datatable">
+            <thead>
+              <tr>
+                <th>Family</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for each in family %}
+              <tr>
+                <td><a href="/species/family/{{ each.id }}/">{{ each }}</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

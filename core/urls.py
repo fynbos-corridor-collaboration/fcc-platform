@@ -11,6 +11,7 @@ urlpatterns = [
     path("report/", views.report, name="report"),
     path("species/", views.species_overview, name="species"),
     path("species/all/", views.species_full_list, name="species_full_list"),
+    path("species/search/", views.species_full_list, name="species_search"),
     path("species/<int:id>/", views.species, name="species"),
     path("species/genus/<int:genus>/", views.species_list, name="genus"),
     path("species/family/<int:family>/", views.species_list, name="family"),

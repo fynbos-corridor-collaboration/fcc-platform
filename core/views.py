@@ -127,6 +127,11 @@ def index(request):
 
         features = {
             'bird_friendly': 'This is a bird-friendly species',
+            'honeybees': 'This will attract honey bees',
+            'cape_sugarbird': 'Will attract the Cape Sugarbird',
+            'monkey_beetle': 'Will attract monkey beetles',
+            'malachite_sunbird': 'Will attract the Malachite Sugarbird',
+            'orange_breasted_sunbird': 'Will attract the Orange-breasted Sugarbird',
             'medicinal': 'It provides medicinal value',
             'first_year': 'It is a pioneer species suitable for establishing the soil in bare areas',
             'construction': 'It can be used as a construction material',
@@ -161,9 +166,6 @@ def index(request):
                         p(f"Yes, we found {key} in {each}")
                         p(each.meta_data["original"][key])
             each.save()
-            
-
-
 
     context = {}
     return render(request, "core/index.html", context)
@@ -599,6 +601,7 @@ def species_overview(request):
         "load_datatables": True,
         "samples": Photo.objects.filter(pk__in=random.sample(samples, 4)),
         "all": Species.objects.all().count(),
+        "features": SpeciesFeatures.objects.all(),
     }
     return render(request, "core/species.overview.html", context)
 
@@ -623,10 +626,18 @@ def species_list(request, genus=None, family=None):
     return render(request, "core/species.list.html", context)
 
 def species_full_list(request):
+    species = Species.objects.all()
+    features = None
+    if "feature" in request.GET:
+        features = SpeciesFeatures.objects.filter(pk__in=request.GET.getlist("feature"))
+        for each in features:
+            species = species.filter(features=each)
     context = {
-        "species_list": Species.objects.all(),
+        "species_list": species,
+        "load_datatables": True,
+        "features": features,
     }
-    return render(request, "core/species.list.html", context)
+    return render(request, "core/species.all.html", context)
 
 def species(request, id):
     context = {

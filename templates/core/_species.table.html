@@ -1,0 +1,24 @@
+<table class="table datatable">
+  <thead>
+    <tr>
+      <th>Scientific name</th>
+      <th>Common name</th>
+      <th>Features</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for each in species_list %}
+    <tr>
+      <td><a href="{% url "species" each.id %}">{{ each.name }}</a></td>
+      <td>
+        {{ each.common_name }}
+      </td>
+      <td>
+        {% for feature in each.features.all %}
+          <span class="badge bg-warning">{{ feature }}</span>
+        {% endfor %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>

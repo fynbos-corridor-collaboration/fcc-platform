@@ -6,7 +6,16 @@
 
   <img src="{{ info.photo.image.large.url }}" alt="" />
 
-  {{ info.description }}
+  {{ info.description|safe }}
+
+  {% if info.features.count %}
+    <h3>Features</h3>
+    <ul>
+    {% for each in info.features.all %}
+      <li>{{ each }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
 
   <div>
     {% for key,value in info.meta_data.original.items %}

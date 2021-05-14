@@ -1,5 +1,5 @@
 {% for each in species_list %}
-  <div class="col-3">
+  <div class="col-3 mb-2">
     <div class="card">
       <a href="{% url "species" each.id %}">
         <img src="{{ each.get_photo_medium }}" class="card-img-top fixed-thumb" alt="{{ each.species }}">

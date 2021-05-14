@@ -1,0 +1,49 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <h1>{% block title %}Species list{% endblock %}</h1>
+
+  <div class="alert alert-info">
+    <strong>{{ species_list.count }}</strong>
+    species found
+  </div>
+
+  {% if features %}
+    <div class="alert alert-warning">
+      <h4>Filters</h4>
+      <ul class="list-unstyled mb-3">
+      {% for each in features %}
+        <i class="fa fa-check"></i> {{ each }}<br>
+      {% endfor %}
+      </ul>
+
+      <p>
+        <a class="btn btn-secondary" href="{% url "species" %}">New search</a>
+        <a class="btn btn-secondary" href="{% url "species_full_list" %}">View all species</a>
+      </p>
+    </div>
+  {% endif %}
+
+  <ul class="nav nav-tabs" id="speciesTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#table_view" type="button" role="tab" aria-controls="table_view" aria-selected="true">Table</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#photos" type="button" role="tab" aria-controls="photos" aria-selected="false">Photos</button>
+    </li>
+  </ul>
+  <div class="tab-content" id="speciesTabContent">
+    <div class="tab-pane fade show active" id="table_view" role="tabpanel" aria-labelledby="table_view">
+      <div class="mt-2 mb-2">
+        {% include "core/_species.table.html" %}
+      </div>
+  </div>
+    <div class="tab-pane fade" id="photos" role="tabpanel" aria-labelledby="photos">
+      <div class="row mt-2">
+        {% include "core/_species.list.html" %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
