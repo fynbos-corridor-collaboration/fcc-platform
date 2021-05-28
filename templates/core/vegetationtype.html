@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <h1>{{ info }}</h1>
+
+  {{ info.description|safe }}
+
+  <div class="alert alert-warning">
+     Information on Cape Town's vegetation comes from <em>Summarised Descriptions
+     of National Vegetation Types Occurring in the City of Cape Town</em> by
+     Patricia Holmes, Biodiversity Management Branch, July 2008 
+  </div>
+
+{% endblock %}

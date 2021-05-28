@@ -10,3 +10,4 @@ numpy
 pandas
 geopandas
 folium
+bleach

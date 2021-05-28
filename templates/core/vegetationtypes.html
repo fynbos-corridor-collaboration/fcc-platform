@@ -1,0 +1,33 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <h1>{{ page }}</h1>
+  {{ page.get_content }}
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Historical area (&#13218;)</th>
+        <th>% in Cape Town</th>
+        <th>Current area in Cape Town (&#13218;)</th>
+        <th>Conserved or managed in Cape Town (&#13218;)</th>
+        <th>National Ecosystem Status</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for each in all %}
+      <tr>
+        <td><a href="{% url "vegetation_type" each.slug %}">{{ each }}</a></td>
+        <td>{{ each.historical_cover }}</td>
+        <td>{{ each.cape_town_cover }}</td>
+        <td>{{ each.current_cape_town_area }}</td>
+        <td>{{ each.conserved_cape_town }}</td>
+        <td>{{ each.redlist.get_code }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

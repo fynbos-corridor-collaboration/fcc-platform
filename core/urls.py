@@ -15,4 +15,6 @@ urlpatterns = [
     path("species/<int:id>/", views.species, name="species"),
     path("species/genus/<int:genus>/", views.species_list, name="genus"),
     path("species/family/<int:family>/", views.species_list, name="family"),
+    path("vegetation-types/", views.vegetation_types, name="vegetation_types"),
+    path("vegetation-types/<slug:slug>/", views.vegetation_type, name="vegetation_type"),
 ]

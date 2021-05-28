@@ -167,6 +167,46 @@ def index(request):
                         p(each.meta_data["original"][key])
             each.save()
 
+
+    if "import_veg" in request.GET:
+        import csv
+
+        VegetationType.objects.all().delete()
+        redlist = Redlist.objects.all()
+        if not redlist:
+            r = {
+                "EX": "Extinct",
+                "EW": "Extinct in the Wild",
+                "CR": "Critically Endangered",
+                "EN": "Endangered",
+                "VU": "Vulnerable",
+                "NT": "Near threatened",
+                "CD": "Conservation Dependent",
+                "LC": "Least Concern",
+                "DD": "Data Deficient",
+                "NE": "Not Evaluated",
+            }
+            for key,value in r.items():
+                Redlist.objects.create(code=key, name=value)
+
+        with open(settings.MEDIA_ROOT + "/import/vegetation_types.csv", "r", encoding="utf-8-sig") as csvfile:
+            contents = csv.DictReader(csvfile)
+            items = []
+            for row in contents:
+                redlist = row["conservation_status"]
+
+                VegetationType.objects.create(
+                    id = row["id"],
+                    name = row["name"],
+                    description = row["description"],
+                    historical_cover = row["historical_cover"],
+                    cape_town_cover = row["percentage_capetown"],
+                    current_cape_town_area = row["current_cover"],
+                    conserved_cape_town = row["conservation_area"],
+                    redlist = Redlist.objects.get(code=row["conservation_status"]),
+                    slug = row["slug"],
+                )
+
     context = {}
     return render(request, "core/index.html", context)
 
@@ -223,7 +263,7 @@ def map(request, id):
         else:
             geo = each.geometry
 
-        url = "https://google.com"
+        url = each.get_absolute_url
 
         # If we need separate colors we'll itinerate over them one by one
         if show_individual_colors:
@@ -571,7 +611,7 @@ def geojson(request, id):
     geom_type = None
     for each in spaces:
         if each.geometry:
-            url = "https://google.com"
+            url = each.get_absolute_url
             content = ""
             content = content + f"<a href='{url}'>View details</a>"
             content = content + f"<br><a href='/maps/{info.id}'>View {info}</a>"
@@ -645,4 +685,17 @@ def species(request, id):
         "info": get_object_or_404(Species, pk=id),
     }
     return render(request, "core/species.html", context)
+
+def vegetation_types(request):
+    context = {
+        "all": VegetationType.objects.all(),
+        "page": Page.objects.get(pk=1),
+    }
+    return render(request, "core/vegetationtypes.html", context)
+
+def vegetation_type(request, slug):
+    context = {
+        "info": get_object_or_404(VegetationType, slug=slug),
+    }
+    return render(request, "core/vegetationtype.html", context)
 

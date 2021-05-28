@@ -5,19 +5,52 @@ from django.utils.text import slugify
 from markdown import markdown
 from django.utils.safestring import mark_safe
 from django.conf import settings
+import bleach
+from unidecode import unidecode
 
 class Page(models.Model):
     name = models.CharField(max_length=255, db_index=True)
     content = models.TextField(null=True, blank=True)
-    image = StdImageField(upload_to="pages", variations={"thumbnail": (350, 350), "medium": (800, 600), "large": (1280, 1024)})
+    content_html = models.TextField(null=True, blank=True, help_text="Auto-generated - do NOT edit")
+    image = StdImageField(upload_to="pages", variations={"thumbnail": (350, 350), "medium": (800, 600), "large": (1280, 1024)}, null=True, blank=True)
     position = models.PositiveSmallIntegerField(db_index=True)
     slug = models.SlugField(max_length=255)
+    FORMATS = (
+        ("HTML", "HTML"),
+        ("MARK", "Markdown"),
+        ("MARK_HTML", "Markdown and HTML"),
+    )
+    format = models.CharField(max_length=9, choices=FORMATS)
 
     def __str__(self):
         return self.name
 
+    def get_content(self):
+        # The content field is already sanitized, according to the settings (see the save() function below)
+        # So when we retrieve the html content we can trust this is safe, and will mark it as such
+        # We avoid using |safe in templates -- to centralize the effort to sanitize input
+        if self.content:
+            return mark_safe(self.content_html)
+        else:
+            return ""
+
     class Meta:
         ordering = ["position"]
+
+    def save(self, *args, **kwargs):
+        if not self.content:
+            self.content_html = None
+        elif self.format == "HTML":
+            # Here it wouldn't hurt to apply bleach and take out unnecessary tags
+            self.content_html = self.content
+        elif self.format == "MARK_HTML":
+            # Here it wouldn't hurt to apply bleach and take out unnecessary tags
+            self.content_html = markdown(self.content)
+        elif self.format == "MARK":
+            self.content_html = markdown(bleach.clean(self.content))
+        if not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
 
 class Garden(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -68,7 +101,14 @@ class ReferenceSpace(models.Model):
     temp_source_id = models.IntegerField(null=True, blank=True, help_text="Only used when importing data")
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.source.name})"
+
+    @property
+    def get_absolute_url(self):
+        return "/space/" + str(self.id)
+
+    class Meta:
+        ordering = ["name"]
 
 class Corridor(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -120,9 +160,13 @@ class Family(models.Model):
 class Redlist(models.Model):
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=2)
+    css = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} ({self.code})"
+
+    def get_code(self):
+        return mark_safe(f"<span class='badge bg-{self.css}'>{self.code}</span>")
 
 class SpeciesFeatures(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -194,3 +238,19 @@ class Photo(models.Model):
     class Meta:
         ordering = ["position"]
 
+class VegetationType(models.Model):
+    name = models.CharField(max_length=255, db_index=True)
+    description = models.TextField(null=True, blank=True)
+    historical_cover = models.PositiveSmallIntegerField(help_text="Cover in km2")
+    cape_town_cover = models.FloatField(help_text="In %")
+    current_cape_town_area = models.FloatField(help_text="In km2")
+    conserved_cape_town = models.PositiveSmallIntegerField(help_text="Conserved or managed, in km2")
+    redlist = models.ForeignKey(Redlist, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=255)
+    spaces = models.ManyToManyField(ReferenceSpace, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
