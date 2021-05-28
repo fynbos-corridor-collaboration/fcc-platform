@@ -532,8 +532,9 @@ def report(request):
     ).add_to(rivermap)
     rivers = rivers.spaces.filter(geometry__crosses=circle)
     for each in rivers:
+        geom = each.geometry.intersection(circle)
         folium.GeoJson(
-            each.geometry.geojson,
+            geom.geojson,
             name="geojson",
         ).add_to(rivermap)
 
