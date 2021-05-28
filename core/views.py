@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 import folium
 from folium.plugins import Fullscreen
 import random
-from django.db.models import Count
+from django.db.models import Q, Count
 
 # Quick debugging, sometimes it's tricky to locate the PRINT in all the Django 
 # output in the console, so just using a simply function to highlight it better
@@ -206,6 +206,24 @@ def index(request):
                     redlist = Redlist.objects.get(code=row["conservation_status"]),
                     slug = row["slug"],
                 )
+
+    if "veg_species" in request.GET:
+        import csv
+
+        species = {}
+        veg_types = {}
+
+        with open(settings.MEDIA_ROOT + "/import/species_vegetation_types.csv", "r", encoding="utf-8-sig") as csvfile:
+            contents = csv.DictReader(csvfile)
+            for row in contents:
+                s = row["species_id"]
+                v = row["vegetation_id"]
+                if s not in species:
+                    species[s] = Species.objects.get(meta_data__original__id=s)
+                if v not in veg_types:
+                    veg_types[v] = VegetationType.objects.get(pk=v)
+                tw = species[s]
+                tw.vegetation_types.add(veg_types[v])
 
     context = {}
     return render(request, "core/index.html", context)
@@ -634,20 +652,43 @@ def geojson(request, id):
     }
     return JsonResponse(data)
 
-def species_overview(request):
-    samples = [15,21,51,81,83,218,230,270,301,313]
+def species_overview(request, vegetation_type=None):
+
+    samples = Species.objects.values_list("id", flat=True).filter(photo__isnull=False)
+    genus = Genus.objects.all()
+    families = Family.objects.all()
+    species = Species.objects.all()
+    veg_types = VegetationType.objects.all().annotate(total=Count("species"))
+
+    if vegetation_type:
+        vegetation_type = VegetationType.objects.get(slug=vegetation_type)
+        species = species.filter(vegetation_types=vegetation_type)
+        samples = samples.filter(vegetation_types=vegetation_type)
+
+        genus = genus.annotate(total=Count("species", filter=Q(species__vegetation_types=vegetation_type)))
+        families = families.annotate(total=Count("species", filter=Q(species__vegetation_types=vegetation_type)))
+
+    try:
+        samples = Species.objects.filter(pk__in=random.sample(list(samples), 4))
+    except:
+        samples = None
+
     context = {
-        "genus": Genus.objects.all(),
-        "family": Family.objects.all(),
+        "genus": genus,
+        "family": families,
         "load_datatables": True,
-        "samples": Photo.objects.filter(pk__in=random.sample(samples, 4)),
-        "all": Species.objects.all().count(),
+        "samples": samples,
+        "all": species.count(),
         "features": SpeciesFeatures.objects.all(),
+        "vegetation_types": veg_types,
+        "vegetation_type": vegetation_type,
+        "veg_link": f"?vegetation_type={vegetation_type.id}" if vegetation_type else "",
     }
     return render(request, "core/species.overview.html", context)
 
 def species_list(request, genus=None, family=None):
     species = Species.objects.all()
+
     if genus:
         genus = get_object_or_404(Genus, pk=genus)
         species = species.filter(genus=genus)
@@ -656,6 +697,12 @@ def species_list(request, genus=None, family=None):
         family = get_object_or_404(Family, pk=family)
         species = species.filter(family=family)
         full_list = Family.objects.all()
+
+    vegetation_type = None
+    if "vegetation_type" in request.GET:
+        vegetation_type = VegetationType.objects.get(pk=request.GET["vegetation_type"])
+        species = species.filter(vegetation_types=vegetation_type)
+
     full_list = full_list.annotate(total=Count("species"))
     context = {
         "load_datatables": True,
@@ -664,10 +711,16 @@ def species_list(request, genus=None, family=None):
         "species_list": species,
         "full_list": full_list,
     }
-    return render(request, "core/species.list.html", context)
+    return render(request, "core/species.all.html", context)
 
 def species_full_list(request):
     species = Species.objects.all()
+
+    vegetation_type = None
+    if "vegetation_type" in request.GET:
+        vegetation_type = VegetationType.objects.get(pk=request.GET["vegetation_type"])
+        species = species.filter(vegetation_types=vegetation_type)
+
     features = None
     if "feature" in request.GET:
         features = SpeciesFeatures.objects.filter(pk__in=request.GET.getlist("feature"))

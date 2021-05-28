@@ -1,18 +1,27 @@
 {% extends "_base.html" %}
 
+{% block head %}
+<style type="text/css">
+.bg-primary a{color:#f4f4f4}
+</style>
+{% endblock %}
+
 {% block content %}
 
   <h1>{% block title %}Species{% endblock %}</h1>
+  {% if vegetation_type %}
+    <h2>{{ vegetation_type }}</h2>
+  {% endif %}
 
   <div class="card-group mb-3">
     {% for each in samples %}
       <div class="card">
-        <a href="{% url "species" each.species.id %}">
-          <img src="{{ each.image.medium.url }}" class="card-img-top fixed-thumb" alt="{{ each.species }}">
+        <a href="{% url "species" each.id %}">
+          <img src="{{ each.photo.image.medium.url }}" class="card-img-top fixed-thumb" alt="{{ each }}">
         </a>
         <div class="card-body">
-          <h5 class="card-title"><a href="{% url "species" each.id %}">{{ each.species.common_name }}</a></h5>
-          <p><em>{{ each.species }}</em></p>
+          <h5 class="card-title"><a href="{% url "species" each.id %}">{{ each.common_name }}</a></h5>
+          <p><em>{{ each }}</em></p>
         </div>
       </div>
     {% endfor %}
@@ -45,12 +54,14 @@
             <thead>
               <tr>
                 <th>Genus</th>
+                <th>Species</th>
               </tr>
             </thead>
             <tbody>
             {% for each in genus %}
               <tr>
-                <td><a href="{% url "genus" each.id %}">{{ each }}</a></td>
+                <td><a href="{% url "genus" each.id %}{{ veg_link }}">{{ each }}</a></td>
+                <td>{{ each.total }}</td>
               </tr>
             {% endfor %}
             </tbody>
@@ -62,10 +73,31 @@
 
   <div class="row mb-3">
     <div class="col">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h2>Browse by vegetation type</h2>
+          <table class="table table-striped datatable">
+            <thead>
+              <tr>
+                <th>Vegetation type</th>
+                <th>Species</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for each in vegetation_types %}
+              <tr {% if each == vegetation_type %}class="bg-primary text-light"{% endif %}>
+                <td><a href="{% url "vegetation_type_species" each.slug %}">{{ each }}</a></td>
+                <td>{{ each.total }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
       <div class="card">
         <div class="card-body">
           <h2>Browse full list</h2>
-          <a href="{% url "species_full_list" %}" class="btn btn-primary">View all ({{ all }})</a>
+          <a href="{% url "species_full_list" %}{{ veg_link }}" class="btn btn-primary">View all ({{ all }})</a>
         </div>
       </div>
     </div>
@@ -77,12 +109,14 @@
             <thead>
               <tr>
                 <th>Family</th>
+                <th>Species</th>
               </tr>
             </thead>
             <tbody>
             {% for each in family %}
               <tr>
-                <td><a href="/species/family/{{ each.id }}/">{{ each }}</a></td>
+                <td><a href="/species/family/{{ each.id }}/{{ veg_link }}">{{ each }}</a></td>
+                <td>{{ each.total }}</td>
               </tr>
             {% endfor %}
             </tbody>

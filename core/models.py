@@ -168,6 +168,23 @@ class Redlist(models.Model):
     def get_code(self):
         return mark_safe(f"<span class='badge bg-{self.css}'>{self.code}</span>")
 
+class VegetationType(models.Model):
+    name = models.CharField(max_length=255, db_index=True)
+    description = models.TextField(null=True, blank=True)
+    historical_cover = models.PositiveSmallIntegerField(help_text="Cover in km2")
+    cape_town_cover = models.FloatField(help_text="In %")
+    current_cape_town_area = models.FloatField(help_text="In km2")
+    conserved_cape_town = models.PositiveSmallIntegerField(help_text="Conserved or managed, in km2")
+    redlist = models.ForeignKey(Redlist, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=255)
+    spaces = models.ManyToManyField(ReferenceSpace, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
+
 class SpeciesFeatures(models.Model):
     name = models.CharField(max_length=255, db_index=True)
 
@@ -201,6 +218,7 @@ class Species(models.Model):
     genus = models.ForeignKey(Genus, on_delete=models.CASCADE, related_name="species")
     family = models.ForeignKey(Family, on_delete=models.CASCADE, null=True, blank=True, related_name="species")
     features = models.ManyToManyField(SpeciesFeatures, blank=True)
+    vegetation_types = models.ManyToManyField(VegetationType, blank=True, related_name="species")
     photo = models.ForeignKey("Photo", on_delete=models.CASCADE, null=True, blank=True, related_name="main_species")
     meta_data = models.JSONField(null=True, blank=True)
 
@@ -238,19 +256,3 @@ class Photo(models.Model):
     class Meta:
         ordering = ["position"]
 
-class VegetationType(models.Model):
-    name = models.CharField(max_length=255, db_index=True)
-    description = models.TextField(null=True, blank=True)
-    historical_cover = models.PositiveSmallIntegerField(help_text="Cover in km2")
-    cape_town_cover = models.FloatField(help_text="In %")
-    current_cape_town_area = models.FloatField(help_text="In km2")
-    conserved_cape_town = models.PositiveSmallIntegerField(help_text="Conserved or managed, in km2")
-    redlist = models.ForeignKey(Redlist, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=255)
-    spaces = models.ManyToManyField(ReferenceSpace, blank=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ["name"]

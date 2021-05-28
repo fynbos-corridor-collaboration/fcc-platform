@@ -1,9 +1,10 @@
 <table class="table datatable">
   <thead>
     <tr>
-      <th>Scientific name</th>
-      <th>Common name</th>
+      <th style="width:250px">Scientific name</th>
+      <th style="width:200px">Common name</th>
       <th>Features</th>
+      <th>Vegetation type(s)</th>
     </tr>
   </thead>
   <tbody>
@@ -15,7 +16,12 @@
       </td>
       <td>
         {% for feature in each.features.all %}
-          <span class="badge bg-warning">{{ feature }}</span>
+          <span class="badge bg-warning">{{ feature }}</span><br>
+        {% endfor %}
+      </td>
+      <td>
+        {% for veg in each.vegetation_types.all %}
+          <span class="badge bg-success">{{ veg }}</span>
         {% endfor %}
       </td>
     </tr>
