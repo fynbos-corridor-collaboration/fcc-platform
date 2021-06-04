@@ -40,6 +40,7 @@ COLOR_SCHEMES = {
 
 def index(request):
     if "import_species" in request.GET:
+        return None
         import csv
 
         Species.objects.all().delete()
@@ -92,11 +93,13 @@ def index(request):
             Species.objects.bulk_create(items)
 
     if "features" in request.GET:
+        return None
         species = Species.objects.all()
         for each in species:
             pass
 
     if "pioneer-update" in request.GET:
+        return None
         pio = SpeciesFeatures.objects.get(pk=65)
         right_one = SpeciesFeatures.objects.get(pk=74)
         species = Species.objects.filter(features=pio)
@@ -105,6 +108,7 @@ def index(request):
         pio.delete()
 
     if "sunbird" in request.GET:
+        return None
         species = Species.objects.filter(meta_data__original__sunbird__isnull=False)
         a = SpeciesFeatures.objects.create(name="Will attract sunbirds")
         for each in species:
@@ -112,7 +116,19 @@ def index(request):
             if sunbird == "1":
                 each.features.add(a)
 
+    if "medicinal" in request.GET:
+        return None
+        species = Species.objects.filter(meta_data__original__medicinal__isnull=False)
+        a = SpeciesFeatures.objects.get(name="It provides medicinal value")
+        for each in species:
+            p(each)
+            medicinal = each.meta_data["original"]["medicinal"]
+            if medicinal == "1":
+                p(each)
+                each.features.add(a)
+
     if "species_images" in request.GET:
+        return None
         from django.core.files.uploadedfile import UploadedFile
         species = Species.objects.all()
         for each in species:
@@ -136,11 +152,13 @@ def index(request):
                 print(each.id)
                 print(e)
     if "clean_species" in request.GET:
+        return None
         names = ["Spinach", "Beetroot", "Onion", "Cauliflower"]
         a = Species.objects.filter(common_name__in=names)
         a.delete()
 
     if "species_fix" in request.GET:
+        return None
         all = Species.objects.all()
 
         features = {
@@ -187,6 +205,7 @@ def index(request):
 
 
     if "import_veg" in request.GET:
+        return None
         import csv
 
         VegetationType.objects.all().delete()
@@ -226,6 +245,7 @@ def index(request):
                 )
 
     if "veg_species" in request.GET:
+        return None
         import csv
 
         species = {}
@@ -243,6 +263,22 @@ def index(request):
                 tw = species[s]
                 tw.vegetation_types.add(veg_types[v])
 
+    if "update_redlist" in request.GET:
+        return None
+        a = Species.objects.all()
+        rl = Redlist.objects.all()
+        red = {}
+        for each in rl:
+            red[each.code] = each
+        for each in a:
+            if each.meta_data["original"]["conservation_status"]:
+                try:
+                    each.redlist = red[each.meta_data["original"]["conservation_status"]]
+                    each.save()
+                except:
+                    p(each)
+                    p(each.meta_data["original"]["conservation_status"])
+        
     context = {}
     return render(request, "core/index.html", context)
 
@@ -810,23 +846,29 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
 
         if subsection == "pioneers":
             context["title"] = "Pioneer species"
-            species = species.filter(features__id=74)
+            species = species.filter(features__id=100)
             context["species_list"] = species
 
         elif subsection == "birds":
             context["title"] = "Bird-friendly species"
-            context["sugarbird_list"] = species.filter(features__id__in=[60,62,63])
-            context["sunbird_list"] = species.filter(features__id=83)
-            context["bird_list"] = species.filter(features__id=58)
+            context["sugarbird_list"] = species.filter(features__id__in=[86,88,89])
+            context["sunbird_list"] = species.filter(features__id=108)
+            context["bird_list"] = species.filter(features__id=84)
 
         elif subsection == "insects":
             context["title"] = "Insect-friendly species"
-            context["bee_list"] = species.filter(features__id=59)
-            context["monkeybeetle_list"] = species.filter(features__id=61)
+            context["bee_list"] = species.filter(features__id=85)
+            context["monkeybeetle_list"] = species.filter(features__id=87)
 
         elif subsection == "edible":
             context["title"] = "Edible plant species"
-            species = species.filter(features__id=72)
+            species = species.filter(features__id=98)
+            context["species_list"] = species
+
+        elif subsection == "medicinal":
+            context["title"] = "Medicinal plant species"
+            p(species)
+            species = species.filter(features__id=90)
             context["species_list"] = species
 
         context["photos_first"] = True

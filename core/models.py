@@ -149,6 +149,9 @@ class Genus(models.Model):
     class Meta:
         ordering = ["name"]
 
+    def get_absolute_url(self):
+        return reverse("genus", args=[self.id])
+
 class Family(models.Model):
     name = models.CharField(max_length=255)
 
@@ -166,8 +169,13 @@ class Redlist(models.Model):
     def __str__(self):
         return f"{self.name} ({self.code})"
 
+    @property
     def get_code(self):
         return mark_safe(f"<span class='badge bg-{self.css}'>{self.code}</span>")
+
+    @property
+    def formatted(self):
+        return mark_safe(f"{self.get_code} {self.name}")
 
 class VegetationType(models.Model):
     name = models.CharField(max_length=255, db_index=True)

@@ -39,6 +39,7 @@
               <li><a href="{{ link }}plants/birds/">Bird-friendly plants</a></li>
               <li><a href="{{ link }}plants/insects/">Insect-friendly plants</a></li>
               <li><a href="{{ link }}plants/edible/">Edible plants</a></li>
+              <li><a href="{{ link }}plants/medicinal/">Medicinal plants</a></li>
             </ul>
           </li>
           <li>
@@ -129,6 +130,12 @@
         {% elif subsection == "edible" %}
           <p>
             The following species are edible.
+          </p>
+          {% include "core/_species.grid.html" %}
+
+        {% elif subsection == "medicinal" %}
+          <p>
+            The following species have medicinal value.
           </p>
           {% include "core/_species.grid.html" %}
 

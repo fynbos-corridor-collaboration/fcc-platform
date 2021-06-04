@@ -2,20 +2,54 @@
 
 {% block content %}
 
-  <h1>{% block title %}{{ info }}{% endblock %}</h1>
+  <h1>
+    {% block title %}{{ info }}{% endblock %}
+  </h1>
 
-  <img src="{{ info.photo.image.large.url }}" alt="" />
+  <div class="row">
+    <div class="col-6">
+      <img src="{{ info.photo.image.large.url }}" alt="" class="img-thumbnail" />
 
-  {{ info.description|safe }}
+      <h3>Description</h3>
+      {{ info.description|safe }}
 
-  {% if info.features.count %}
-    <h3>Features</h3>
-    <ul>
-    {% for each in info.features.all %}
-      <li>{{ each }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
+      <h3>Source</h3>
+    </div>
+
+    <div class="col-6">
+      <h3>Scientific name</h3>
+      <p><em>{{ info.name }}</em></p>
+
+      <h3>Common name(s)</h3>
+      <p>{{ info.common_name }}</p>
+
+      <h3>Conservation status</h3>
+      <p>{{ info.redlist.formatted }}</p>
+
+      {% if info.features.count %}
+        <h3>Features</h3>
+        <ul class="list">
+        {% for each in info.features.all %}
+          <li>{{ each }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if info.vegetation_types %}
+        <h3>Vegetation types</h3>
+        <ul>
+          {% for each in info.vegetation_types.all %}
+            <li><a href="{{ each.get_absolute_url }}">{{ each }}</a></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        <h3>Genus</h3>
+        <p><a href="{{ info.genus.get_absolute_url }}">{{ info.genus }}</a></p>
+
+    </div>
+  </div>
+
 
   <div>
     {% for key,value in info.meta_data.original.items %}
