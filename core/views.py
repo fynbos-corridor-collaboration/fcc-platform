@@ -94,6 +94,14 @@ def index(request):
         for each in species:
             pass
 
+    if "pioneer-update" in request.GET:
+        pio = SpeciesFeatures.objects.get(pk=65)
+        right_one = SpeciesFeatures.objects.get(pk=74)
+        species = Species.objects.filter(features=pio)
+        for each in species:
+            each.features.add(right_one)
+        pio.delete()
+
     if "species_images" in request.GET:
         from django.core.files.uploadedfile import UploadedFile
         species = Species.objects.all()
@@ -665,8 +673,13 @@ def species_overview(request, vegetation_type=None):
         species = species.filter(vegetation_types=vegetation_type)
         samples = samples.filter(vegetation_types=vegetation_type)
 
-        genus = genus.annotate(total=Count("species", filter=Q(species__vegetation_types=vegetation_type)))
-        families = families.annotate(total=Count("species", filter=Q(species__vegetation_types=vegetation_type)))
+        genus = genus.annotate(total=Count("species", filter=Q(species__vegetation_types=vegetation_type))).filter(total__gt=0)
+        families = families.annotate(total=Count("species", filter=Q(species__vegetation_types=vegetation_type))).filter(total__gt=0)
+        features = SpeciesFeatures.objects.filter(species__vegetation_types=vegetation_type).distinct()
+    else:
+        genus = genus.annotate(total=Count("species"))
+        families = families.annotate(total=Count("species"))
+        features = SpeciesFeatures.objects.all()
 
     try:
         samples = Species.objects.filter(pk__in=random.sample(list(samples), 4))
@@ -679,7 +692,7 @@ def species_overview(request, vegetation_type=None):
         "load_datatables": True,
         "samples": samples,
         "all": species.count(),
-        "features": SpeciesFeatures.objects.all(),
+        "features": features,
         "vegetation_types": veg_types,
         "vegetation_type": vegetation_type,
         "veg_link": f"?vegetation_type={vegetation_type.id}" if vegetation_type else "",
@@ -724,12 +737,19 @@ def species_full_list(request):
     features = None
     if "feature" in request.GET:
         features = SpeciesFeatures.objects.filter(pk__in=request.GET.getlist("feature"))
-        for each in features:
-            species = species.filter(features=each)
+        if request.GET.get("search") == "all":
+            for each in features:
+                species = species.filter(features=each)
+        else:
+            species = species.filter(features__in=features)
+
+    species = species.distinct()
+
     context = {
         "species_list": species,
         "load_datatables": True,
         "features": features,
+        "vegetation_type": vegetation_type,
     }
     return render(request, "core/species.all.html", context)
 

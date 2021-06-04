@@ -7,6 +7,7 @@ from django.utils.safestring import mark_safe
 from django.conf import settings
 import bleach
 from unidecode import unidecode
+from django.urls import reverse
 
 class Page(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -182,6 +183,9 @@ class VegetationType(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse("vegetation_type", args=[self.slug])
+
     class Meta:
         ordering = ["name"]
 
@@ -217,7 +221,7 @@ class Species(models.Model):
     description = models.TextField(null=True, blank=True)
     genus = models.ForeignKey(Genus, on_delete=models.CASCADE, related_name="species")
     family = models.ForeignKey(Family, on_delete=models.CASCADE, null=True, blank=True, related_name="species")
-    features = models.ManyToManyField(SpeciesFeatures, blank=True)
+    features = models.ManyToManyField(SpeciesFeatures, blank=True, related_name="species")
     vegetation_types = models.ManyToManyField(VegetationType, blank=True, related_name="species")
     photo = models.ForeignKey("Photo", on_delete=models.CASCADE, null=True, blank=True, related_name="main_species")
     meta_data = models.JSONField(null=True, blank=True)

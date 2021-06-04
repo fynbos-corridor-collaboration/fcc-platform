@@ -10,7 +10,17 @@
 
   <h1>{% block title %}Species{% endblock %}</h1>
   {% if vegetation_type %}
-    <h2>{{ vegetation_type }}</h2>
+    <h2>
+      {{ vegetation_type }}
+    </h2>
+    <div class="alert alert-warning">
+      There are <strong>{{ all }}</strong> species found in this vegetation type.
+      Use the filters below to locate the species of your interest.
+      <br>
+      <br>
+      <a href="{% url "species_full_list" %}{{ veg_link }}">View all {{ all }} species</a><br>
+      <a href="{% url "species" %}">Back to main species list</a>
+    </div>
   {% endif %}
 
   <div class="card-group mb-3">
@@ -33,6 +43,9 @@
         <div class="card-body">
           <h2>Search species list</h2>
           <form action="{% url "species_search" %}">
+            {% if vegetation_type %}
+              <input type="hidden" name="vegetation_type" value="{{ vegetation_type.id }}" />
+            {% endif %}
             {% for each in features %}
               <div class="form-check">
                 <input type="checkbox" name="feature" value="{{ each.id }}" id="feature_{{ each.id }}" class="form-check-input" />
@@ -41,7 +54,11 @@
                 </label>
               </div>
             {% endfor %}
-            <button type="submit" class="btn btn-primary">Filter list</button>
+            <p class="mt-4">
+              Show species matching:
+              <button name="search" value="all" type="submit" class="btn btn-primary">ALL of these filters</button>
+              <button name="search" value="any" type="submit" class="btn btn-warning">ANY of these filters</button>
+            </p>
           </form>
         </div>
       </div>
