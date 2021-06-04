@@ -1,0 +1,12 @@
+{{ info.description|safe }}
+
+<div class="alert alert-warning">
+   Information on Cape Town's vegetation comes from <em>Summarised Descriptions
+   of National Vegetation Types Occurring in the City of Cape Town</em> by
+   Patricia Holmes, Biodiversity Management Branch, July 2008 
+</div>
+
+<p>
+  <a class="btn btn-primary" href="{% url "species_full_list" %}?vegetation_type={{ info.id }}">View all plant species ({{ info.species.count }})</a>
+  <a class="btn btn-primary" href="{% url "vegetation_type_species" info.slug %}">Plant species search</a>
+</p>

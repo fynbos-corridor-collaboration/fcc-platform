@@ -1,0 +1,178 @@
+{% extends "_base.html" %}
+
+  {% block title %}
+    {% if title %}{{ title }} - {% endif %}
+    Plot profiler
+  {% endblock %}
+
+{% block head %}
+<style type="text/css">
+.col-3 > ul > li > a {
+  font-size:20px;
+  font-weight:bold;
+  color:#333;
+  margin-top:20px;
+  text-decoration: none;
+  display: block;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-3 bg-light p-3">
+        <h3>Plot Profiler</h3>
+        <h4>
+          Location: 
+          <a href="http://">
+            {{ lat }}, {{ lng }}
+          </a>
+        </h4>
+
+        <ul class="list-unstyled">
+          <li><a href="{{ link }}vegetation-type/"><i class="fa fa-leaf fa-fw"></i> {{ info.name }}</a>
+            <ul>
+              <li><a href="{{ link }}vegetation-type/">Overview</a>
+              <li><a href="{{ link }}plants/pioneers/">Pioneer species</a></li>
+              <li><a href="{{ link }}plants/birds/">Bird-friendly plants</a></li>
+              <li><a href="{{ link }}plants/insects/">Insect-friendly plants</a></li>
+              <li><a href="{{ link }}plants/edible/">Edible plants</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="{{ link }}nearby/"><i class="fa fa-map-signs fa-fw"></i> Nearby</a>
+            <ul>
+              <li><a href="{{ link }}nearby/remnants/">Natural remnants</a></li>
+              <li><a href="{{ link }}nearby/rivers/">Rivers</a></li>
+              <li><a href="{{ link }}nearby/parks/">Parks</a></li>
+              <li><a href="{{ link }}nearby/schools/">Schools</a></li>
+              <li><a href="{{ link }}nearby/cemeteries/">Cemeteries</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="{{ link }}biodiversity/"><i class="fa fa-fw fa-crow"></i> Biodiversity</a>
+            <ul>
+              <li><a href="{{ link }}biodiversity/map/">View map</a></li>
+              <li><a href="{{ link }}biodiversity/animals/">Animals</a></li>
+            </ul>
+          </li>
+        </ul>
+
+
+      </div>
+      <div class="col-9">
+
+        {% if title %}
+          <h2>{{ title }}</h2>
+        {% endif %}
+
+        {% if section == "vegetation-type" %}
+
+          <h2>{{ info }}</h2>
+
+          {% include "core/_vegetationtype.html" %}
+
+
+        {% elif subsection == "pioneers" %}
+          <p>
+            The following species can be used as some of the first 
+            species to be planted. They are hardy, fast-growing, and will 
+            tolerate soil that is not in a great condition. Make sure you
+            plant these species <em>before</em> adding more sensitive species.
+          </p>
+          {% include "core/_species.grid.html" %}
+
+        {% elif subsection == "birds" %}
+          <p>
+            With your garden, you can attract different bird species. Depending on 
+            your location, you can target specific species, or plant more generalist
+            bird-friendly species. Below is an overview of relevant plants
+            for {{ info }}.
+          </p>
+
+          <h3 class="mt-4">Sunbirds</h3>
+          {% with species_list=sunbird_list %}
+            {% include "core/_species.grid.html" %}
+          {% endwith %}
+
+          <h3 class="mt-4">Sugarbirds</h3>
+          {% with species_list=sugarbird_list %}
+            {% include "core/_species.grid.html" %}
+          {% endwith %}
+
+          <h3 class="mt-4">Generalist bird-friendly species</h3>
+          {% with species_list=bird_list %}
+            {% include "core/_species.grid.html" %}
+          {% endwith %}
+
+        {% elif subsection == "insects" %}
+          <p>
+            With your garden, you can attract different insect species. 
+            Insects are important for pollination of many plants, and a number of insect
+            species are able to thrive in cities, as long as they can find food. 
+            Below are relevant plant species within the 
+            {{ info }} vegetation type.
+          </p>
+
+          <h3 class="mt-4">Monkey beetles</h3>
+          {% with species_list=monkeybeetle_list %}
+            {% include "core/_species.grid.html" %}
+          {% endwith %}
+
+          <h3 class="mt-4">Honey bees</h3>
+          {% with species_list=bee_list %}
+            {% include "core/_species.grid.html" %}
+          {% endwith %}
+
+        {% elif subsection == "edible" %}
+          <p>
+            The following species are edible.
+          </p>
+          {% include "core/_species.grid.html" %}
+
+        {% elif section == "nearby" %}
+
+          <h2>{{ subsection|title }}</h2>
+
+          <p>
+            We have found <strong>{{ layer.count }} {{ subsection }}</strong>
+            within proximity of your location. 
+
+            {% if layer.count > 0 %}
+            You can see them on the maps below, 
+            or you can jump to <a href="#full-list">the list</a> by clicking here.
+            {% endif %}
+          </p>
+
+          {% if layer.count > 0 %}
+
+            <h3>Street map</h3>
+
+            {{ map|safe }}
+
+            <h3 class="mt-4">Satellite map</h3>
+            {{ satmap|safe }}
+
+            <h3 class="mt-4">List</h3>
+
+            <p>These are the items we found:</p>
+
+            <div class="list-group list-group-flush mb-4">
+              {% for each in layer %}
+                <a href="{% url "space" each.id %}" class="list-group-item list-group-item-action">{{ each.name }}</a>
+              {% endfor %}
+            </div>
+
+            <p>The city-wide map with all {{ subsection }} can be found <a href="{% url "map" source.id %}">here</a>.</p>
+
+          {% endif %}
+
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

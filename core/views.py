@@ -9,6 +9,8 @@ import folium
 from folium.plugins import Fullscreen
 import random
 from django.db.models import Q, Count
+from django.contrib.gis import geos
+from django.contrib.gis.measure import D
 
 # Quick debugging, sometimes it's tricky to locate the PRINT in all the Django 
 # output in the console, so just using a simply function to highlight it better
@@ -101,6 +103,14 @@ def index(request):
         for each in species:
             each.features.add(right_one)
         pio.delete()
+
+    if "sunbird" in request.GET:
+        species = Species.objects.filter(meta_data__original__sunbird__isnull=False)
+        a = SpeciesFeatures.objects.create(name="Will attract sunbirds")
+        for each in species:
+            sunbird = each.meta_data["original"]["sunbird"]
+            if sunbird == "1":
+                each.features.add(a)
 
     if "species_images" in request.GET:
         from django.core.files.uploadedfile import UploadedFile
@@ -455,7 +465,6 @@ def report(request):
         lat = -33.9641
         lng = 18.5113
 
-    from django.contrib.gis import geos
     center = geos.Point(lng, lat)
 
     radius = 0.01
@@ -577,7 +586,6 @@ def report(request):
         name="geojson",
     ).add_to(remnantmap)
     #remnants = remnants.spaces.filter(geometry__within=circle)
-    from django.contrib.gis.measure import D
     remnants = remnants.spaces.filter(geometry__distance_lte=(center, D(km=3)))
     for each in remnants:
         folium.GeoJson(
@@ -771,4 +779,147 @@ def vegetation_type(request, slug):
         "info": get_object_or_404(VegetationType, slug=slug),
     }
     return render(request, "core/vegetationtype.html", context)
+
+
+def profile(request, section=None, lat=None, lng=None, id=None, subsection=None):
+
+    vegetation = get_object_or_404(Document, pk=983356)
+    if lat and lng:
+        link = f"/profile/{lat},{lng}/"
+
+    try:
+        lat = float(lat)
+        lng = float(lng)
+        center = geos.Point(lng, lat)
+        veg = vegetation.spaces.get(geometry__intersects=center)
+        veg = VegetationType.objects.get(pk=6)
+    except:
+        messages.error(request, f"We are unable to locate the relevant vegetation type.")
+
+    context = {
+        "lat": lat,
+        "lng": lng,
+        "link": link,
+        "info": veg,
+        "section": section,
+        "subsection": subsection,
+    }
+
+    if section == "plants":
+        species = Species.objects.filter(vegetation_types=veg)
+
+        if subsection == "pioneers":
+            context["title"] = "Pioneer species"
+            species = species.filter(features__id=74)
+            context["species_list"] = species
+
+        elif subsection == "birds":
+            context["title"] = "Bird-friendly species"
+            context["sugarbird_list"] = species.filter(features__id__in=[60,62,63])
+            context["sunbird_list"] = species.filter(features__id=83)
+            context["bird_list"] = species.filter(features__id=58)
+
+        elif subsection == "insects":
+            context["title"] = "Insect-friendly species"
+            context["bee_list"] = species.filter(features__id=59)
+            context["monkeybeetle_list"] = species.filter(features__id=61)
+
+        elif subsection == "edible":
+            context["title"] = "Edible plant species"
+            species = species.filter(features__id=72)
+            context["species_list"] = species
+
+        context["photos_first"] = True
+
+    elif section == "nearby":
+        
+        files = {
+            "schools": 983409,
+            "cemeteries": 983426,
+            "parks": 983479,
+            "rivers": 983382,
+            "remnants": 983097,
+        }
+
+        capetown = get_object_or_404(ReferenceSpace, pk=988911)
+        source_document = get_object_or_404(Document, pk=files[subsection])
+
+        radius = 0.01
+        circle = center.buffer(radius)
+
+        layer = source_document.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+
+        if not layer:
+            radius = 0.02
+            circle = center.buffer(radius)
+
+            messages.warning(request, "We could not find anything in the regular area search, so we expanded our search to cover a wider area.")
+            layer = source_document.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+
+        map = folium.Map(
+            location=[lat,lng],
+            zoom_start=14,
+            scrollWheelZoom=False,
+            tiles=STREET_TILES,
+            attr="Mapbox",
+        )
+
+        folium.GeoJson(
+            circle.geojson,
+            name="geojson",
+        ).add_to(map)
+
+        Fullscreen().add_to(map)
+
+        satmap = folium.Map(
+            location=[lat,lng],
+            zoom_start=17,
+            scrollWheelZoom=False,
+            tiles=SATELLITE_TILES,
+            attr="Mapbox",
+        )
+
+        def style_function(feature):
+            return {
+                "fillOpacity": 0,
+                "weight": 4,
+                "color": "#fff",
+            }
+
+        folium.GeoJson(
+            circle.geojson,
+            name="geojson",
+            style_function=style_function,
+        ).add_to(satmap)
+
+        satmap.fit_bounds(map.get_bounds())
+        Fullscreen().add_to(satmap)
+
+        folium.GeoJson(
+            capetown.geometry.geojson,
+            name="geojson",
+            style_function=style_function,
+        ).add_to(satmap)
+
+
+        for each in layer:
+            geom = each.geometry.intersection(circle)
+
+            folium.GeoJson(
+                geom.geojson,
+                name="geojson",
+            ).add_to(map)
+
+            folium.GeoJson(
+                geom.geojson,
+                name="geojson",
+            ).add_to(satmap)
+
+
+        context["map"] = map._repr_html_()
+        context["satmap"] = satmap._repr_html_()
+        context["layer"] = layer
+        context["source"] = source_document
+
+    return render(request, "core/profile.html", context)
 

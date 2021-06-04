@@ -39,25 +39,6 @@
     </div>
   {% endif %}
 
-  <ul class="nav nav-tabs" id="speciesTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#table_view" type="button" role="tab" aria-controls="table_view" aria-selected="true">Table</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#photos" type="button" role="tab" aria-controls="photos" aria-selected="false">Photos</button>
-    </li>
-  </ul>
-  <div class="tab-content" id="speciesTabContent">
-    <div class="tab-pane fade show active" id="table_view" role="tabpanel" aria-labelledby="table_view">
-      <div class="mt-2 mb-2">
-        {% include "core/_species.table.html" %}
-      </div>
-  </div>
-    <div class="tab-pane fade" id="photos" role="tabpanel" aria-labelledby="photos">
-      <div class="row mt-2">
-        {% include "core/_species.list.html" %}
-      </div>
-    </div>
-  </div>
+  {% include "core/_species.grid.html" %}
 
 {% endblock %}

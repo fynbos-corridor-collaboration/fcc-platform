@@ -18,4 +18,11 @@ urlpatterns = [
     path("vegetation-types/", views.vegetation_types, name="vegetation_types"),
     path("vegetation-types/<slug:slug>/", views.vegetation_type, name="vegetation_type"),
     path("vegetation-types/<slug:vegetation_type>/species/", views.species_overview, name="vegetation_type_species"),
+
+    path("profile/<str:lat>,<str:lng>/", views.profile, name="profile"),
+    path("profile/<str:lat>,<str:lng>/<slug:section>/", views.profile, name="profile"),
+    path("profile/<str:lat>,<str:lng>/<slug:section>/<slug:subsection>/", views.profile, name="profile"),
+
+    path("profile/<int:id>/", views.profile, name="profile"),
+    path("profile/<int:id>/<slug:section>/", views.profile, name="profile"),
 ]
