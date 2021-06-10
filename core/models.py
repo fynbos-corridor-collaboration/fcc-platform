@@ -247,6 +247,37 @@ class Species(models.Model):
         else:
             return settings.MEDIA_URL + "/placeholder.png"
 
+    def old(self):
+        return self.meta_data.get("original")
+
+    def get_links(self):
+        links = {}
+        original = self.meta_data.get("original")
+        if original.get("link"):
+            link = original.get("link")
+            if "wikipedia" in link:
+                links["Wikipedia"] = link
+            elif "pza" in link:
+                links["PlantZA"] = link
+            elif "redlist" in link:
+                links["Redlist"] = link
+            else:
+                links[link] = link
+
+        if original.get("link_plantza"):
+            links["PlantZA"] = original.get("link_plantza")
+
+        if original.get("link_wikipedia"):
+            links["Wikipedia"] = original.get("link_wikipedia")
+
+        if original.get("link_extra"):
+            links["More information"] = original.get("link_extra")
+
+        if original.get("link_redlist"):
+            links["Redlist"] = original.get("link_redlist")
+
+        return links
+
 class Photo(models.Model):
     name = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     description = models.TextField(null=True, blank=True)

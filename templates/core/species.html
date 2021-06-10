@@ -8,12 +8,37 @@
 
   <div class="row">
     <div class="col-6">
-      <img src="{{ info.photo.image.large.url }}" alt="" class="img-thumbnail" />
+
+      <figure class="mb-3">
+        <img src="{{ info.photo.image.large.url }}" alt="" class="img-thumbnail" />
+        
+        {% if info.meta_data.original.image_credit %}
+          <em>Image: <a href="{{ info.meta_data.original.image_link }}">{{ info.meta_data.original.image_credit }}</a></em>
+        {% endif %}
+      </figure>
 
       <h3>Description</h3>
       {{ info.description|safe }}
 
-      <h3>Source</h3>
+      {% if info.old.propagation_cutting %}
+        <h3 class="mt-3">Propagation instructions - cuttings</h3>
+        <p>{{ info.old.propagation_cutting|safe }}</p>
+      {% endif %}
+
+      {% if info.old.propagation_seed %}
+        <h3 class="mt-3">Propagation instructions - seeds</h3>
+        <p>{{ info.old.propagation_seed|safe }}</p>
+      {% endif %}
+
+      {% if info.get_links %}
+        <h4 class="mt-3">Sources and references</h4>
+        <ul>
+        {% for key,value in info.get_links.items %}
+          <li><a href="{{ value }}">{{ key }}</a></li>          
+        {% endfor %}
+        </ul>
+      {% endif %}
+
     </div>
 
     <div class="col-6">
@@ -23,19 +48,21 @@
       <h3>Common name(s)</h3>
       <p>{{ info.common_name }}</p>
 
-      <h3>Conservation status</h3>
-      <p>{{ info.redlist.formatted }}</p>
+      {% if info.redlist %}
+        <h3>Conservation status</h3>
+        <p>{{ info.redlist.formatted }}</p>
+      {% endif %}
 
       {% if info.features.count %}
         <h3>Features</h3>
-        <ul class="list">
+        <ul class="list-unstyled">
         {% for each in info.features.all %}
-          <li>{{ each }}</li>
+          <li><a href="{% url "species_search" %}?feature={{ each.id }}">{{ each }}</a></li>
         {% endfor %}
         </ul>
       {% endif %}
 
-      {% if info.vegetation_types %}
+      {% if info.vegetation_types.all %}
         <h3>Vegetation types</h3>
         <ul>
           {% for each in info.vegetation_types.all %}
@@ -51,12 +78,13 @@
   </div>
 
 
-  <div>
-    {% for key,value in info.meta_data.original.items %}
-      <p><strong>{{ key }}</strong><br>
-      {{ value }}</p>
-    {% endfor %}
-  </div>
-
+  {% if false %}
+    <div>
+      {% for key,value in info.meta_data.original.items %}
+        <p><strong>{{ key }}</strong><br>
+        {{ value }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
 
 {% endblock %}
