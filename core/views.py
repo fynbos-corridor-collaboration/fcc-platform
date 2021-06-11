@@ -25,6 +25,9 @@ SATELLITE_TILES = "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.png
 STREET_TILES = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=" + MAPBOX_API_KEY
 LIGHT_TILES = "https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token=" + MAPBOX_API_KEY
 
+# Some reference spaces/lists we will be using
+SUBURBS = ReferenceSpace.objects.filter(source_id=334434)
+
 COLOR_SCHEMES = {
     "moc": ["#144d58","#a6cee3","#33a02c","#b2df8a","#e31a1c","#fb9a99","#ff7f00","#fdbf6f","#6a3d9a","#cab2d6","#b15928","#ffff99"],
     "accent": ["#7fc97f","#beaed4","#fdc086","#ffff99","#386cb0","#f0027f","#bf5b17","#666666"],
@@ -37,6 +40,7 @@ COLOR_SCHEMES = {
     "purple": ["#3f007d", "#54278f", "#6a51a3", "#807dba", "#9e9ac8", "#bcbddc", "#dadaeb", "#efedf5", "#fcfbfd"],
     "red": ["#7f0000", "#b30000", "#d7301f", "#ef6548", "#fc8d59", "#fdbb84", "#fdd49e", "#fee8c8", "#fff7ec"],
 }
+
 
 def index(request):
     if "import_species" in request.GET:
@@ -863,8 +867,9 @@ def species(request, id):
     return render(request, "core/species.html", context)
 
 def gardens(request):
+    all = Garden.objects.filter(active=True)
     context = {
-        "all": Garden.objects.filter(active=True),
+        "all": all,
         "page": Page.objects.get(pk=2),
     }
     return render(request, "core/gardens.html", context)
@@ -873,7 +878,24 @@ def garden(request, id):
     vegetation = get_object_or_404(Document, pk=983356)
     info = get_object_or_404(Garden, pk=id)
     veg = vegetation.spaces.get(geometry__intersects=info.geometry.centroid)
+
+    map = folium.Map(
+        zoom_start=14,
+        scrollWheelZoom=False,
+        tiles=STREET_TILES,
+        attr="Mapbox",
+    )
+
+    folium.GeoJson(
+        info.geometry.geojson,
+        name="geojson",
+    ).add_to(map)
+
+    Fullscreen().add_to(map)
+    map.fit_bounds(map.get_bounds())
+
     context = {
+        "map": map._repr_html_(),
         "info": info,
         "veg": veg,
     }

@@ -110,6 +110,18 @@ class Garden(models.Model):
         except:
             return None
 
+    @property
+    def suburb(self):
+        if not self.geometry:
+            return None
+        suburb = ReferenceSpace.objects.filter(source_id=334434, geometry__intersects=self.geometry)
+        if suburb:
+            return suburb[0].name.title()
+        else:
+            return None
+
+    class Meta:
+        ordering = ["name"]
 
 class Document(models.Model):
     name = models.CharField(max_length=255, db_index=True)
