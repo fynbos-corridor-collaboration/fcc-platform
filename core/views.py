@@ -285,6 +285,7 @@ def index(request):
 
     if "gardens" in request.GET:
         import csv
+        return None
         a = Garden.objects.all()
         a.delete()
         with open(settings.MEDIA_ROOT + "/import/sites.csv", "r", encoding="utf-8-sig") as csvfile:
@@ -341,6 +342,46 @@ def index(request):
                     p(e)
                 g.organizations.add(communitree)
                 g.save()
+
+    if "photos" in request.GET:
+        return None
+        import csv
+        from django.core.files.uploadedfile import UploadedFile
+        from dateutil.parser import parse
+        a = Photo.objects.filter(old_id__isnull=False).order_by("-old_id")
+        if a:
+            max_id = a[0].old_id
+        count = 0
+        with open(settings.MEDIA_ROOT + "/import/photos.csv", "r", encoding="utf-8-sig") as csvfile:
+            contents = csv.DictReader(csvfile)
+            for row in contents:
+                id = int(row["id"])
+                if id > max_id:
+                    count += 1
+                    folder = row["folder"]
+                    file = row["file"]
+                    path = settings.MEDIA_ROOT + f"/old/photos/{folder}/{file}/large.jpg"
+                    g = Photo.objects.create(
+                        description = row["description"],
+                        original = row,
+                        date = parse(row["created_at"]),
+                        upload_date = parse(row["updated_at"]),
+                        image = UploadedFile(file=open(path, "rb")),
+                        garden_id = row["site_id"] if row["site_id"] else None,
+                        old_id = row["id"],
+                    )
+
+                if count == 500:
+                    return None
+        
+    if "photo_update" in request.GET:
+        return None
+        from dateutil.parser import parse
+        a = Photo.objects.filter(old_id__isnull=False)
+        for each in a:
+            each.date = parse(each.original["created_at"])
+            each.upload_date = parse(each.original["updated_at"])
+            each.save()
 
     context = {}
     return render(request, "core/index.html", context)

@@ -343,6 +343,9 @@ class Photo(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
     species = models.ForeignKey(Species, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
 
+    old_id = models.IntegerField(db_index=True, null=True, blank=True) # Delete after migration is complete
+    original = models.JSONField(null=True, blank=True)
+
     def __str__(self):
         if self.name:
             return self.name
