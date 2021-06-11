@@ -352,6 +352,10 @@ class Photo(models.Model):
         else:
             return f"Photo {self.id}"
 
+    @property
+    def get_photo_medium(self):
+        return self.image.medium.url
+
     class Meta:
-        ordering = ["position"]
+        ordering = ["position", "date"]
 

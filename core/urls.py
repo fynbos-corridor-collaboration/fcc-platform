@@ -6,6 +6,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("gardens/", views.gardens, name="gardens"),
     path("gardens/<int:id>/", views.garden, name="garden"),
+    path("gardens/<int:garden>/photos/", views.photos, name="garden_photos"),
     path("maps/", views.maps, name="maps"),
     path("maps/<int:id>/", views.map, name="map"),
     path("space/<int:id>/", views.space, name="space"),
@@ -27,4 +28,6 @@ urlpatterns = [
 
     path("profile/<int:id>/", views.profile, name="profile"),
     path("profile/<int:id>/<slug:section>/", views.profile, name="profile"),
+
+    path("photos/", views.photos, name="photos"),
 ]

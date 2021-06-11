@@ -1,0 +1,37 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<div class="row">
+  {% for each in photos %}
+    <div class="col-3 mb-2">
+      <div class="card">
+        <a href="{% url "garden" each.id %}">
+          <img src="{{ each.get_photo_medium }}" class="card-img-top fixed-thumb" alt="{{ each }}">
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<div class="alert alert-secondary">
+  <span class="step-links">
+    {% if photos.has_previous %}
+      <a class="btn btn-dark" href="?page=1">&laquo; first</a>
+      <a class="btn btn-dark" href="?page={{ photos.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <div class="text-center">
+      Page {{ photos.number }} of {{ photos.paginator.num_pages }}.
+    </div> 
+
+    {% if photos.has_next %}
+      <div class="text-end">
+        <a class="btn btn-dark" href="?page={{ photos.next_page_number }}">next</a>
+        <a class="btn btn-dark" href="?page={{ photos.paginator.num_pages }}">last &raquo;</a>
+      </div>
+    {% endif %}
+  </span>
+</div>
+
+{% endblock %}

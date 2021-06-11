@@ -11,6 +11,7 @@ import random
 from django.db.models import Q, Count
 from django.contrib.gis import geos
 from django.contrib.gis.measure import D
+from django.core.paginator import Paginator
 
 # Quick debugging, sometimes it's tricky to locate the PRINT in all the Django 
 # output in the console, so just using a simply function to highlight it better
@@ -919,6 +920,7 @@ def garden(request, id):
     vegetation = get_object_or_404(Document, pk=983356)
     info = get_object_or_404(Garden, pk=id)
     veg = vegetation.spaces.get(geometry__intersects=info.geometry.centroid)
+    photos = Photo.objects.filter(garden=info).exclude(id=info.photo.id).order_by("-date")[:12]
 
     map = folium.Map(
         zoom_start=14,
@@ -939,6 +941,7 @@ def garden(request, id):
         "map": map._repr_html_(),
         "info": info,
         "veg": veg,
+        "photos": photos,
     }
     return render(request, "core/garden.html", context)
 
@@ -1102,4 +1105,17 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
         context["source"] = source_document
 
     return render(request, "core/profile.html", context)
+
+def photos(request, garden=None):
+    photos = Photo.objects.filter(garden__isnull=False)
+    if garden:
+        photos = photos.filter(garden_id=garden)
+    paginator = Paginator(photos, 60)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "photos": page_obj,
+    }
+    return render(request, "core/photos.html", context)
 
