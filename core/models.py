@@ -53,14 +53,63 @@ class Page(models.Model):
             self.slug = slugify(unidecode(self.name))
         super().save(*args, **kwargs)
 
-class Garden(models.Model):
+class Organization(models.Model):
     name = models.CharField(max_length=255, db_index=True)
-    content = models.TextField(null=True, blank=True)
-    geometry = models.GeometryField(null=True, blank=True)
-    photo = models.ForeignKey("Photo", on_delete=models.CASCADE, null=True, blank=True, related_name="gardens")
+    description = models.TextField(null=True, blank=True)
+    logo = StdImageField(upload_to="pages", variations={"thumbnail": (350, 350), "medium": (800, 600), "large": (1280, 1024)})
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ["name"]
+
+class Garden(models.Model):
+    name = models.CharField(max_length=255, db_index=True)
+    description = models.TextField(null=True, blank=True)
+    geometry = models.GeometryField(null=True, blank=True)
+    photo = models.ForeignKey("Photo", on_delete=models.CASCADE, null=True, blank=True, related_name="gardens")
+    active = models.BooleanField(default=True, db_index=True)
+    original = models.JSONField(null=True, blank=True)
+
+    class PhaseStatus(models.IntegerChoices):
+        PENDING = 1, "Pending"
+        IN_PROGRESS = 2, "In progress"
+        COMPLETED = 3, "Completed"
+
+    phase_assessment = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_alienremoval = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_landscaping = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_pioneers = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_birdsinsects = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_specialists = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_placemaking = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    organizations = models.ManyToManyField(Organization, blank=True)
+
+    @property
+    def get_photo_medium(self):
+        if self.photo:
+            return self.photo.image.medium.url
+        else:
+            return settings.MEDIA_URL + "/placeholder.png"
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def get_lat(self):
+        try:
+            return self.geometry.centroid[1]
+        except:
+            return None
+
+    @property
+    def get_lng(self):
+        try:
+            return self.geometry.centroid[0]
+        except:
+            return None
+
 
 class Document(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -129,17 +178,6 @@ class Event(models.Model):
     def __str__(self):
         return self.name
 
-class Organization(models.Model):
-    name = models.CharField(max_length=255, db_index=True)
-    description = models.TextField(null=True, blank=True)
-    logo = StdImageField(upload_to="pages", variations={"thumbnail": (350, 350), "medium": (800, 600), "large": (1280, 1024)})
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ["name"]
-
 class Genus(models.Model):
     name = models.CharField(max_length=255)
 
@@ -160,6 +198,9 @@ class Family(models.Model):
 
     class Meta:
         ordering = ["name"]
+
+    def get_absolute_url(self):
+        return reverse("family", args=[self.id])
 
 class Redlist(models.Model):
     name = models.CharField(max_length=255)

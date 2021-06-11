@@ -17,7 +17,7 @@
     <li>
       Our garden network
       <ul>
-        <li><a href="http://">Introduction</a></li>
+        <li><a href="{% url "gardens" %}">Introduction</a></li>
         <li><a href="http://">View map</a></li>
         <li><a href="http://">Start a new garden</a></li>
         <li><a href="http://">Add your garden</a></li>
@@ -61,51 +61,6 @@
     </li>
   </ul>
 
-  <p>
-    While the strategy is being developed, the FCC is featuring a temporary project website 
-    that can share the ongoing work. However, work is underway to prepare the next version 
-    of this website. This report highlights some of this work.
-  </p>
-
-  <h2>Rationale</h2>
-
-  <p>
-    There are two key reasons why we are setting up a different website. Firstly, we believe
-    that an interactive website that comes with some useful tools that are specific to 
-    restoration of fynbos in Cape Town can really benefit other organisations and groups
-    that are wanting to do similar work. The current website is set up primarily as an informational
-    website and we need some structural changes to embed more advanced tools. Secondly, 
-    the current website of Communitree features a number of tools around mapping, tracking 
-    of species origin, nursery management, and other tools that would be useful to share 
-    with FCC. Communitree has decided to work on integration of these tools in the FCC 
-    website, and to donate the required programming work in order to do so. In order to take
-    full advantage of these various tools and increased capacity we are therefore 
-    developing a new platform for FCC, to be launched some time in 2021.
-  </p>
-
-  <h2>Technology</h2>
-
-  <p>The following technologies are used to develop the website. All of these technologies
-  are open source:</p>
-
-    <ul>
-    <li>Django 3</li>
-    <li>Python 3</li>
-    <li>PostgreSQL</li>
-    <li>PostGIS</li>
-    <li>Docker</li>
-  </ul>
-
-  <h2>Licensing</h2>
-
-  <p>
-    The new FCC platform will be made available as open source software, allowing other parties 
-    to freely use the source code, and making it easier for other people to contribute to this
-    project as well. All code will be published under an MIT license (see:
-    https://opensource.org/licenses/MIT). Code will be made available through the open source
-    repository of Github.
-  </p>
-  
   <h2>Create report</h2>
   <form action="/report/">
     Latitude:
@@ -117,7 +72,6 @@
     <button type="submit">Generate report</button>
   </form>
 
-
   <h2>Samples</h2>
   <ul>
     <li><a href="/report/?lat=-34.070078&lng=18.571595">Strandfontein</a></li>
@@ -127,5 +81,6 @@
   <ul>
     <li><a href="http://0.0.0.0:7777/?import_species=true">Load species (add csv to media)</a></li>
     <li><a href="http://0.0.0.0:7777/?species_images=true">Set photos (put species/ in media)</a></li>
+    <li><a href="http://0.0.0.0:7777/?gardens=true">Load gardens (add csv to media; copy sites from /media in communitree to /media in fcc)</a></li>
   </ul>
 {% endblock %}

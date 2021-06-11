@@ -44,22 +44,14 @@
     </div>
 
     <div class="col-6">
-      <h3>Scientific name</h3>
-      <p><em>{{ info.name }}</em></p>
+      <h3>Coordinates</h3>
+      <p>{{ info.geometry.centroid }}</p>
 
-      <h3>Common name(s)</h3>
-      <p>{{ info.common_name }}</p>
-
-      {% if info.redlist %}
-        <h3>Conservation status</h3>
-        <p>{{ info.redlist.formatted }}</p>
-      {% endif %}
-
-      {% if info.features.count %}
-        <h3>Features</h3>
+      {% if info.organizations.count %}
+        <h3>Involved organisations</h3>
         <ul class="list-unstyled">
-        {% for each in info.features.all %}
-          <li><a href="{% url "species_search" %}?feature={{ each.id }}">{{ each }}</a></li>
+        {% for each in info.organizations.all %}
+          <li>{{ each }}</li>
         {% endfor %}
         </ul>
       {% endif %}
@@ -73,8 +65,12 @@
         </ul>
         {% endif %}
 
-        <h3>Genus</h3>
-        <p><a href="{{ info.genus.get_absolute_url }}">{{ info.genus }}</a></p>
+        <h3>Vegetation type</h3>
+        <p>{{ veg }}</p>
+
+        <h3>Location analysis</h3>
+        <p><a href="{% url "profile" info.get_lat info.get_lng %}">View location profile</a></p>
+        <p>This will provide an overview of the garden based on its location.</p>
 
         {% if info.family %}
           <h3>Family</h3>

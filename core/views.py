@@ -278,7 +278,66 @@ def index(request):
                 except:
                     p(each)
                     p(each.meta_data["original"]["conservation_status"])
-        
+
+    if "gardens" in request.GET:
+        import csv
+        a = Garden.objects.all()
+        a.delete()
+        with open(settings.MEDIA_ROOT + "/import/sites.csv", "r", encoding="utf-8-sig") as csvfile:
+            contents = csv.DictReader(csvfile)
+            def get_phase(string):
+                if not string:
+                    return None
+                elif string == "in_progress":
+                    return 2
+                elif string == "pending":
+                    return 1
+                elif string == "completed":
+                    return 3
+                else:
+                    return "ERROR"
+                    
+            communitree = Organization.objects.filter(name="Communitree")
+            if not communitree:
+                communitree = Organization.objects.create(name="Communitree")
+            else:
+                communitree = communitree[0]
+            from django.core.files.uploadedfile import UploadedFile
+            for row in contents:
+                if row["lng"] and row["lat"]:
+                    geo = geos.Point(float(row["lng"]), float(row["lat"]))
+                else:
+                    geo = None
+                g = Garden.objects.create(
+                    id = row["id"],
+                    name = row["name"],
+                    description = row["description"],
+                    geometry = geo,
+                    active = True if row["active"] == "1" else False,
+                    original = row,
+                    phase_assessment = get_phase(row["phase_assessment"]),
+                    phase_alienremoval = get_phase(row["phase_alienremoval"]),
+                    phase_landscaping = get_phase(row["phase_landscaping"]),
+                    phase_pioneers = get_phase(row["phase_pioneers"]),
+                    phase_birdsinsects = get_phase(row["phase_birdinsect"]),
+                    phase_specialists = get_phase(row["phase_specialists"]),
+                    phase_placemaking = get_phase(row["phase_placemaking"]),
+                )
+                id = row["id"]
+                path = settings.MEDIA_ROOT + f"/sites/{id}.jpg"
+                try:
+                    photo = Photo.objects.create(
+                        image = UploadedFile(file=open(path, "rb")),
+                        author = "Communitree",
+                        garden = g,
+                    )
+                    g.photo = photo
+                except Exception as e:
+                    p(row["id"])
+                    p(e)
+                g.organizations.add(communitree)
+                g.save()
+
     context = {}
     return render(request, "core/index.html", context)
 
@@ -803,6 +862,23 @@ def species(request, id):
     }
     return render(request, "core/species.html", context)
 
+def gardens(request):
+    context = {
+        "all": Garden.objects.filter(active=True),
+        "page": Page.objects.get(pk=2),
+    }
+    return render(request, "core/gardens.html", context)
+
+def garden(request, id):
+    vegetation = get_object_or_404(Document, pk=983356)
+    info = get_object_or_404(Garden, pk=id)
+    veg = vegetation.spaces.get(geometry__intersects=info.geometry.centroid)
+    context = {
+        "info": info,
+        "veg": veg,
+    }
+    return render(request, "core/garden.html", context)
+
 def vegetation_types(request):
     context = {
         "all": VegetationType.objects.all(),
@@ -815,7 +891,6 @@ def vegetation_type(request, slug):
         "info": get_object_or_404(VegetationType, slug=slug),
     }
     return render(request, "core/vegetationtype.html", context)
-
 
 def profile(request, section=None, lat=None, lng=None, id=None, subsection=None):
 
