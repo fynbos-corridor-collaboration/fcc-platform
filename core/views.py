@@ -606,10 +606,11 @@ def report(request):
         lat = -33.9641
         lng = 18.5113
 
-    center = geos.Point(lng, lat)
-
-    radius = 0.01
-    circle = center.buffer(radius)
+    center = geos.Point(x=lng, y=lat, srid=4326)
+    center.transform(3857) # Transform Projection to Web Mercator     
+    radius = 1000 # Number of meters distance
+    circle = center.buffer(radius) 
+    circle.transform(4326) # Transform back to WGS84 to create geojson
 
     map = folium.Map(
         location=[lat,lng],
@@ -1027,14 +1028,18 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
         capetown = get_object_or_404(ReferenceSpace, pk=988911)
         source_document = get_object_or_404(Document, pk=files[subsection])
 
-        radius = 0.01
-        circle = center.buffer(radius)
+        center = geos.Point(x=lng, y=lat, srid=4326)
+        center.transform(3857) # Transform Projection to Web Mercator     
+        radius = 1000 # Number of meters distance
+        circle = center.buffer(radius) 
+        circle.transform(4326) # Transform back to WGS84 to create geojson
 
         layer = source_document.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
 
         if not layer:
-            radius = 0.02
-            circle = center.buffer(radius)
+            radius = 2000 # Number of meters distance
+            circle = center.buffer(radius) 
+            circle.transform(4326) # Transform back to WGS84 to create geojson
 
             messages.warning(request, "We could not find anything in the regular area search, so we expanded our search to cover a wider area.")
             layer = source_document.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
