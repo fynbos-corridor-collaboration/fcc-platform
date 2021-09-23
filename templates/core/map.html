@@ -15,4 +15,30 @@
 
   <div id="map" class="leaflet-map mt-4"></div>
 
+  <h2>Items inside this map</h2>
+
+  {% if info.spaces.count > 200 %}
+
+    <div class="alert alert-warning">
+      Over 200 individual records are found inside this map.
+      This table is limited to 200 records.
+    </div>
+
+  {% endif %}
+
+  <table class="table table-bordered datatable">
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for each in info.spaces.all %}
+        <tr>
+          <td><a href="{{ each.get_absolute_url }}">{{ each }}</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 {% endblock %}

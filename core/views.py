@@ -481,6 +481,7 @@ def map(request, id):
         "info": info,
         "load_map": True,
         "load_leaflet_item": True,
+        "load_datatables": True,
         "data": data,
         "properties": properties,
         "show_individual_colors": show_individual_colors,
@@ -492,6 +493,11 @@ def map(request, id):
 def space(request, id):
     info = get_object_or_404(ReferenceSpace, pk=id)
     geo = info.geometry
+
+    if "download" in request.POST:
+        response = HttpResponse(geo.geojson, content_type="application/json")
+        response["Content-Disposition"] = f"attachment; filename=\"{info.name}.geojson\""
+        return response
     map = folium.Map(
         location=[info.geometry.centroid[1], info.geometry.centroid[0]],
         zoom_start=14,
@@ -546,6 +552,7 @@ def space(request, id):
         "info": info,
         "map": map._repr_html_(),
         "satmap": satmap._repr_html_(),
+        "center": info.geometry.centroid,
     }
     return render(request, "core/space.html", context)
 

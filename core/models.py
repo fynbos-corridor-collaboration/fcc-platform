@@ -152,6 +152,10 @@ class Document(models.Model):
         else:
             return {}
 
+    @property
+    def get_absolute_url(self):
+        return "/maps/" + str(self.id)
+
 class ReferenceSpace(models.Model):
     name = models.CharField(max_length=255, db_index=True)
     content = models.TextField(null=True, blank=True)
@@ -169,6 +173,21 @@ class ReferenceSpace(models.Model):
 
     class Meta:
         ordering = ["name"]
+
+    @property
+    def get_lat(self):
+        try:
+            return self.geometry.centroid[1]
+        except:
+            return None
+
+    @property
+    def get_lng(self):
+        try:
+            return self.geometry.centroid[0]
+        except:
+            return None
+
 
 class Corridor(models.Model):
     name = models.CharField(max_length=255, db_index=True)

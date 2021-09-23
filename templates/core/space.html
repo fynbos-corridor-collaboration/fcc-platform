@@ -28,6 +28,7 @@
     <div class="mt-2 alert alert-dark text-center">
       <i class="fa fa-map-marker-alt"></i>
       Coordinates: {{ center}}<br>
+      Type of object: {{ info.geometry.geom_type }}<br>
       <a href="http://www.openstreetmap.org/?mlat={{ info.get_lat }}&amp;mlon={{ info.get_lng }}&amp;zoom=12">View on OpenStreetMap</a> | 
       <a href="https://www.google.com/maps/search/?api=1&query={{ info.get_lat }},{{ info.get_lng }}">View on Google Maps</a>
       <br>
@@ -44,6 +45,20 @@
           {{ satmap|safe }}
         </div>
       </div>
+    </div>
+
+    <div class="mb-4">
+      <form method="post" class="float-end">
+        <button type="submit" name="download" value="true" class="btn btn-secondary">
+          <i class="fa fa-download"></i> 
+          Download (geojson format)
+        </button>
+        {% csrf_token %}
+      </form>
+      <a href="{{ info.source.get_absolute_url }}" class="btn btn-primary">
+        <i class="fa fa-arrow-left"></i>
+        Back to source map
+      </a>
     </div>
 
 {% endblock %}
