@@ -125,12 +125,6 @@ class Garden(models.Model):
 
 class Document(models.Model):
     name = models.CharField(max_length=255, db_index=True)
-    author = models.CharField(max_length=255, null=True, blank=True)
-    url = models.CharField(max_length=255, null=True, blank=True)
-    content = models.TextField(null=True, blank=True)
-    color = models.CharField(max_length=50, null=True, blank=True)
-    meta_data = models.JSONField(null=True, blank=True)
-    active = models.BooleanField(default=True, db_index=True)
 
     class Type(models.IntegerChoices):
         UNKNOWN = 0, "Unknown"
@@ -141,6 +135,12 @@ class Document(models.Model):
         CONTEXT = 5, "Context"
 
     type = models.IntegerField(choices=Type.choices, db_index=True, default=0)
+    author = models.CharField(max_length=255, null=True, blank=True)
+    url = models.URLField(max_length=255, null=True, blank=True)
+    content = models.TextField("Description", null=True, blank=True)
+    color = models.CharField(max_length=50, null=True, blank=True, help_text="See https://htmlcolors.com/color-names for an overview of possible color names")
+    meta_data = models.JSONField(null=True, blank=True, help_text="Only to be edited if you know what this does - otherwise, please do not change")
+    active = models.BooleanField(default=True, db_index=True)
 
     def __str__(self):
         return self.name
@@ -151,8 +151,6 @@ class Document(models.Model):
             return self.meta_data["dataviz"]
         else:
             return {}
-
-    content = models.TextField(null=True, blank=True)
 
 class ReferenceSpace(models.Model):
     name = models.CharField(max_length=255, db_index=True)

@@ -7,10 +7,13 @@ class SearchAdmin(admin.ModelAdmin):
 class VegTypeAdmin(admin.ModelAdmin):
     autocomplete_fields = ["spaces"]
 
+class DocAdmin(SearchAdmin):
+    list_display = ["name", "author", "active"]
+
 admin.site.register(Photo, SearchAdmin)
 admin.site.register(Page, SearchAdmin)
 admin.site.register(Garden, SearchAdmin)
-admin.site.register(Document, SearchAdmin)
+admin.site.register(Document, DocAdmin)
 admin.site.register(ReferenceSpace, SearchAdmin)
 admin.site.register(Corridor, SearchAdmin)
 admin.site.register(Event, SearchAdmin)
