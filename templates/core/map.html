@@ -13,9 +13,37 @@
 
   <h1>{% block title %}{{ info }}{% endblock %}</h1>
 
+  {% if info.content %}
+    <div>
+      {{ info.content|linebreaksbr}}
+    </div>
+  {% endif %}
+
+  {% if info.author %}
+    <h3 class="mt-4">Map author</h3>
+    <div>{{ info.author }}</div>
+  {% endif %}
+
+  {% if info.url %}
+    <h3 class="mt-4">More information</h3>
+    <div><a href="{{ info.url }}">{{ info.url }}</a></div>
+  {% endif %}
+
   <div id="map" class="leaflet-map mt-4"></div>
 
   <h2>Items inside this map</h2>
+
+  <p>
+    Our online maps are based on so-called <a href="https://en.wikipedia.org/wiki/Shapefile">shapefiles</a>. These shapefiles contain
+    different objects (such as lines, polygons, or points). Each object <em>might</em> have an own name and information (for instance,
+    a map could contain all the different wards in Cape Town, each of them represented as an individual polygon). 
+  </p>
+
+  <p>
+    Below, we list all of the objects that are available within this shapefile. You can click each object, and see this object on 
+    a separate page - with an option to download the associated shapefile details. For some maps these objects can be very
+    interesting - for others it is not so relevant. We leave it to you to decide!
+  </p>
 
   {% if info.spaces.count > 200 %}
 
@@ -26,7 +54,7 @@
 
   {% endif %}
 
-  <table class="table table-bordered datatable">
+  <table class="table table-bordered datatable mb-4">
     <thead>
       <tr>
         <th>Name</th>
@@ -35,10 +63,14 @@
     <tbody>
       {% for each in info.spaces.all %}
         <tr>
-          <td><a href="{{ each.get_absolute_url }}">{{ each }}</a></td>
+          <td><a href="{{ each.get_absolute_url }}">{{ each.name }}</a></td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+
+  <div class="mb-3 mt-3">
+    <a href="{% url "maps" %}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Back to map overview</a>
+  </div>
 
 {% endblock %}
