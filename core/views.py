@@ -587,6 +587,7 @@ def maps(request):
         "boundaries": ReferenceSpace.objects.get(pk=983170),
         "type_list": type_list,
         "getcolors": getcolors,
+        "title": "Maps",
         "icons": {
             1: "leaf",
             2: "draw-square",

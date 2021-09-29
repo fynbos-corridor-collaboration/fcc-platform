@@ -1,36 +1,60 @@
 {% load static %}
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-pink">
-    <div class="container">
-      <a class="navbar-brand" href="/"><img class="pe-3" src="{% static 'img/logo.png' %}" alt="" /></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link {% if menu == "home" %}active{% endif %}" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if menu == "resources" %}active{% endif %}" href="{% url "maps" %}">Resources</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if menu == "maps" %}active{% endif %}" href="{% url "maps" %}">Maps</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if menu == "strategy" %}active{% endif %}" href="{% url "maps" %}">Strategy</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if menu == "network" %}active{% endif %}" href="{% url "gardens" %}">Garden network</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if menu == "report" %}active{% endif %}" href="{% url "report" %}">Report</a>
-          </li>
-        </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-      </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-pink">
+  <div class="container">
+    <a class="navbar-brand" href="/"><img class="pe-3" src="{% static 'img/logo.png' %}" alt="" /></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">About us</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="http://">Introduction</a></li>
+            <li><a class="dropdown-item" href="http://">History</a></li>
+            <li><a class="dropdown-item" href="http://">Our organisations</a></li>
+            <li><a class="dropdown-item" href="http://">Contact form</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fynbos rehabilitation</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="">Garden vision</a></li>
+            <li><a class="dropdown-item" href="">Garden design</a></li>
+            <li><a class="dropdown-item" href="">Planting</a></li>
+            <li><a class="dropdown-item" href="">Monitoring</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Our garden network</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url "gardens" %}">Introduction</a></li>
+            <li><a class="dropdown-item" href="http://">View map</a></li>
+            <li><a class="dropdown-item" href="http://">Add your garden</a></li>
+            <li><a class="dropdown-item" href="http://">Become a member</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Join us</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="http://">Trainings and workshops</a></li>
+            <li><a class="dropdown-item" href="http://">Online course</a></li>
+            <li><a class="dropdown-item" href="http://">Whatsapp groups</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Resources</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/maps/">Maps</a></li>
+            <li><a class="dropdown-item" href="/vegetation-types/">Vegetation types</a></li>
+            <li><a class="dropdown-item" href="/species/">Species list</a></li>
+            <li><a class="dropdown-item" href="http://">Teaching resources</a></li>
+            <li><a class="dropdown-item" href="/report/">Instant site analysis</a></li>
+            <li hidden><a class="dropdown-item" href="http://">Numato</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
