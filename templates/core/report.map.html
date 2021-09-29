@@ -1,0 +1,58 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block css %}
+<style type="text/css">
+.icon-square {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    border-radius: .75rem;
+}
+.fadeout {
+  opacity:0.4;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="row g-4 py-2 pb-4 row-cols-1 row-cols-lg-3">
+  <div class="col d-flex align-items-start">
+    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+      <i class="fa fa-info"></i>
+    </div>
+    <div>
+      <h2><a href="{% url "report" %}">Introduction</a></h2>
+    </div>
+  </div>
+  <div class="col d-flex align-items-start">
+    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+      <i class="fa fa-map"></i>
+    </div>
+    <div>
+      <h2>{% block title %}Select your location{% endblock %}</h2>
+    </div>
+  </div>
+  <div class="col d-flex align-items-start fadeout">
+    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+      <i class="fa fa-file"></i>
+    </div>
+    <div>
+      <h2>View report</h2>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  Select the location you want to analyse on the map.
+</div>
+
+<div class="mb-4">
+  {{ map|safe }}
+</div>
+
+{% endblock %}

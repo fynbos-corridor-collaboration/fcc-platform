@@ -598,7 +598,22 @@ def maps(request):
     }
     return render(request, "core/maps.html", context)
 
-def report(request):
+def report(request, show_map=False, lat=False, lng=False):
+    if show_map:
+        map = folium.Map(
+            location=[-34.070078, 18.571595],
+            zoom_start=10,
+            scrollWheelZoom=True,
+            tiles=STREET_TILES,
+            attr="Mapbox",
+        )
+        context = {
+            "map": map._repr_html_(),
+        }
+        return render(request, "core/report.map.html", context)
+    elif not "lat" in request.GET and not lat:
+        return render(request, "core/report.start.html")
+
     info = get_object_or_404(ReferenceSpace, pk=988911)
     schools = get_object_or_404(Document, pk=983409)
     cemeteries = get_object_or_404(Document, pk=983426)
@@ -607,12 +622,12 @@ def report(request):
     remnants = get_object_or_404(Document, pk=983097)
     vegetation = get_object_or_404(Document, pk=983356)
 
-    try:
+    if "lat" in request.GET:
         lat = float(request.GET["lat"])
         lng = float(request.GET["lng"])
-    except:
-        lat = -33.9641
-        lng = 18.5113
+    else:
+        lat = float(lat)
+        lng = float(lng)
 
     center = geos.Point(x=lng, y=lat, srid=4326)
     center.transform(3857) # Transform Projection to Web Mercator     

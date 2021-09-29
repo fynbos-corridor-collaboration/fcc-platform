@@ -1,0 +1,101 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block css %}
+<style type="text/css">
+.card-cover {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+.rounded-5 {
+    border-radius: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+  <div class="container px-4 px-md-3">
+    <div class="row align-items-lg-center">
+      <div class="col-8 mx-auto col-md-4 order-md-2 col-lg-5">
+        <img src="{% static "img/report.jpg" %}" alt="" />
+      </div>
+      <div class="col-md-8 order-md-1 col-lg-7 text-center text-md-start">
+        <h1>{% block title %}Instant site analysis{% endblock %}</h1>
+        <p class="lead mb-4">
+          Are you keen to learn what the original vegetation type is of your own garden, your nearby community garden,
+          or a potential plot? What plants you should start the garden with? Which species to introduce so that you 
+          can have structure and diversity? What remnants are nearby or which potential corridors or other gardens
+          you can connect with? Enter your coordinates and a full report becomes available!
+        </p>
+
+        <div class="d-flex flex-column flex-md-row">
+          <a href="{% url "report_map" %}" class="btn btn-lg btn-primary mb-3 me-md-3">Get started</a>
+          <a href="/docs/5.1/getting-started/download/" class="btn btn-lg btn-outline-secondary mb-3">How this works</a>
+        </div>
+        <p class="text-muted mb-0">
+          Currently <strong>v1.0.0</strong>
+          <span class="px-1">·</span>
+          <a href="/docs/versions/" class="link-secondary">View changelog</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <h2 class="mb-3">Sample reports</h2>
+
+  <div class="row row-cols-1 row-cols-lg-3 align-items-stretch pb-5">
+
+    <div class="col">
+      <a href="{% url "report" "-34.070" "18.57" %}">
+        <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('unsplash-photo-1.jpg');">
+          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Huis Luckhoff Community Garden</h2>
+            <ul class="d-flex list-unstyled mt-auto">
+              <li class="d-flex align-items-center me-3">
+                <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"></use></svg>
+                <small>Rosebank</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="{% url "report" "-34.070" "18.57" %}">
+        <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('unsplash-photo-1.jpg');">
+          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Company Gardens</h2>
+            <ul class="d-flex list-unstyled mt-auto">
+              <li class="d-flex align-items-center me-3">
+                <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"></use></svg>
+                <small>City Centre</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="{% url "report" "-34.070078" "18.571595" %}">
+        <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('unsplash-photo-1.jpg');">
+          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Strandfontein Community Centre</h2>
+            <ul class="d-flex list-unstyled mt-auto">
+              <li class="d-flex align-items-center me-3">
+                <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"></use></svg>
+                <small>Strandfontein</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+{% endblock %}
