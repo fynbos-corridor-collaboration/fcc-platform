@@ -50,8 +50,17 @@
   {% block head %}{% endblock %}
 
   <style type="text/css">
-    .navbar-brand img {max-height:200px}
-    .bg-pink{background:#FCF1F1}
+    .navbar-brand img {
+      max-height:170px;
+    }
+    .load-bg{
+      background-size:cover;
+      background-image:url("{% static HEADER_BG %}") !important;
+    }
+    .bg-pink{
+      background:#FCF1F1;
+      border-bottom: 4px solid #9D7E91;
+    }
   </style>
 
 </head>
