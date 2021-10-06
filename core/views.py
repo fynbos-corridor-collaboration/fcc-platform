@@ -387,6 +387,10 @@ def index(request):
             each.upload_date = parse(each.original["updated_at"])
             each.save()
 
+    if "import_content" in request.GET:
+        pages = ["Introduction", "History", "Our organisations", "Contact form", "Become a member", "Trainings and workshops", "Online course", "Whatsapp groups", "Teaching resources"]
+        for each in pages:
+            Page.objects.create(name=each, position=0, format="MARK")
     context = {}
     return render(request, "core/index.html", context)
 
@@ -1149,6 +1153,13 @@ def photos(request, garden=None):
         "photos": page_obj,
     }
     return render(request, "core/photos.html", context)
+
+def page(request, slug):
+    info = get_object_or_404(Page, slug=slug)
+    context = {
+        "page": info,
+    }
+    return render(request, "core/page.html", context)
 
 def user_login(request):
     redirect_url = "index"

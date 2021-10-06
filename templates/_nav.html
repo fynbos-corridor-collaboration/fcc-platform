@@ -11,10 +11,10 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">About us</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="http://">Introduction</a></li>
-            <li><a class="dropdown-item" href="http://">History</a></li>
-            <li><a class="dropdown-item" href="http://">Our organisations</a></li>
-            <li><a class="dropdown-item" href="http://">Contact form</a></li>
+            <li><a class="dropdown-item" href="{% url "about" "introduction" %}">Introduction</a></li>
+            <li><a class="dropdown-item" href="{% url "about" "history" %}">History</a></li>
+            <li><a class="dropdown-item" href="{% url "about" "our-organisations" %}">Our organisations</a></li>
+            <li><a class="dropdown-item" href="{% url "about" "contact-form" %}">Contact form</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
@@ -38,9 +38,9 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Join us</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="http://">Trainings and workshops</a></li>
-            <li><a class="dropdown-item" href="http://">Online course</a></li>
-            <li><a class="dropdown-item" href="http://">Whatsapp groups</a></li>
+            <li><a class="dropdown-item" href="{% url "join" "trainings-and-workshops" %}">Trainings and workshops</a></li>
+            <li><a class="dropdown-item" href="{% url "join" "online-course" %}">Online course</a></li>
+            <li><a class="dropdown-item" href="{% url "join" "whatsapp-groups" %}">Whatsapp groups</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
@@ -49,7 +49,7 @@
             <li><a class="dropdown-item" href="/maps/">Maps</a></li>
             <li><a class="dropdown-item" href="/vegetation-types/">Vegetation types</a></li>
             <li><a class="dropdown-item" href="/species/">Species list</a></li>
-            <li><a class="dropdown-item" href="http://">Teaching resources</a></li>
+            <li><a class="dropdown-item" href="{% url "resources" "teaching-resources" %}">Teaching resources</a></li>
             <li><a class="dropdown-item" href="{% url "report" %}">Instant site analysis</a></li>
             <li hidden><a class="dropdown-item" href="http://">Numato</a></li>
           </ul>

@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <h1>{{ page }}</h1>
+  {{ page.get_content }}
+
+  {% if request.user.is_staff %}
+    <a class="btn btn-primary" href="/admin/core/page/{{ page.id }}/change/" style="position:fixed;bottom:10px;right:10px;" target="_blank">
+      <i class="fa fa-pencil"></i>
+      Edit page
+    </a>
+  {% endif %}
+
+{% endblock %}
