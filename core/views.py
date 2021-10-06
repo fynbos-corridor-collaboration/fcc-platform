@@ -13,6 +13,9 @@ from django.contrib.gis import geos
 from django.contrib.gis.measure import D
 from django.core.paginator import Paginator
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+
 # Quick debugging, sometimes it's tricky to locate the PRINT in all the Django 
 # output in the console, so just using a simply function to highlight it better
 def p(text):
@@ -1146,4 +1149,37 @@ def photos(request, garden=None):
         "photos": page_obj,
     }
     return render(request, "core/photos.html", context)
+
+def user_login(request):
+    redirect_url = "index"
+    if request.GET.get("next"):
+        redirect_url = request.GET.get("next")
+
+    if request.user.is_authenticated:
+        return redirect(redirect_url)
+
+    if request.method == "POST":
+        email = request.POST.get("email").lower()
+        password = request.POST.get("password")
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You are logged in.")
+            return redirect(redirect_url)
+        else:
+            messages.error(request, "We could not authenticate you, please try again.")
+
+    context = {
+    }
+    return render(request, "core/login.html", context)
+
+def user_logout(request):
+    logout(request)
+    messages.warning(request, "You are now logged out")
+
+    if "next" in request.GET:
+        return redirect(request.GET.get("next"))
+    else:
+        return redirect("index")
 

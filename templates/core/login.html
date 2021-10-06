@@ -1,0 +1,30 @@
+{% extends "_base.html" %}
+
+{% block page_name %}login{% endblock %}
+{% block title %}Log in{% endblock %}
+
+{% block head %}
+  <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block content %}
+  <div class="card login">
+    <div class="card-body">
+      <h3>Log in</h3>
+      <hr>
+      <form method="post" action="">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="text" class="form-control" id="email" name="email">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-fw fa-sign-in"></i> Sign in</button>
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

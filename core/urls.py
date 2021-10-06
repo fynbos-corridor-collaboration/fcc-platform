@@ -32,4 +32,7 @@ urlpatterns = [
     path("profile/<int:id>/<slug:section>/", views.profile, name="profile"),
 
     path("photos/", views.photos, name="photos"),
+
+    path("accounts/login/", views.user_login, name="login"),
+    path("accounts/logout/", views.user_logout, name="logout"),
 ]
