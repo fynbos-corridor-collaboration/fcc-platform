@@ -3,6 +3,7 @@ from .models import *
 
 class SearchAdmin(admin.ModelAdmin):
     search_fields = ["name"]
+    exclude = ["content_html"]
 
 class VegTypeAdmin(admin.ModelAdmin):
     autocomplete_fields = ["spaces"]
@@ -10,9 +11,13 @@ class VegTypeAdmin(admin.ModelAdmin):
 class DocAdmin(SearchAdmin):
     list_display = ["name", "author", "active"]
 
+class GardenAdmin(SearchAdmin):
+    list_display = ["name", "active"]
+    list_filter = ["active", "organizations"]
+
 admin.site.register(Photo, SearchAdmin)
 admin.site.register(Page, SearchAdmin)
-admin.site.register(Garden, SearchAdmin)
+admin.site.register(Garden, GardenAdmin)
 admin.site.register(Document, DocAdmin)
 admin.site.register(ReferenceSpace, SearchAdmin)
 admin.site.register(Corridor, SearchAdmin)

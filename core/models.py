@@ -94,7 +94,7 @@ class Garden(models.Model):
             return settings.MEDIA_URL + "/placeholder.png"
 
     def __str__(self):
-        return self.name
+        return self.name if self.name else "Unnamed garden"
 
     @property
     def get_lat(self):
@@ -215,6 +215,7 @@ class Genus(models.Model):
 
     class Meta:
         ordering = ["name"]
+        verbose_name_plural = "Genera"
 
     def get_absolute_url(self):
         return reverse("genus", args=[self.id])
@@ -246,6 +247,9 @@ class Redlist(models.Model):
     @property
     def formatted(self):
         return mark_safe(f"{self.get_code} {self.name}")
+
+    class Meta:
+        verbose_name_plural = "Redlist"
 
 class VegetationType(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -309,6 +313,7 @@ class Species(models.Model):
 
     class Meta:
         ordering = ["name"]
+        verbose_name_plural = "Species"
 
     @property
     def get_photo_medium(self):
