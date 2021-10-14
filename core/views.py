@@ -125,10 +125,8 @@ def index(request):
         species = Species.objects.filter(meta_data__original__medicinal__isnull=False)
         a = SpeciesFeatures.objects.get(name="It provides medicinal value")
         for each in species:
-            p(each)
             medicinal = each.meta_data["original"]["medicinal"]
             if medicinal == "1":
-                p(each)
                 each.features.add(a)
 
     if "species_images" in request.GET:
