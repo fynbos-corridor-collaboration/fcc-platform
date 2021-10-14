@@ -137,7 +137,7 @@ def index(request):
 
     if "species_images" in request.GET:
         from django.core.files.uploadedfile import UploadedFile
-        species = Species.objects.all()
+        species = Species.objects.all()[:10]
         for each in species:
             try:
                 credit = each.meta_data["original"]["image_credit"]
@@ -154,10 +154,8 @@ def index(request):
                 each.save()
 
             except Exception as e:
-                print(id)
-                print(each)
-                print(each.id)
-                print(e)
+                messages.warning(request, str(e))
+                messages.warning(request, each.id)
     if "clean_species" in request.GET:
         return None
         names = ["Spinach", "Beetroot", "Onion", "Cauliflower"]
