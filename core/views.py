@@ -136,7 +136,6 @@ def index(request):
                 each.features.add(a)
 
     if "species_images" in request.GET:
-        return None
         from django.core.files.uploadedfile import UploadedFile
         species = Species.objects.all()
         for each in species:
