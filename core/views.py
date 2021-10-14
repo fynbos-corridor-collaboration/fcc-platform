@@ -1072,12 +1072,12 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
         center = geos.Point(lng, lat)
         veg = vegetation.spaces.get(geometry__intersects=center)
         veg = VegetationType.objects.get(pk=6)
+        suburb = ReferenceSpace.objects.filter(source_id=334434, geometry__intersects=center)
+        if suburb:
+            suburb = suburb[0].name.title()
     except:
         messages.error(request, f"We are unable to locate the relevant vegetation type.")
-
-    suburb = ReferenceSpace.objects.filter(source_id=334434, geometry__intersects=center)
-    if suburb:
-        suburb = suburb[0].name.title()
+        suburb = None
 
     context = {
         "lat": lat,
@@ -1115,7 +1115,6 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
 
         elif subsection == "medicinal":
             context["title"] = "Medicinal plant species"
-            p(species)
             species = species.filter(features__id=115)
             context["species_list"] = species
 
