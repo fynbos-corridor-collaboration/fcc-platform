@@ -106,8 +106,8 @@ def index(request):
             pass
 
     if "pioneer-update" in request.GET:
-        pio = SpeciesFeatures.objects.get(pk=65)
-        right_one = SpeciesFeatures.objects.get(pk=74)
+        pio = SpeciesFeatures.objects.get(pk=116)
+        right_one = SpeciesFeatures.objects.get(pk=125)
         species = Species.objects.filter(features=pio)
         for each in species:
             each.features.add(right_one)
