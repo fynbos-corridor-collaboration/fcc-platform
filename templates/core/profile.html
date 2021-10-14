@@ -23,26 +23,24 @@
   <div class="container">
     <div class="row">
       <div class="col-3 bg-light p-3">
-        <h3>Plot Profiler</h3>
-        <h4>
-          Location: 
-          <a href="http://">
-            {{ lat }}, {{ lng }}
-          </a>
-        </h4>
+        <h4><i class="fa fa-leaf fa-fw"></i> Vegetation type</h4>
+        <a href="{{ link }}vegetation-type/">{{ info.name }}</a>
 
         <ul class="list-unstyled">
-          <li><a href="{{ link }}vegetation-type/"><i class="fa fa-leaf fa-fw"></i> {{ info.name }}</a>
+          <li class="mt-5"><h4><i class="fa fa-users fa-fw"></i> Species for social value</h4>
             <ul>
-              <li><a href="{{ link }}vegetation-type/">Overview</a>
-              <li><a href="{{ link }}plants/pioneers/">Pioneer species</a></li>
-              <li><a href="{{ link }}plants/birds/">Bird-friendly plants</a></li>
-              <li><a href="{{ link }}plants/insects/">Insect-friendly plants</a></li>
               <li><a href="{{ link }}plants/edible/">Edible plants</a></li>
               <li><a href="{{ link }}plants/medicinal/">Medicinal plants</a></li>
             </ul>
           </li>
-          <li>
+          <li class="mt-5"><h4><i class="fa fa-leaf fa-fw"></i> Ecological function</h4>
+            <ul>
+              <li><a href="{{ link }}plants/pioneers/">Pioneer species</a></li>
+              <li><a href="{{ link }}plants/birds/">Bird-friendly plants</a></li>
+              <li><a href="{{ link }}plants/insects/">Insect-friendly plants</a></li>
+            </ul>
+          </li>
+          <li hidden>
             <a href="{{ link }}nearby/"><i class="fa fa-map-signs fa-fw"></i> Nearby</a>
             <ul>
               <li><a href="{{ link }}nearby/remnants/">Natural remnants</a></li>
@@ -52,7 +50,7 @@
               <li><a href="{{ link }}nearby/cemeteries/">Cemeteries</a></li>
             </ul>
           </li>
-          <li>
+          <li hidden>
             <a href="{{ link }}biodiversity/"><i class="fa fa-fw fa-crow"></i> Biodiversity</a>
             <ul>
               <li><a href="{{ link }}biodiversity/map/">View map</a></li>
@@ -61,12 +59,21 @@
           </li>
         </ul>
 
-
+        <form method="post" class="mt-5">
+          <input type="hidden" name="next" value="true" />
+          <button type="submit" class="btn btn-success">Go to the next step &raquo;</button>
+          {% csrf_token %}
+        </form>
+            
       </div>
       <div class="col-9">
 
         {% if title %}
           <h2>{{ title }}</h2>
+        {% endif %}
+
+        {% if not info %}
+          <p><em>Please go to the SELECT A SITE section to try selecting a place from the map.</em></p>
         {% endif %}
 
         {% if section == "vegetation-type" %}
@@ -172,6 +179,24 @@
             <p>The city-wide map with all {{ subsection }} can be found <a href="{% url "map" source.id %}">here</a>.</p>
 
           {% endif %}
+
+        {% else %}
+          <h1>Choose plants</h1>
+
+          {% if lat %}
+          <p class="alert alert-warning">
+            This is the species profile based on the following coordinates:
+            <strong>{{ lat }}, {{ lng }}</strong>. 
+            <br>
+            This location is in <strong>{{ suburb }}</strong>.
+            If you want to change this, please go to
+            <a href="../site-selection/">Site Selection</a>.
+          </p>
+          {% endif %}
+
+          <p>Welcome! Here we explain how you can select the right kinds of plants...</p>
+          <p>Start by reading more about the vegetation type.</p>
+          <p>And then browse the recommended plant lists for your vegetation type.</p>
 
         {% endif %}
 

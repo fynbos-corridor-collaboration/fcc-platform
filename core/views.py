@@ -630,6 +630,12 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         lat = float(lat)
         lng = float(lng)
 
+    if "next" in request.POST:
+        response = redirect("rehabilitation_assessment")
+        response.set_cookie("lat", lat)
+        response.set_cookie("lng", lng)
+        return response
+
     center = geos.Point(x=lng, y=lat, srid=4326)
     center.transform(3857) # Transform Projection to Web Mercator     
     radius = 1000 # Number of meters distance
@@ -970,6 +976,24 @@ def species_full_list(request):
     }
     return render(request, "core/species.all.html", context)
 
+def rehabilitation_assessment(request, title="Assess and envision"):
+    if "next" in request.POST:
+        if title == "Assess and envision":
+            return redirect("rehabilitation_plant_selection")
+        elif title == "Design your garden":
+            return redirect("rehabilitation_workplan")
+        elif title == "Make a work plan":
+            return redirect("rehabilitation_monitoring")
+    context = {
+        "title": title,
+    }
+    return render(request, "core/assessment.html", context)
+
+def rehabilitation_plant_selection(request):
+    context = {
+    }
+    return render(request, "core/assessment.html", context)
+
 def species(request, id):
     context = {
         "info": get_object_or_404(Species, pk=id),
@@ -1029,6 +1053,16 @@ def vegetation_type(request, slug):
 def profile(request, section=None, lat=None, lng=None, id=None, subsection=None):
 
     vegetation = get_object_or_404(Document, pk=983356)
+    veg = None
+    link = None
+
+    if "next" in request.POST:
+        return redirect("rehabilitation_design")
+
+    if not lat:
+        lat = request.COOKIES.get("lat")
+        lng = request.COOKIES.get("lng")
+
     if lat and lng:
         link = f"/profile/{lat},{lng}/"
 
@@ -1041,6 +1075,10 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
     except:
         messages.error(request, f"We are unable to locate the relevant vegetation type.")
 
+    suburb = ReferenceSpace.objects.filter(source_id=334434, geometry__intersects=center)
+    if suburb:
+        suburb = suburb[0].name.title()
+
     context = {
         "lat": lat,
         "lng": lng,
@@ -1048,6 +1086,7 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
         "info": veg,
         "section": section,
         "subsection": subsection,
+        "suburb": suburb,
     }
 
     if section == "plants":

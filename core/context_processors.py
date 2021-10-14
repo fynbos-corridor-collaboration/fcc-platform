@@ -10,7 +10,8 @@ def site(request):
     except:
         work_offline = False
 
-    header_bg = random.choice(range(0,44))
+    l = [24,26,29,11,9,19,8,34,12,27]
+    header_bg = random.choice(l)
 
     return {
         "DEBUG": settings.DEBUG,

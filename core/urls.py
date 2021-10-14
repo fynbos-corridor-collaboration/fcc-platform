@@ -44,4 +44,9 @@ urlpatterns = [
     path("fynbos-rehabilitation/site-selection/", views.report, {"site_selection": True}, name="rehabilitation_site_selection"),
     path("fynbos-rehabilitation/site-selection/map/", views.report, {"show_map": True, "site_selection": True}, name="rehabilitation_site_selection_map"),
     path("fynbos-rehabilitation/site-selection/<str:lat>/<str:lng>/", views.report, {"site_selection": True}, name="rehabilitation_site_selection"),
+    path("fynbos-rehabilitation/assessment/", views.rehabilitation_assessment, name="rehabilitation_assessment"),
+    path("fynbos-rehabilitation/design/", views.rehabilitation_assessment, {"title": "Design your garden"}, name="rehabilitation_design"),
+    path("fynbos-rehabilitation/work-plan/", views.rehabilitation_assessment, {"title": "Make a work plan"}, name="rehabilitation_workplan"),
+    path("fynbos-rehabilitation/monitoring/", views.rehabilitation_assessment, {"title": "Monitor"}, name="rehabilitation_monitoring"),
+    path("fynbos-rehabilitation/plant-selection/", views.profile, name="rehabilitation_plant_selection"),
 ]

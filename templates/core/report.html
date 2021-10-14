@@ -71,8 +71,6 @@
   <br>
 </div>
 
-<h2>Score card</h2>
-
 <h3 class="mt-5">Possible expansion stepping stone sites</h3>
 <p><em>How many possible nearby stepping stone gardens can be created, taking into account public infrastructure?</em></p>
 
@@ -158,19 +156,32 @@
 
 <p>With {{ existing.count }} existing stepping stones in the area, we rate this as: <strong>{{ existing.label }}</strong></p>
 
-<hr>
+{% if site_selection %}
+  <div class="alert alert-info">
+    <p>
+      So... do you think that:
+    </p>
+    <ul>
+      <li>You can link up this site with other (potential or existing) stepping stone?</li>
+      <li>You can secure long term permission be secured, or a strong local alliship be developed</li>
+      <li>Your garden can add up to > 1ha in the area?</li>
+    </ul>
 
-So... do you think that:
+  <p>
+    If yes, great! You found a great location!
+  </p>
 
-- You can link up this site with other (potential or existing) stepping stone?
-- You can secure long term permission be secured, or a strong local alliship be developed
-- Your garden can add up to > 1ha in the area?
+  <form method="post">
+    <input type="hidden" name="next" value="true" />
+    <button type="submit" class="btn btn-success">Go to the next step &raquo;</button>
+    {% csrf_token %}
+  </form>
 
-If yes, great! You found a great location!
+  <p class="mt-3">If not, why not go back and try out another location? <a href="./">Go back</a></p>
 
-GO TO NEXT STEP > 
+  </div>
 
-<hr>
+{% endif %}
 
     <h2 class="mt-4">Maps</h2>
     <div class="mt-2 alert alert-success text-center">

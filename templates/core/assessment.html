@@ -1,0 +1,20 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <main class="px-3" style="min-height:50vh">
+    <h1>{{ title }}</h1>
+    <p class="lead">
+      This page will be populated with text and/or reference material
+      from the strategy document.
+    </p>
+    {% if title != "Monitor" %}
+    <form method="post">
+      <input type="hidden" name="next" value="true" />
+      <button type="submit" class="btn btn-success">Go to the next step &raquo;</button>
+      {% csrf_token %}
+    </form>
+    {% endif %}
+  </main>
+
+{% endblock %}
