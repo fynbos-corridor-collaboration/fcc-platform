@@ -15,6 +15,10 @@
 .fadeout {
   opacity:0.4;
 }
+#map {
+  height: 800px;
+}
+.leaflet-container .leaflet-popup-content a{color:#fff}
 </style>
 {% endblock %}
 
@@ -26,7 +30,7 @@
       <i class="fa fa-info"></i>
     </div>
     <div>
-      <h2><a href="{% url "report" %}">Introduction</a></h2>
+      <h2><a href="../">Introduction</a></h2>
     </div>
   </div>
   <div class="col d-flex align-items-start">
@@ -51,8 +55,22 @@
   Select the location you want to analyse on the map.
 </div>
 
-<div class="mb-4">
-  {{ map|safe }}
+<div class="mb-4" id="map">
 </div>
 
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript">
+	var popup = L.popup();
+
+	function onMapClick(e) {
+		popup
+			.setLatLng(e.latlng)
+			.setContent("Confirm location?<br><br><a href='./?lat=" + e.latlng.lat + "&amp;lng=" + e.latlng.lng + "' class='btn btn-primary'>Confirm</a>")
+			.openOn(map);
+	}
+
+	map.on('click', onMapClick);
+</script>
 {% endblock %}

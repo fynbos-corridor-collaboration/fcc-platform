@@ -605,8 +605,8 @@ def maps(request):
     }
     return render(request, "core/maps.html", context)
 
-def report(request, show_map=False, lat=False, lng=False):
-    if show_map:
+def report(request, show_map=False, lat=False, lng=False, site_selection=False):
+    if show_map and not "lat" in request.GET:
         map = folium.Map(
             location=[-34.070078, 18.571595],
             zoom_start=10,
@@ -615,11 +615,17 @@ def report(request, show_map=False, lat=False, lng=False):
             attr="Mapbox",
         )
         context = {
-            "map": map._repr_html_(),
+            "load_map": True,
+            "site_selection": site_selection,
+            "lat": -34.07,
+            "lng": 18.57,
         }
         return render(request, "core/report.map.html", context)
     elif not "lat" in request.GET and not lat:
-        return render(request, "core/report.start.html")
+        context = {
+            "site_selection": site_selection,
+        }
+        return render(request, "core/report.start.html", context)
 
     info = get_object_or_404(ReferenceSpace, pk=988911)
     schools = get_object_or_404(Document, pk=983409)
@@ -790,6 +796,45 @@ def report(request, show_map=False, lat=False, lng=False):
     except:
         veg = None
 
+    expansion = {}
+    expansion["count"] = schools.count() + cemeteries.count() + parks.count()
+    if expansion["count"] <= 1:
+        expansion["rating"] = 0
+        expansion["label"] = "<span class='badge bg-danger'>poor</span>"
+    elif expansion["count"] <= 3:
+        expansion["rating"] = 1
+        expansion["label"] = "<span class='badge bg-warning'>okay</span>"
+    else:
+        expansion["rating"] = 2
+        expansion["label"] = "<span class='badge bg-success'>great</span>"
+    expansion["label"] = mark_safe(expansion["label"])
+
+    connectors = {}
+    connectors["count"] = rivers.count()
+    if connectors["count"] <= 1:
+        connectors["rating"] = 0
+        connectors["label"] = "<span class='badge bg-danger'>poor</span>"
+    elif connectors["count"] <= 3:
+        connectors["rating"] = 1
+        connectors["label"] = "<span class='badge bg-warning'>okay</span>"
+    else:
+        connectors["rating"] = 2
+        connectors["label"] = "<span class='badge bg-success'>great</span>"
+    connectors["label"] = mark_safe(connectors["label"])
+
+    existing = {}
+    existing["count"] = remnants.count()
+    if existing["count"] <= 0:
+        existing["rating"] = 0
+        existing["label"] = "<span class='badge bg-danger'>poor</span>"
+    elif existing["count"] <= 2:
+        existing["rating"] = 1
+        existing["label"] = "<span class='badge bg-warning'>okay</span>"
+    else:
+        existing["rating"] = 2
+        existing["label"] = "<span class='badge bg-success'>great</span>"
+    existing["label"] = mark_safe(existing["label"])
+
     context = {
         "map": map._repr_html_(),
         "satmap": satmap._repr_html_(),
@@ -803,8 +848,12 @@ def report(request, show_map=False, lat=False, lng=False):
         "remnants": remnants,
         "schoolmap": schoolmap._repr_html_(),
         "schools": schools,
+        "expansion": expansion,
+        "connectors": connectors,
+        "existing": existing,
         "veg": veg,
         "center": center,
+        "site_selection": site_selection,
     }
     return render(request, "core/report.html", context)
 
@@ -1155,6 +1204,12 @@ def photos(request, garden=None):
     return render(request, "core/photos.html", context)
 
 def page(request, slug):
+
+    if slug == "fynbos-rehabilitation":
+        check = Page.objects.filter(slug=slug)
+        if not check:
+            Page.objects.create(name="Fynbos rehabilitation", position=0, format="MARK")
+
     info = get_object_or_404(Page, slug=slug)
     context = {
         "page": info,

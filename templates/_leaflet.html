@@ -8,14 +8,17 @@
 <script>
   // create leaflet map - https://leafletjs.com/reference-1.6.0.html
   var map = L.map("map", {
-    zoom: 15,
+    zoom: 11,
     scrollWheelZoom: false,
     fullscreenControl: true,
     renderer: L.canvas(),
+    {% if lat and lng %}
+      center: [{{ lat }}, {{ lng }}],
+    {% endif %}
   });
 
   // add tile layer
-  var tileLayer = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY29tbXVuaXRyZWUiLCJhIjoiY2lzdHZuanl1MDAwODJvcHR1dzU5NHZrbiJ9.0ETJ3fXYJ_biD7R7FiwAEg", {
+  var tileLayer = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={{ MAPBOX_API_KEY }}", {
     attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
     id: "{% if leaflet.style %}{{ leaflet.style }}{% elif properties.map_layer_style %}mapbox/{{ properties.map_layer_style }}{% else %}mapbox/streets-v11{% endif %}",
     tileSize: 512,

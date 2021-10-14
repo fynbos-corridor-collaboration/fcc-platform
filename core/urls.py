@@ -39,4 +39,9 @@ urlpatterns = [
     path("about/<slug:slug>/", views.page, name="about"),
     path("join/<slug:slug>/", views.page, name="join"),
     path("resources/<slug:slug>/", views.page, name="resources"),
+
+    path("fynbos-rehabilitation/", views.page, {"slug": "fynbos-rehabilitation"}),
+    path("fynbos-rehabilitation/site-selection/", views.report, {"site_selection": True}, name="rehabilitation_site_selection"),
+    path("fynbos-rehabilitation/site-selection/map/", views.report, {"show_map": True, "site_selection": True}, name="rehabilitation_site_selection_map"),
+    path("fynbos-rehabilitation/site-selection/<str:lat>/<str:lng>/", views.report, {"site_selection": True}, name="rehabilitation_site_selection"),
 ]

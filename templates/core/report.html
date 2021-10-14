@@ -10,6 +10,19 @@
     .largeicon {
       font-size: 5rem;
     }
+    .icon-square {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.5rem;
+        border-radius: .75rem;
+    }
+    .fadeout {
+      opacity:0.4;
+    }
+</style>
 
   </style>
 {% endblock %}
@@ -22,17 +35,144 @@
 {% endblock %}
 
 {% block content %}
-  
-  <h1>{% block title %}Report{% endblock %}</h1>
 
-    <div class="mt-2 alert alert-dark text-center">
-      <i class="fa fa-map-marker-alt"></i>
-      Coordinates: {{ center}}<br>
-      <a href="http://www.openstreetmap.org/?mlat={{ info.get_lat }}&amp;mlon={{ info.get_lng }}&amp;zoom=12">View on OpenStreetMap</a> | 
-      <a href="https://www.google.com/maps/search/?api=1&query={{ info.get_lat }},{{ info.get_lng }}">View on Google Maps</a>
-      <br>
+<div class="row g-4 py-2 pb-4 row-cols-1 row-cols-lg-3">
+  <div class="col d-flex align-items-start">
+    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+      <i class="fa fa-info"></i>
     </div>
+    <div>
+      <h2><a href="../">Introduction</a></h2>
+    </div>
+  </div>
+  <div class="col d-flex align-items-start">
+    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+      <i class="fa fa-map"></i>
+    </div>
+    <div>
+      <h2><a href="./">Select your location</a></h2>
+    </div>
+  </div>
+  <div class="col d-flex align-items-start">
+    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+      <i class="fa fa-file"></i>
+    </div>
+    <div>
+      <h2>{% block title %}View report{% endblock %}</h2>
+    </div>
+  </div>
+</div>
 
+<div class="mt-2 alert alert-dark text-center">
+  <i class="fa fa-map-marker-alt"></i>
+  Coordinates: {{ center}}<br>
+  <a href="http://www.openstreetmap.org/?mlat={{ info.get_lat }}&amp;mlon={{ info.get_lng }}&amp;zoom=12">View on OpenStreetMap</a> | 
+  <a href="https://www.google.com/maps/search/?api=1&query={{ info.get_lat }},{{ info.get_lng }}">View on Google Maps</a>
+  <br>
+</div>
+
+<h2>Score card</h2>
+
+<h3 class="mt-5">Possible expansion stepping stone sites</h3>
+<p><em>How many possible nearby stepping stone gardens can be created, taking into account public infrastructure?</em></p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Schools</td>
+      <td>{{ schools.count }}</td>
+    </tr>
+    <tr>
+      <td>Parks</td>
+      <td>{{ parks.count }}</td>
+    </tr>
+    <tr>
+      <td>Cemeteries</td>
+      <td>{{ cemeteries.count }}</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <th>Total number of sites</th>
+    <th>{{ expansion.count }}</th>
+</table>
+
+<p>With {{ expansion.count }} potential expansion sites in the area, we rate this as: <strong>{{ expansion.label }}</strong></p>
+
+<h3 class="mt-5">Possible corridor connectors</h3>
+<p><em>How many possible nearby corridor connectors are present?</em></p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Rivers</td>
+      <td>{{ rivers.count }}</td>
+    </tr>
+    <tr>
+      <td>Railways</td>
+      <td>{{ railways.count }}</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <th>Total number of sites</th>
+    <th>{{ connectors.count }}</th>
+</table>
+
+<p>With {{ connectors.count }} potential corridor connectors in the area, we rate this as: <strong>{{ connectors.label }}</strong></p>
+
+<h3 class="mt-5">Existing stepping stones</h3>
+<p><em>How many existing stepping stones are located nearby?</em></p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Natural remnants / reserves</td>
+      <td>{{ remnants.count }}</td>
+    </tr>
+    <tr>
+      <td>Registered stepping stone gardens</td>
+      <td>{{ gardens.count }}</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <th>Total number of sites</th>
+    <th>{{ existing.count }}</th>
+</table>
+
+<p>With {{ existing.count }} existing stepping stones in the area, we rate this as: <strong>{{ existing.label }}</strong></p>
+
+<hr>
+
+So... do you think that:
+
+- You can link up this site with other (potential or existing) stepping stone?
+- You can secure long term permission be secured, or a strong local alliship be developed
+- Your garden can add up to > 1ha in the area?
+
+If yes, great! You found a great location!
+
+GO TO NEXT STEP > 
+
+<hr>
+
+    <h2 class="mt-4">Maps</h2>
     <div class="mt-2 alert alert-success text-center">
       Your vegetation type is: <strong><a href="http://">{{ veg }}</a></strong>
     </div>
