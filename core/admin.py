@@ -44,6 +44,7 @@ admin_site.register(Corridor, SearchAdmin)
 admin_site.register(Event, SearchAdmin)
 admin_site.register(Genus, SearchAdmin)
 admin_site.register(Species, SearchAdmin)
+admin_site.register(SpeciesFeatures, SearchAdmin)
 admin_site.register(Redlist, SearchAdmin)
 admin_site.register(VegetationType, VegTypeAdmin)
 
