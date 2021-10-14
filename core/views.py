@@ -202,6 +202,7 @@ def index(request):
 
 
     if "import_veg" in request.GET:
+        return None
         import csv
 
         VegetationType.objects.all().delete()
@@ -241,7 +242,6 @@ def index(request):
                 )
 
     if "veg_species" in request.GET:
-        return None
         import csv
 
         species = {}
