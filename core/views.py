@@ -137,7 +137,7 @@ def index(request):
 
     if "species_images" in request.GET:
         from django.core.files.uploadedfile import UploadedFile
-        species = Species.objects.all()[:10]
+        species = Species.objects.all()
         for each in species:
             try:
                 credit = each.meta_data["original"]["image_credit"]
