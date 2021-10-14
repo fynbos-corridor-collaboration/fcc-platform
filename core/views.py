@@ -276,7 +276,6 @@ def index(request):
 
     if "gardens" in request.GET:
         import csv
-        return None
         a = Garden.objects.all()
         a.delete()
         with open(settings.MEDIA_ROOT + "/import/sites.csv", "r", encoding="utf-8-sig") as csvfile:
@@ -329,8 +328,7 @@ def index(request):
                     )
                     g.photo = photo
                 except Exception as e:
-                    p(row["id"])
-                    p(e)
+                    messages.error(request, f"Garden pic error ({id}). Error: {str(e)}")
                 g.organizations.add(communitree)
                 g.save()
 
