@@ -48,7 +48,6 @@ COLOR_SCHEMES = {
 
 def index(request):
     if "import_species" in request.GET:
-        return None
         import csv
 
         Species.objects.all().delete()
