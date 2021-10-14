@@ -106,7 +106,6 @@ def index(request):
             pass
 
     if "pioneer-update" in request.GET:
-        return None
         pio = SpeciesFeatures.objects.get(pk=65)
         right_one = SpeciesFeatures.objects.get(pk=74)
         species = Species.objects.filter(features=pio)
@@ -115,7 +114,6 @@ def index(request):
         pio.delete()
 
     if "sunbird" in request.GET:
-        return None
         species = Species.objects.filter(meta_data__original__sunbird__isnull=False)
         a = SpeciesFeatures.objects.create(name="Will attract sunbirds")
         for each in species:
@@ -124,7 +122,6 @@ def index(request):
                 each.features.add(a)
 
     if "medicinal" in request.GET:
-        return None
         species = Species.objects.filter(meta_data__original__medicinal__isnull=False)
         a = SpeciesFeatures.objects.get(name="It provides medicinal value")
         for each in species:
@@ -156,13 +153,11 @@ def index(request):
                 messages.warning(request, str(e))
                 messages.warning(request, each.id)
     if "clean_species" in request.GET:
-        return None
         names = ["Spinach", "Beetroot", "Onion", "Cauliflower"]
         a = Species.objects.filter(common_name__in=names)
         a.delete()
 
     if "species_fix" in request.GET:
-        return None
         all = Species.objects.all()
 
         features = {
