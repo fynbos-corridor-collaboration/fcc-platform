@@ -1094,29 +1094,29 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
 
         if subsection == "pioneers":
             context["title"] = "Pioneer species"
-            species = species.filter(features__id=100)
+            species = species.filter(features__id=125)
             context["species_list"] = species
 
         elif subsection == "birds":
             context["title"] = "Bird-friendly species"
-            context["sugarbird_list"] = species.filter(features__id__in=[86,88,89])
-            context["sunbird_list"] = species.filter(features__id=108)
-            context["bird_list"] = species.filter(features__id=84)
+            context["sugarbird_list"] = species.filter(features__id__in=[111,113,114])
+            context["sunbird_list"] = species.filter(features__id=133)
+            context["bird_list"] = species.filter(features__id=109)
 
         elif subsection == "insects":
             context["title"] = "Insect-friendly species"
-            context["bee_list"] = species.filter(features__id=85)
-            context["monkeybeetle_list"] = species.filter(features__id=87)
+            context["bee_list"] = species.filter(features__id=110)
+            context["monkeybeetle_list"] = species.filter(features__id=112)
 
         elif subsection == "edible":
             context["title"] = "Edible plant species"
-            species = species.filter(features__id=98)
+            species = species.filter(features__id=123)
             context["species_list"] = species
 
         elif subsection == "medicinal":
             context["title"] = "Medicinal plant species"
             p(species)
-            species = species.filter(features__id=90)
+            species = species.filter(features__id=115)
             context["species_list"] = species
 
         context["photos_first"] = True
