@@ -274,6 +274,9 @@ def index(request):
                     p(each)
                     p(each.meta_data["original"]["conservation_status"])
 
+    if "garden_fix" in request.GET:
+        g = Garden.objects.filter(meta_data__priority_site="1")
+        g.delete()
     if "gardens" in request.GET:
         import csv
         a = Garden.objects.all()
