@@ -1,5 +1,15 @@
 <h1>{{ info }}</h1>
 
+{% if map %}
+
+  <div>
+
+    {{ map|safe }}
+
+  </div>
+
+{% endif %}
+
 {{ info.description|safe }}
 
 <div class="alert alert-warning">
@@ -12,3 +22,13 @@
   <a class="btn btn-primary" href="{% url "species_full_list" %}?vegetation_type={{ info.id }}">View all plant species ({{ info.species.count }})</a>
   <a class="btn btn-primary" href="{% url "vegetation_type_species" info.slug %}">Plant species search</a>
 </p>
+
+{% if map %}
+  <form method="post" class="d-inline">
+    <button type="submit" name="download" value="true" class="btn btn-secondary">
+      <i class="fa fa-download"></i> 
+      Download map (geojson format)
+    </button>
+    {% csrf_token %}
+  </form>
+{% endif %}

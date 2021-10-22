@@ -63,11 +63,15 @@
   </div>
 </div>
 
-<div class="mt-2 alert alert-dark text-center">
+<div class="mt-2 alert alert-success text-center">
+  {% if veg %}
+  The original vegetation type at this location is:<br> <strong><a href="{% url "vegetation_type" veg.get_vegetation_type.slug %}">{{ veg.name }}</a></strong><br>
+  {% endif %}
+  <br>
   <i class="fa fa-map-marker-alt"></i>
-  Coordinates: {{ center}}<br>
-  <a href="http://www.openstreetmap.org/?mlat={{ info.get_lat }}&amp;mlon={{ info.get_lng }}&amp;zoom=12">View on OpenStreetMap</a> | 
-  <a href="https://www.google.com/maps/search/?api=1&query={{ info.get_lat }},{{ info.get_lng }}">View on Google Maps</a>
+  Coordinates: <br>{{ lat}}, {{ lng }}<br><br>
+  <a href="http://www.openstreetmap.org/?mlat={{ lat }}&amp;mlon={{ lng }}&amp;zoom=12" target="_blank">View on OpenStreetMap</a> | 
+  <a href="https://www.google.com/maps/search/?api=1&query={{ lat }},{{ lng }}" target="_blank">View on Google Maps</a>
   <br>
 </div>
 
@@ -185,7 +189,6 @@
 
     <h2 class="mt-4">Maps</h2>
     <div class="mt-2 alert alert-success text-center">
-      Your vegetation type is: <strong><a href="http://">{{ veg }}</a></strong>
     </div>
     <div class="row mb-2">
       <div class="col-md-6">

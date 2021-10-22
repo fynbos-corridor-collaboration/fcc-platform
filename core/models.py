@@ -188,6 +188,9 @@ class ReferenceSpace(models.Model):
         except:
             return None
 
+    def get_vegetation_type(self):
+        v = VegetationType.objects.filter(spaces=self)
+        return v[0] if v else None
 
 class Corridor(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -260,7 +263,7 @@ class VegetationType(models.Model):
     conserved_cape_town = models.PositiveSmallIntegerField(help_text="Conserved or managed, in km2")
     redlist = models.ForeignKey(Redlist, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=255)
-    spaces = models.ManyToManyField(ReferenceSpace, blank=True)
+    spaces = models.ManyToManyField(ReferenceSpace, blank=True, limit_choices_to={"source_id": 983172})
 
     def __str__(self):
         return self.name

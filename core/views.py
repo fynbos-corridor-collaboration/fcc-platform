@@ -847,6 +847,8 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         "existing": existing,
         "veg": veg,
         "center": center,
+        "lat": lat,
+        "lng": lng,
         "site_selection": site_selection,
     }
     return render(request, "core/report.html", context)
@@ -976,9 +978,9 @@ def species_full_list(request):
     }
     return render(request, "core/species.all.html", context)
 
-def rehabilitation_assessment(request, title="Assess and envision"):
+def rehabilitation_assessment(request, title="Assess and imagine"):
     if "next" in request.POST:
-        if title == "Assess and envision":
+        if title == "Assess and imagine":
             return redirect("rehabilitation_plant_selection")
         elif title == "Design your garden":
             return redirect("rehabilitation_workplan")
@@ -1045,8 +1047,35 @@ def vegetation_types(request):
     return render(request, "core/vegetationtypes.html", context)
 
 def vegetation_type(request, slug):
+
+    info = get_object_or_404(VegetationType, slug=slug)
+
+    if "download" in request.POST:
+        geo = info.spaces.all()[0].geometry
+        response = HttpResponse(geo.geojson, content_type="application/json")
+        response["Content-Disposition"] = f"attachment; filename=\"{info.name}.geojson\""
+        return response
+
+    map = folium.Map(
+        zoom_start=14,
+        scrollWheelZoom=False,
+        tiles=STREET_TILES,
+        attr="Mapbox",
+    )
+
+    Fullscreen().add_to(map)
+
+    for each in info.spaces.all():
+        folium.GeoJson(
+            each.geometry.geojson,
+            name="geojson",
+        ).add_to(map)
+
+    map.fit_bounds(map.get_bounds())
+
     context = {
-        "info": get_object_or_404(VegetationType, slug=slug),
+        "info": info,
+        "map": map._repr_html_(),
     }
     return render(request, "core/vegetationtype.html", context)
 
@@ -1193,7 +1222,6 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
             name="geojson",
             style_function=style_function,
         ).add_to(satmap)
-
 
         for each in layer:
             geom = each.geometry.intersection(circle)

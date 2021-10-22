@@ -10,7 +10,7 @@ def site(request):
     except:
         work_offline = False
 
-    l = [24,26,29,11,9,19,8,34,12,27]
+    l = [24,26,29,11,9,19,8,34,12,27,12]
     header_bg = random.choice(l)
 
     return {
