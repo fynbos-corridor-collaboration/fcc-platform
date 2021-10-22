@@ -45,7 +45,6 @@ COLOR_SCHEMES = {
     "red": ["#7f0000", "#b30000", "#d7301f", "#ef6548", "#fc8d59", "#fdbb84", "#fdd49e", "#fee8c8", "#fff7ec"],
 }
 
-
 def index(request):
     if "import_species" in request.GET:
         import csv
@@ -621,7 +620,7 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     parks = get_object_or_404(Document, pk=983479)
     rivers = get_object_or_404(Document, pk=983382)
     remnants = get_object_or_404(Document, pk=983097)
-    vegetation = get_object_or_404(Document, pk=983356)
+    vegetation = get_object_or_404(Document, pk=983172)
 
     if "lat" in request.GET:
         lat = float(request.GET["lat"])
@@ -1011,7 +1010,7 @@ def gardens(request):
     return render(request, "core/gardens.html", context)
 
 def garden(request, id):
-    vegetation = get_object_or_404(Document, pk=983356)
+    vegetation = get_object_or_404(Document, pk=983172)
     info = get_object_or_404(Garden, pk=id)
     veg = vegetation.spaces.get(geometry__intersects=info.geometry.centroid)
     photos = Photo.objects.filter(garden=info).exclude(id=info.photo.id).order_by("-date")[:12]
@@ -1081,7 +1080,7 @@ def vegetation_type(request, slug):
 
 def profile(request, section=None, lat=None, lng=None, id=None, subsection=None):
 
-    vegetation = get_object_or_404(Document, pk=983356)
+    vegetation = get_object_or_404(Document, pk=983172)
     veg = None
     link = None
 
