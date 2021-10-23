@@ -679,6 +679,16 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     rivers = rivers.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
     centers = centers.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
 
+    length = 0
+    for each in rivers:
+        # We want to figure out what the total river length (in m) in the circle is.
+        # To do so we need to convert to a coordinate system that measures things in m
+        # See: https://gis.stackexchange.com/questions/180776/get-linestring-length-in-meters-python-geodjango
+        geom = each.geometry
+        geom = geom.intersection(circle)
+        geom.transform(3857)
+        length += geom.length
+
     expansion = {}
     expansion["count"] = schools.count() + cemeteries.count() + parks.count() + centers.count()
     if expansion["count"] <= 1:
@@ -760,7 +770,7 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         "lng": lng,
         "site_selection": site_selection,
         "open_these_layers": open_these_layers,
-
+        "river_length": length,
         "maps": documents,
         "load_map": True,
         "parents": parents,
