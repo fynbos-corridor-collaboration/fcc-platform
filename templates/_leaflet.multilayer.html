@@ -186,6 +186,11 @@
     $("i.angle", this).toggleClass("fa-angle-down fa-angle-up");
   })
 
+  {% if open_these_layers %}
+    {% for each in open_these_layers %}
+      $(".toggle-layer[data-id='{{ each }}']").click();
+    {% endfor %}
+  {% endif %}
   {% if boundaries %}
     // open default layer that should be shown from the start
     $(".toggle-layer[data-id='{{ boundaries.source.id }}']").parent().prev(".category-title").click();

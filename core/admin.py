@@ -24,7 +24,12 @@ class VegTypeAdmin(admin.ModelAdmin):
     autocomplete_fields = ["spaces"]
 
 class DocAdmin(SearchAdmin):
-    list_display = ["name", "author", "active"]
+    list_display = ["name", "author", "active", "include_in_site_analysis"]
+    list_filter = ["active", "include_in_site_analysis"]
+
+class SpaceAdmin(SearchAdmin):
+    list_display = ["name", "source"]
+    list_filter = ["source"]
 
 class GardenAdmin(SearchAdmin):
     list_display = ["name", "active"]
@@ -39,7 +44,7 @@ admin_site.register(Photo, SearchAdmin)
 admin_site.register(Page, SearchAdmin)
 admin_site.register(Garden, GardenAdmin)
 admin_site.register(Document, DocAdmin)
-admin_site.register(ReferenceSpace, SearchAdmin)
+admin_site.register(ReferenceSpace, SpaceAdmin)
 admin_site.register(Event, SearchAdmin)
 admin_site.register(Genus, SearchAdmin)
 admin_site.register(Species, SearchAdmin)

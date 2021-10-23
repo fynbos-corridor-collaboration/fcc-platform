@@ -593,6 +593,7 @@ def maps(request):
     return render(request, "core/maps.html", context)
 
 def report(request, show_map=False, lat=False, lng=False, site_selection=False):
+
     if show_map and not "lat" in request.GET:
         map = folium.Map(
             location=[-34.070078, 18.571595],
@@ -620,7 +621,24 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     parks = get_object_or_404(Document, pk=983479)
     rivers = get_object_or_404(Document, pk=983382)
     remnants = get_object_or_404(Document, pk=983097)
+    gardens = get_object_or_404(Document, pk=1)
     vegetation = get_object_or_404(Document, pk=983172)
+    boundaries = ReferenceSpace.objects.get(pk=983170)
+
+    # These are the layers we open by default on the map
+    open_these_layers = [schools.id, cemeteries.id, parks.id, rivers.id, remnants.id, gardens.id, boundaries.id]
+
+    if "update_color" in request.GET:
+        rivers.color = "blue"
+        rivers.save()
+        remnants.color = "green"
+        remnants.save()
+        parks.color = "#9DC209"
+        parks.save()
+        schools.color = "violet"
+        schools.save()
+        cemeteries.color = "#C58917"
+        cemeteries.save()
 
     if "lat" in request.GET:
         lat = float(request.GET["lat"])
@@ -641,153 +659,21 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     circle = center.buffer(radius) 
     circle.transform(4326) # Transform back to WGS84 to create geojson
 
-    map = folium.Map(
-        location=[lat,lng],
-        zoom_start=14,
-        scrollWheelZoom=False,
-        tiles=STREET_TILES,
-        attr="Mapbox",
-    )
-
-    folium.GeoJson(
-        circle.geojson,
-        name="geojson",
-    ).add_to(map)
-
-    if info.geometry.geom_type != "Point":
-        # For a point we want to give some space around it, but polygons should be
-        # an exact fit
-        map.fit_bounds(map.get_bounds())
-
-    Fullscreen().add_to(map)
-
-    satmap = folium.Map(
-        location=[lat,lng],
-        zoom_start=17,
-        scrollWheelZoom=False,
-        tiles=SATELLITE_TILES,
-        attr="Mapbox",
-    )
-
-    folium.GeoJson(
-        circle.geojson,
-        name="geojson",
-    ).add_to(satmap)
-
-    # For a point we want to give some space around it, but polygons should be
-    # an exact fit, and we also want to show the outline of the polygon on the
-    # satellite image
-    satmap.fit_bounds(map.get_bounds())
-    def style_function(feature):
-        return {
-            "fillOpacity": 0,
-            "weight": 4,
-        }
-    folium.GeoJson(
-        info.geometry.geojson,
-        name="geojson",
-        style_function=style_function,
-    ).add_to(satmap)
-
-    Fullscreen().add_to(satmap)
-
-    parkmap = folium.Map(
-        location=[lat,lng],
-        zoom_start=15,
-        scrollWheelZoom=False,
-        tiles=LIGHT_TILES,
-        attr="Mapbox",
-    )
-    folium.GeoJson(
-        circle.geojson,
-        name="geojson",
-    ).add_to(parkmap)
-    parks = parks.spaces.filter(geometry__within=circle)
-    for each in parks:
-        folium.GeoJson(
-            each.geometry.geojson,
-            name="geojson",
-        ).add_to(parkmap)
-
-    cemeteriesmap = folium.Map(
-        location=[lat,lng],
-        zoom_start=15,
-        scrollWheelZoom=False,
-        tiles=LIGHT_TILES,
-        attr="Mapbox",
-    )
-    folium.GeoJson(
-        circle.geojson,
-        name="geojson",
-    ).add_to(cemeteriesmap)
-    cemeteries = cemeteries.spaces.filter(geometry__within=circle)
-    for each in cemeteries:
-        folium.GeoJson(
-            each.geometry.geojson,
-            name="geojson",
-        ).add_to(cemeteriesmap)
-
-    schoolmap = folium.Map(
-        location=[lat,lng],
-        zoom_start=15,
-        scrollWheelZoom=False,
-        tiles=LIGHT_TILES,
-        attr="Mapbox",
-    )
-    folium.GeoJson(
-        circle.geojson,
-        name="geojson",
-    ).add_to(schoolmap)
-    schools = schools.spaces.filter(geometry__within=circle)
-    for each in schools:
-        folium.GeoJson(
-            each.geometry.geojson,
-            name="geojson",
-        ).add_to(schoolmap)
-
-    remnantmap = folium.Map(
-        location=[lat,lng],
-        zoom_start=15,
-        scrollWheelZoom=False,
-        tiles=LIGHT_TILES,
-        attr="Mapbox",
-    )
-    folium.GeoJson(
-        center.geojson,
-        name="geojson",
-    ).add_to(remnantmap)
-    #remnants = remnants.spaces.filter(geometry__within=circle)
-    remnants = remnants.spaces.filter(geometry__distance_lte=(center, D(km=3)))
-    for each in remnants:
-        folium.GeoJson(
-            each.geometry.geojson,
-            name="geojson",
-        ).add_to(remnantmap)
-
-    rivermap = folium.Map(
-        location=[lat,lng],
-        zoom_start=15,
-        scrollWheelZoom=False,
-        tiles=LIGHT_TILES,
-        attr="Mapbox",
-    )
-    folium.GeoJson(
-        circle.geojson,
-        name="geojson",
-    ).add_to(rivermap)
-    rivers = rivers.spaces.filter(geometry__crosses=circle)
-    for each in rivers:
-        geom = each.geometry.intersection(circle)
-        folium.GeoJson(
-            geom.geojson,
-            name="geojson",
-        ).add_to(rivermap)
-
     try:
-        veg = vegetation.spaces.filter(geometry__intersects=center)
+        veg = vegetation.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
         veg = veg[0]
     except:
         veg = None
+
+    #parks = parks.spaces.filter(geometry__within=circle)
+    #remnants = remnants.spaces.filter(geometry__distance_lte=(center, D(km=3)))
+
+    parks = parks.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+    cemeteries = cemeteries.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+    schools = schools.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+    remnants = remnants.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+    gardens = gardens.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+    rivers = rivers.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
 
     expansion = {}
     expansion["count"] = schools.count() + cemeteries.count() + parks.count()
@@ -816,7 +702,7 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     connectors["label"] = mark_safe(connectors["label"])
 
     existing = {}
-    existing["count"] = remnants.count()
+    existing["count"] = remnants.count() + gardens.count()
     if existing["count"] <= 0:
         existing["rating"] = 0
         existing["label"] = "<span class='badge bg-danger'>poor</span>"
@@ -827,7 +713,6 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         existing["rating"] = 2
         existing["label"] = "<span class='badge bg-success'>great</span>"
     existing["label"] = mark_safe(existing["label"])
-
 
     types = Document.Type
     parents = []
@@ -855,17 +740,11 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
             parents.remove(each)
 
     context = {
-        "map": map._repr_html_(),
-        "satmap": satmap._repr_html_(),
-        "parkmap": parkmap._repr_html_(),
         "parks": parks,
-        "cemeteriesmap": cemeteriesmap._repr_html_(),
         "cemeteries": cemeteries,
-        "rivermap": rivermap._repr_html_(),
         "rivers": rivers,
-        "remnantmap": remnantmap._repr_html_(),
         "remnants": remnants,
-        "schoolmap": schoolmap._repr_html_(),
+        "gardens": gardens,
         "schools": schools,
         "expansion": expansion,
         "connectors": connectors,
@@ -875,12 +754,13 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         "lat": lat,
         "lng": lng,
         "site_selection": site_selection,
+        "open_these_layers": open_these_layers,
 
         "maps": documents,
         "load_map": True,
         "parents": parents,
         "hits": hits,
-        "boundaries": ReferenceSpace.objects.get(pk=983170),
+        "boundaries": boundaries,
         "type_list": type_list,
         "getcolors": getcolors,
         "title": "Maps",
@@ -890,7 +770,8 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
             3: "train",
             4: "map-marker",
             5: "info-circle",
-        }
+        },
+        "properties": {"map_layer_style": "light-v10"},
     }
     return render(request, "core/report.html", context)
 
