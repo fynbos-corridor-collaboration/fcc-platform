@@ -64,65 +64,6 @@ class Organization(models.Model):
     class Meta:
         ordering = ["name"]
 
-class Garden(models.Model):
-    name = models.CharField(max_length=255, db_index=True)
-    description = models.TextField(null=True, blank=True)
-    geometry = models.GeometryField(null=True, blank=True)
-    photo = models.ForeignKey("Photo", on_delete=models.CASCADE, null=True, blank=True, related_name="gardens")
-    active = models.BooleanField(default=True, db_index=True)
-    original = models.JSONField(null=True, blank=True)
-
-    class PhaseStatus(models.IntegerChoices):
-        PENDING = 1, "Pending"
-        IN_PROGRESS = 2, "In progress"
-        COMPLETED = 3, "Completed"
-
-    phase_assessment = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_alienremoval = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_landscaping = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_pioneers = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_birdsinsects = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_specialists = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_placemaking = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    organizations = models.ManyToManyField(Organization, blank=True)
-
-    @property
-    def get_photo_medium(self):
-        if self.photo:
-            return self.photo.image.medium.url
-        else:
-            return settings.MEDIA_URL + "/placeholder.png"
-
-    def __str__(self):
-        return self.name if self.name else "Unnamed garden"
-
-    @property
-    def get_lat(self):
-        try:
-            return self.geometry.centroid[1]
-        except:
-            return None
-
-    @property
-    def get_lng(self):
-        try:
-            return self.geometry.centroid[0]
-        except:
-            return None
-
-    @property
-    def suburb(self):
-        if not self.geometry:
-            return None
-        suburb = ReferenceSpace.objects.filter(source_id=334434, geometry__intersects=self.geometry)
-        if suburb:
-            return suburb[0].name.title()
-        else:
-            return None
-
-    class Meta:
-        ordering = ["name"]
-
 class Document(models.Model):
     name = models.CharField(max_length=255, db_index=True)
 
@@ -182,9 +123,6 @@ class ReferenceSpace(models.Model):
     def get_absolute_url(self):
         return "/space/" + str(self.id)
 
-    class Meta:
-        ordering = ["name"]
-
     @property
     def get_lat(self):
         try:
@@ -203,7 +141,31 @@ class ReferenceSpace(models.Model):
         v = VegetationType.objects.filter(spaces=self)
         return v[0] if v else None
 
-class GardenNew(ReferenceSpace):
+    @property
+    def get_photo_medium(self):
+        if self.photo:
+            return self.photo.image.medium.url
+        else:
+            return settings.MEDIA_URL + "/placeholder.png"
+
+    def __str__(self):
+        return self.name if self.name else "Unnamed garden"
+
+    @property
+    def suburb(self):
+        if not self.geometry:
+            return None
+        suburb = ReferenceSpace.objects.filter(source_id=334434, geometry__intersects=self.geometry)
+        if suburb:
+            return suburb[0].name.title()
+        else:
+            return None
+
+    class Meta:
+        ordering = ["name"]
+
+
+class Garden(ReferenceSpace):
     active = models.BooleanField(default=True, db_index=True)
     original = models.JSONField(null=True, blank=True)
 
@@ -389,7 +351,6 @@ class Photo(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     author = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     garden = models.ForeignKey(Garden, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
-    g = models.ForeignKey(GardenNew, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
     event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
     species = models.ForeignKey(Species, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
 

@@ -37,8 +37,7 @@ class UserAdmin(admin.ModelAdmin):
 
 admin_site.register(Photo, SearchAdmin)
 admin_site.register(Page, SearchAdmin)
-#admin_site.register(Garden, GardenAdmin)
-admin_site.register(GardenNew, SearchAdmin)
+admin_site.register(Garden, GardenAdmin)
 admin_site.register(Document, DocAdmin)
 admin_site.register(ReferenceSpace, SearchAdmin)
 admin_site.register(Event, SearchAdmin)
