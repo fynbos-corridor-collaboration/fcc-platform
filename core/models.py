@@ -203,10 +203,23 @@ class ReferenceSpace(models.Model):
         v = VegetationType.objects.filter(spaces=self)
         return v[0] if v else None
 
-class Corridor(models.Model):
-    name = models.CharField(max_length=255, db_index=True)
-    content = models.TextField(null=True, blank=True)
-    geometry = models.GeometryField(null=True, blank=True)
+class GardenNew(ReferenceSpace):
+    active = models.BooleanField(default=True, db_index=True)
+    original = models.JSONField(null=True, blank=True)
+
+    class PhaseStatus(models.IntegerChoices):
+        PENDING = 1, "Pending"
+        IN_PROGRESS = 2, "In progress"
+        COMPLETED = 3, "Completed"
+
+    phase_assessment = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_alienremoval = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_landscaping = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_pioneers = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_birdsinsects = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_specialists = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_placemaking = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    organizations = models.ManyToManyField(Organization, blank=True)
 
     def __str__(self):
         return self.name

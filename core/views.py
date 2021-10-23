@@ -593,6 +593,30 @@ def maps(request):
     return render(request, "core/maps.html", context)
 
 def report(request, show_map=False, lat=False, lng=False, site_selection=False):
+    g = GardenNew.objects.all()
+    source = Document.objects.get(name="Stepping-stone gardens")
+    if not g:
+        a = Garden.objects.all()
+        for each in a:
+            gg = GardenNew.objects.create(
+                name = each.name if each.name else "Unnamed garden",
+                active = each.active,
+                original = each.original,
+                content = each.description,
+                geometry = each.geometry,
+                photo = each.photo,
+                phase_assessment = each.phase_assessment,
+                phase_alienremoval = each.phase_alienremoval,
+                phase_landscaping = each.phase_landscaping,
+                phase_pioneers = each.phase_pioneers,
+                phase_birdsinsects = each.phase_birdsinsects,
+                phase_specialists = each.phase_specialists,
+                phase_placemaking = each.phase_placemaking,
+                source = source,
+            )
+            for e in each.organizations.all():
+                gg.organizations.add(e)
+
     if show_map and not "lat" in request.GET:
         map = folium.Map(
             location=[-34.070078, 18.571595],
