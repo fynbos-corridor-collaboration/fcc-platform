@@ -32,6 +32,9 @@
     .tab-content {
       width: 100%;
     }
+    .category-buttons {
+      display: block;
+    }
 </style>
 
   </style>
@@ -134,6 +137,22 @@
         {% endif %}
       </td>
       <td>{{ parks.count }}</td>
+    </tr>
+    <tr>
+      <td>Community centres</td>
+      <td>
+        {% if centers.count %}
+          <ul class="unstyled ">
+            {% for each in centers %}
+              <li {% if forloop.counter > 7 %}hidden{% endif %}><a href="{% url "space" each.id %}">{{ each.name }}</a></li>
+            {% endfor %}
+          </ul>
+          {% if centers.count > 7 %}
+            <a class="viewall" href="#">View all</a>
+          {% endif %}
+        {% endif %}
+      </td>
+      <td>{{ centers.count }}</td>
     </tr>
     <tr>
       <td>Cemeteries</td>

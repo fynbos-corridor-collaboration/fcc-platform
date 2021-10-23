@@ -83,7 +83,7 @@
             toggle_{{ layer.id }}_layer.setAttribute("data-geojson", "{% url "geojson" layer.id %}{% if lat and lng %}?lat={{ lat }}&lng={{ lng }}{% elif layer == boundaries.source %}?space={{ boundaries.id }}{% else %}?main_space={{ boundaries.id }}{% endif %}");
             toggle_{{ layer.id }}_layer.setAttribute("data-color", "{{ getcolors|get_item:layer.id }}");
 
-            toggle_{{ layer.id }}_layer.innerHTML = "<ul class='fa-ul'><li><span class='fa-li'><i class='fal fa-fw fa-circle' style='color: {{ getcolors|get_item:layer.id }}'></i></span>{{ layer.meta_data.shortname|default:layer }}</li></ul>";
+            toggle_{{ layer.id }}_layer.innerHTML = "<ul class='fa-ul'><li><span class='fa-li'><i class='fal fa-fw fa-circle' style='color: {{ getcolors|get_item:layer.id }}'></i></span>{% if open_these_layers and layer.id == 983157 %}1km radius{% else %}{{ layer.meta_data.shortname|default:layer }}{% endif %}</li></ul>";
             categoryButtons_{{ each }}.appendChild(toggle_{{ layer.id }}_layer);
           {% endfor %}
         {% endfor %}
@@ -186,15 +186,18 @@
     $("i.angle", this).toggleClass("fa-angle-down fa-angle-up");
   })
 
+  {% if boundaries %}
+    // open default layer that should be shown from the start
+    {% if not open_these_layers %}
+      $(".toggle-layer[data-id='{{ boundaries.source.id }}']").parent().prev(".category-title").click();
+    {% endif %}
+    $(".toggle-layer[data-id='{{ boundaries.source.id }}']").click();
+  {% endif %}
+
   {% if open_these_layers %}
     {% for each in open_these_layers %}
       $(".toggle-layer[data-id='{{ each }}']").click();
     {% endfor %}
-  {% endif %}
-  {% if boundaries %}
-    // open default layer that should be shown from the start
-    $(".toggle-layer[data-id='{{ boundaries.source.id }}']").parent().prev(".category-title").click();
-    $(".toggle-layer[data-id='{{ boundaries.source.id }}']").click();
   {% endif %}
 
 </script>

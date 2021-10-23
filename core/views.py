@@ -620,13 +620,14 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     cemeteries = get_object_or_404(Document, pk=983426)
     parks = get_object_or_404(Document, pk=983479)
     rivers = get_object_or_404(Document, pk=983382)
+    centers = get_object_or_404(Document, pk=983491)
     remnants = get_object_or_404(Document, pk=983097)
     gardens = get_object_or_404(Document, pk=1)
     vegetation = get_object_or_404(Document, pk=983172)
     boundaries = ReferenceSpace.objects.get(pk=983170)
 
     # These are the layers we open by default on the map
-    open_these_layers = [schools.id, cemeteries.id, parks.id, rivers.id, remnants.id, gardens.id, boundaries.id]
+    open_these_layers = [schools.id, cemeteries.id, parks.id, rivers.id, remnants.id, gardens.id, boundaries.id, centers.id]
 
     if "update_color" in request.GET:
         rivers.color = "blue"
@@ -635,10 +636,12 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         remnants.save()
         parks.color = "#9DC209"
         parks.save()
-        schools.color = "violet"
+        schools.color = "purple"
         schools.save()
-        cemeteries.color = "#C58917"
+        cemeteries.color = "#CC0101"
         cemeteries.save()
+        centers.color = "orange"
+        centers.save()
 
     if "lat" in request.GET:
         lat = float(request.GET["lat"])
@@ -674,9 +677,10 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     remnants = remnants.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
     gardens = gardens.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
     rivers = rivers.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+    centers = centers.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
 
     expansion = {}
-    expansion["count"] = schools.count() + cemeteries.count() + parks.count()
+    expansion["count"] = schools.count() + cemeteries.count() + parks.count() + centers.count()
     if expansion["count"] <= 1:
         expansion["rating"] = 0
         expansion["label"] = "<span class='badge bg-danger'>poor</span>"
@@ -743,6 +747,7 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         "parks": parks,
         "cemeteries": cemeteries,
         "rivers": rivers,
+        "centers": centers,
         "remnants": remnants,
         "gardens": gardens,
         "schools": schools,
@@ -803,8 +808,10 @@ def geojson(request, id):
                 geom = each.geometry.intersection(circle)
             url = each.get_absolute_url
             content = ""
+            if each.photo:
+                content = f"<a class='d-block' href='{url}'><img alt='{each.name}' src='{each.photo.image.thumbnail.url}' /></a><hr>"
             content = content + f"<a href='{url}'>View details</a>"
-            content = content + f"<br><a href='/maps/{info.id}'>View {info}</a>"
+            content = content + f"<br><a href='/maps/{info.id}'>View source layer: <strong>{info}</strong></a>"
             if not geom_type:
                 geom_type = geom.geom_type
             features.append({
