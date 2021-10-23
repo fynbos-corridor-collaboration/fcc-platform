@@ -594,11 +594,14 @@ def maps(request):
 
 def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     g = GardenNew.objects.all()
+    g.delete()
+    g = None
     source = Document.objects.get(name="Stepping-stone gardens")
     if not g:
         a = Garden.objects.all()
         for each in a:
             gg = GardenNew.objects.create(
+                id = each.id,
                 name = each.name if each.name else "Unnamed garden",
                 active = each.active,
                 original = each.original,

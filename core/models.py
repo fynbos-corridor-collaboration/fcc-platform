@@ -389,6 +389,7 @@ class Photo(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     author = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     garden = models.ForeignKey(Garden, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
+    g = models.ForeignKey(GardenNew, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
     event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
     species = models.ForeignKey(Species, on_delete=models.CASCADE, null=True, blank=True, related_name="photos")
 
