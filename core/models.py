@@ -141,6 +141,7 @@ class Document(models.Model):
     color = models.CharField(max_length=50, null=True, blank=True, help_text="See https://htmlcolors.com/color-names for an overview of possible color names")
     meta_data = models.JSONField(null=True, blank=True, help_text="Only to be edited if you know what this does - otherwise, please do not change")
     active = models.BooleanField(default=True, db_index=True)
+    include_in_site_analysis = models.BooleanField(default=False, db_index=True)
 
     def __str__(self):
         return self.name
@@ -155,6 +156,16 @@ class Document(models.Model):
     @property
     def get_absolute_url(self):
         return "/maps/" + str(self.id)
+
+    # Returns the opacity used for the background color in maps
+    # Some layers, such as the boundary layer, should be fully 
+    # transparent so we only see a border.
+    @property
+    def get_opacity(self):
+        try:
+            return self.meta_data["opacity"]
+        except:
+            return 0.4 # Default background color opacity in the maps
 
 class ReferenceSpace(models.Model):
     name = models.CharField(max_length=255, db_index=True)

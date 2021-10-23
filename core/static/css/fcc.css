@@ -104,3 +104,8 @@
   object-fit: cover;
   height: 200px;
 }
+
+@media print {
+  .pagebreak { page-break-before: always; }
+  .printhide {display:none}
+}

@@ -674,21 +674,21 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         name="geojson",
     ).add_to(satmap)
 
-    if True:
-        # For a point we want to give some space around it, but polygons should be
-        # an exact fit, and we also want to show the outline of the polygon on the
-        # satellite image
-        satmap.fit_bounds(map.get_bounds())
-        def style_function(feature):
-            return {
-                "fillOpacity": 0,
-                "weight": 4,
-            }
-        folium.GeoJson(
-            info.geometry.geojson,
-            name="geojson",
-            style_function=style_function,
-        ).add_to(satmap)
+    # For a point we want to give some space around it, but polygons should be
+    # an exact fit, and we also want to show the outline of the polygon on the
+    # satellite image
+    satmap.fit_bounds(map.get_bounds())
+    def style_function(feature):
+        return {
+            "fillOpacity": 0,
+            "weight": 4,
+        }
+    folium.GeoJson(
+        info.geometry.geojson,
+        name="geojson",
+        style_function=style_function,
+    ).add_to(satmap)
+
     Fullscreen().add_to(satmap)
 
     parkmap = folium.Map(
@@ -828,6 +828,32 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         existing["label"] = "<span class='badge bg-success'>great</span>"
     existing["label"] = mark_safe(existing["label"])
 
+
+    types = Document.Type
+    parents = []
+    hits = {}
+    type_list = {}
+    getcolors = {}
+    for each in types:
+        e = int(each)
+        parents.append(e)
+        hits[e] = []
+        type_list[e] = each.label
+
+    documents = Document.objects.filter(active=True, include_in_site_analysis=True).order_by("type")
+    if not documents:
+        d = Document.objects.filter(id__in=[983409, 983426, 983479, 983382, 983097, 983172, 983157])
+        d.update(include_in_site_analysis=True)
+        documents = Document.objects.filter(active=True, include_in_site_analysis=True).order_by("type")
+    for each in documents:
+        t = each.type
+        hits[t].append(each)
+        getcolors[each.id] = each.color
+
+    for each in parents:
+        if not hits[each]:
+            parents.remove(each)
+
     context = {
         "map": map._repr_html_(),
         "satmap": satmap._repr_html_(),
@@ -849,6 +875,22 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         "lat": lat,
         "lng": lng,
         "site_selection": site_selection,
+
+        "maps": documents,
+        "load_map": True,
+        "parents": parents,
+        "hits": hits,
+        "boundaries": ReferenceSpace.objects.get(pk=983170),
+        "type_list": type_list,
+        "getcolors": getcolors,
+        "title": "Maps",
+        "icons": {
+            1: "leaf",
+            2: "draw-square",
+            3: "train",
+            4: "map-marker",
+            5: "info-circle",
+        }
     }
     return render(request, "core/report.html", context)
 
@@ -856,20 +898,37 @@ def geojson(request, id):
     info = Document.objects.get(pk=id)
     features = []
     spaces = info.spaces.all()
+    intersection = False
+
     if "space" in request.GET:
         spaces = spaces.filter(id=request.GET["space"])
+
+    if "lat" in request.GET and "lng" in request.GET:
+        lat = float(request.GET.get("lat"))
+        lng = float(request.GET.get("lng"))
+        center = geos.Point(x=lng, y=lat, srid=4326)
+        center.transform(3857) # Transform Projection to Web Mercator     
+        radius = 1000 # Number of meters distance
+        circle = center.buffer(radius) 
+        circle.transform(4326) # Transform back to WGS84 to create geojson
+        intersection = True
+        spaces = spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+
     geom_type = None
     for each in spaces:
         if each.geometry:
+            geom = each.geometry
+            if intersection:
+                geom = each.geometry.intersection(circle)
             url = each.get_absolute_url
             content = ""
             content = content + f"<a href='{url}'>View details</a>"
             content = content + f"<br><a href='/maps/{info.id}'>View {info}</a>"
             if not geom_type:
-                geom_type = each.geometry.geom_type
+                geom_type = geom.geom_type
             features.append({
                 "type": "Feature",
-                "geometry": json.loads(each.geometry.json),
+                "geometry": json.loads(geom.json),
                 "properties": {
                     "name": each.name,
                     "content": content,

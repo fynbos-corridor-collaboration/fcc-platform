@@ -1,11 +1,18 @@
 {% extends "_base.html" %}
+{% load static %}
 
 {% block css %}
-
+  <link rel="stylesheet" href="{% static "css/leaflet.multilayer.css" %}" />
   <style>
     #map {
-      height: 500px;
       margin-bottom: 30px;
+    }
+    @media print {
+      #map {
+        margin:0;
+        height:100vh;
+        width:100vw;
+      }
     }
     .largeicon {
       font-size: 5rem;
@@ -22,6 +29,9 @@
     .fadeout {
       opacity:0.4;
     }
+    .tab-content {
+      width: 100%;
+    }
 </style>
 
   </style>
@@ -36,7 +46,7 @@
 
 {% block content %}
 
-<div class="row g-4 py-2 pb-4 row-cols-1 row-cols-lg-3">
+<div class="row g-4 py-2 pb-4 row-cols-1 row-cols-lg-3 printhide">
   <div class="col d-flex align-items-start">
     <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
       <i class="fa fa-info"></i>
@@ -75,6 +85,8 @@
   <br>
 </div>
 
+<div id="map" class="leaflet-map pagebreak"></div>
+
 <h3 class="mt-5">Possible expansion stepping stone sites</h3>
 <p><em>How many possible nearby stepping stone gardens can be created, taking into account public infrastructure?</em></p>
 
@@ -82,74 +94,167 @@
   <thead>
     <tr>
       <th>Type</th>
-      <th>Quantity</th>
+      <th width="50%">List</th>
+      <th width="10%">Quantity</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Schools</td>
+      <td>
+        Schools
+      </td>
+      <td>
+        {% if schools.count %}
+          <ul class="unstyled ">
+            {% for each in schools %}
+              <li {% if forloop.counter > 7 %}hidden{% endif %}><a href="{% url "space" each.id %}">{{ each.name }}</a></li>
+            {% endfor %}
+          </ul>
+          {% if schools.count > 7 %}
+            <a class="viewall" href="#">View all</a>
+          {% endif %}
+        {% endif %}
+      </td>
       <td>{{ schools.count }}</td>
     </tr>
     <tr>
-      <td>Parks</td>
+      <td>
+        Parks
+      </td>
+      <td>
+        {% if parks.count %}
+          <ul class="unstyled ">
+            {% for each in parks %}
+              <li {% if forloop.counter > 7 %}hidden{% endif %}><a href="{% url "space" each.id %}">{{ each.name }}</a></li>
+            {% endfor %}
+          </ul>
+          {% if parks.count > 7 %}
+            <a class="viewall" href="#">View all</a>
+          {% endif %}
+        {% endif %}
+      </td>
       <td>{{ parks.count }}</td>
     </tr>
     <tr>
       <td>Cemeteries</td>
+      <td>
+        {% if cemeteries.count %}
+          <ul class="unstyled ">
+            {% for each in cemeteries %}
+              <li {% if forloop.counter > 7 %}hidden{% endif %}><a href="{% url "space" each.id %}">{{ each.name }}</a></li>
+            {% endfor %}
+          </ul>
+          {% if cemeteries.count > 7 %}
+            <a class="viewall" href="#">View all</a>
+          {% endif %}
+        {% endif %}
+      </td>
       <td>{{ cemeteries.count }}</td>
     </tr>
   </tbody>
   <tfoot>
     <th>Total number of sites</th>
+    <th></th>
     <th>{{ expansion.count }}</th>
 </table>
 
 <p>With {{ expansion.count }} potential expansion sites in the area, we rate this as: <strong>{{ expansion.label }}</strong></p>
 
-<h3 class="mt-5">Possible corridor connectors</h3>
+<h3 class="mt-5 pagebreak">Possible corridor connectors</h3>
 <p><em>How many possible nearby corridor connectors are present?</em></p>
 
 <table class="table table-striped">
   <thead>
     <tr>
       <th>Type</th>
-      <th>Quantity</th>
+      <th width="50%">List</th>
+      <th width="10%">Quantity</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Rivers</td>
+      <td>Rivers and waterways</td>
+      <td>
+        {% if rivers.count %}
+          <ul class="unstyled ">
+            {% for each in rivers %}
+              <li {% if forloop.counter > 7 %}hidden{% endif %}><a href="{% url "space" each.id %}">{{ each.name }}</a></li>
+            {% endfor %}
+          </ul>
+          {% if rivers.count > 7 %}
+            <a class="viewall" href="#">View all</a>
+          {% endif %}
+        {% endif %}
+      </td>
       <td>{{ rivers.count }}</td>
     </tr>
     <tr>
       <td>Railways</td>
+      <td>
+        {% if railways.count %}
+          <ul class="unstyled ">
+            {% for each in railways %}
+              <li {% if forloop.counter > 7 %}hidden{% endif %}><a href="{% url "space" each.id %}">{{ each.name }}</a></li>
+            {% endfor %}
+          </ul>
+          {% if railways.count > 7 %}
+            <a class="viewall" href="#">View all</a>
+          {% endif %}
+        {% endif %}
+      </td>
       <td>{{ railways.count }}</td>
     </tr>
   </tbody>
   <tfoot>
     <th>Total number of sites</th>
+    <th></th>
     <th>{{ connectors.count }}</th>
 </table>
 
 <p>With {{ connectors.count }} potential corridor connectors in the area, we rate this as: <strong>{{ connectors.label }}</strong></p>
 
-<h3 class="mt-5">Existing stepping stones</h3>
+<h3 class="mt-5 pagebreak">Existing stepping stones</h3>
 <p><em>How many existing stepping stones are located nearby?</em></p>
 
 <table class="table table-striped">
   <thead>
     <tr>
       <th>Type</th>
-      <th>Quantity</th>
+      <th width="50%">List</th>
+      <th width="10%">Quantity</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Natural remnants / reserves</td>
+      <td>
+        {% if remnants.count %}
+          <ul class="unstyled ">
+            {% for each in remnants %}
+              <li {% if forloop.counter > 7 %}hidden{% endif %}><a href="{% url "space" each.id %}">{{ each.name }}</a></li>
+            {% endfor %}
+          </ul>
+          {% if remnants.count > 7 %}
+            <a class="viewall" href="#">View all</a>
+          {% endif %}
+        {% endif %}
+      </td>
       <td>{{ remnants.count }}</td>
     </tr>
     <tr>
       <td>Registered stepping stone gardens</td>
+      <td>
+        {% if gardens.count %}
+          <ul class="unstyled ">
+            {% for each in gardens %}
+              <li {% if forloop.counter > 7 %}hidden{% endif %}><a href="{% url "space" each.id %}">{{ each.name }}</a></li>
+            {% endfor %}
+          </ul>
+          {% if gardens.count > 7 %}
+            <a class="viewall" href="#">View all</a>
+          {% endif %}
+        {% endif %}
+      </td>
       <td>{{ gardens.count }}</td>
     </tr>
   </tbody>
@@ -187,6 +292,24 @@
 
 {% endif %}
 
+
+{% endblock %}
+
+{% block footer %}
+  {% include "_leaflet.multilayer.html" %}
+  <script type="text/javascript">
+  $(function(){
+    $(".viewall").click(function(e){
+      e.preventDefault();
+      $(this).hide();
+      $(this).closest("td").find("li").removeAttr("hidden");
+    });
+  });
+  </script>
+
+
+{% endblock %}
+
     <h2 class="mt-4">Maps</h2>
 
     <div class="d-flex align-items-start">
@@ -200,9 +323,23 @@
       <div class="tab-content" id="v-pills-tabContent">
 
         <div class="tab-pane fade show active" id="v-pills-maps" role="tabpanel" aria-labelledby="v-pills-maps-tab">
+
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <div class="leaflet-map">
+                {{ map|safe }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="leaflet-map">
+                {{ satmap|safe }}
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <div class="tab-pane fade show active" id="v-pills-schools" role="tabpanel" aria-labelledby="v-pills-schools-tab">
+        <div class="tab-pane fade" id="v-pills-schools" role="tabpanel" aria-labelledby="v-pills-schools-tab">
 
           <div class="row mb-2">
             <div class="col-md-6">
@@ -337,11 +474,6 @@
           </div>
         </div>
         <div class="col-md-3">
-          <ul>
-            {% for each in schools %}
-              <li><a href="{% url "space" each.id %}">{{ each }}</a></li>
-            {% endfor %}
-          </ul>
         </div>
       </div>
 
@@ -372,5 +504,3 @@
       {% endif %}
 
     </section>
-
-{% endblock %}

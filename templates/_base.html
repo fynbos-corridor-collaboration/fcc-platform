@@ -44,7 +44,7 @@
     <link href="{% static 'css/leaflet.legend.css' %}" rel="stylesheet" />
   {% endif %}
 
-  <link rel="stylesheet" href="{% static 'css/fcc.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/fcc.css' %}?rf" />
 
   {% block css %}{% endblock %}
   {% block head %}{% endblock %}
@@ -98,7 +98,7 @@
     {% block content %}{% endblock %}
   </div>
 
-<div class="mt-5 bg-light bg-gradient">
+<div class="mt-5 bg-light bg-gradient printhide">
   <div class="container">
     <footer class="py-5">
       <div class="row">
