@@ -188,7 +188,7 @@
     <tr>
       <th>Type</th>
       <th width="50%">List</th>
-      <th width="10%">Quantity</th>
+      <th width="10%">Length</th>
     </tr>
   </thead>
   <tbody>
@@ -207,31 +207,32 @@
         {% endif %}
       </td>
       <td>
-        {{ rivers.count }}
-        ({{ river_length|floatformat:0|intcomma }} m)
+        {{ river_length|floatformat:0|intcomma }} m
       </td>
     </tr>
     <tr>
       <td>Railways</td>
       <td>
-        {% if railways.count %}
+        {% if railway.count %}
           <ul class="unstyled ">
-            {% for each in railways %}
+            {% for each in railway %}
               <li {% if forloop.counter > 7 %}hidden{% endif %}><a href="{% url "space" each.id %}">{{ each.name }}</a></li>
             {% endfor %}
           </ul>
-          {% if railways.count > 7 %}
+          {% if railway.count > 7 %}
             <a class="viewall" href="#">View all</a>
           {% endif %}
         {% endif %}
       </td>
-      <td>{{ railways.count }}</td>
+      <td>
+        {{ railway_length|floatformat:0|intcomma }} m
+      </td>
     </tr>
   </tbody>
   <tfoot>
-    <th>Total number of sites</th>
+    <th>Total length</th>
     <th></th>
-    <th>{{ connectors.count }}</th>
+    <th>{{ connectors.count|floatformat:0|intcomma }} m</th>
 </table>
 
 <p>With {{ connectors.count }} potential corridor connectors in the area, we rate this as: <strong>{{ connectors.label }}</strong></p>

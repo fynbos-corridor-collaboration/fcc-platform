@@ -620,6 +620,7 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     cemeteries = get_object_or_404(Document, pk=983426)
     parks = get_object_or_404(Document, pk=983479)
     rivers = get_object_or_404(Document, pk=983382)
+    railway = get_object_or_404(Document, pk=2)
     centers = get_object_or_404(Document, pk=983491)
     remnants = get_object_or_404(Document, pk=983097)
     gardens = get_object_or_404(Document, pk=1)
@@ -627,7 +628,7 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     boundaries = ReferenceSpace.objects.get(pk=983170)
 
     # These are the layers we open by default on the map
-    open_these_layers = [schools.id, cemeteries.id, parks.id, rivers.id, remnants.id, gardens.id, boundaries.id, centers.id]
+    open_these_layers = [schools.id, cemeteries.id, parks.id, rivers.id, railway.id, remnants.id, gardens.id, boundaries.id, centers.id]
 
     if "update_color" in request.GET:
         rivers.color = "blue"
@@ -677,17 +678,25 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     remnants = remnants.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
     gardens = gardens.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
     rivers = rivers.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
+    railway = railway.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
     centers = centers.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
 
+    # We want to figure out what the total river and railway length (in m) in the circle is.
+    # To do so we need to convert to a coordinate system that measures things in m
+    # See: https://gis.stackexchange.com/questions/180776/get-linestring-length-in-meters-python-geodjango
     length = 0
     for each in rivers:
-        # We want to figure out what the total river length (in m) in the circle is.
-        # To do so we need to convert to a coordinate system that measures things in m
-        # See: https://gis.stackexchange.com/questions/180776/get-linestring-length-in-meters-python-geodjango
         geom = each.geometry
         geom = geom.intersection(circle)
         geom.transform(3857)
         length += geom.length
+
+    railway_length = 0
+    for each in railway:
+        geom = each.geometry
+        geom = geom.intersection(circle)
+        geom.transform(3857)
+        railway_length += geom.length
 
     expansion = {}
     expansion["count"] = schools.count() + cemeteries.count() + parks.count() + centers.count()
@@ -703,11 +712,11 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     expansion["label"] = mark_safe(expansion["label"])
 
     connectors = {}
-    connectors["count"] = rivers.count()
-    if connectors["count"] <= 1:
+    connectors["count"] = length + railway_length
+    if connectors["count"] <= 200:
         connectors["rating"] = 0
         connectors["label"] = "<span class='badge bg-danger'>poor</span>"
-    elif connectors["count"] <= 3:
+    elif connectors["count"] <= 500:
         connectors["rating"] = 1
         connectors["label"] = "<span class='badge bg-warning'>okay</span>"
     else:
@@ -757,6 +766,7 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         "parks": parks,
         "cemeteries": cemeteries,
         "rivers": rivers,
+        "railway": railway,
         "centers": centers,
         "remnants": remnants,
         "gardens": gardens,
@@ -771,6 +781,7 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
         "site_selection": site_selection,
         "open_these_layers": open_these_layers,
         "river_length": length,
+        "railway_length": railway_length,
         "maps": documents,
         "load_map": True,
         "parents": parents,
