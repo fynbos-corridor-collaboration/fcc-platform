@@ -1,0 +1,46 @@
+{% extends "_base.html" %}
+
+{% block title %}Priority map{% endblock %}
+
+{% block content %}
+
+  <h2>Poor quality rivers</h2>
+
+  <p>The following rivers were identified:</p>
+
+  <ul>
+  {% for each in rivers %}
+    <li><a href="{{ each.get_absolute_url }}">{{ each }}</a></li>
+  {% endfor %}
+  </ul>
+
+  <p>
+    In here, we noticed that the Lotus Canal was missing. However, from experience
+    working along this canal, we feel that this river should also be included. It is not 
+    of a high quality and has a lot of potential. We therefore added these as well. 
+  </p>
+
+  {{ rivermap|safe }}
+
+  <h2>Adding a buffer</h2>
+
+  <p>
+    In order to find suitable areas, we added a 200m buffer around all the rivers.
+    The result is the map below.
+  </p>
+
+  {{ riverbuffermap|safe }}
+
+  <h2>Loading bionet</h2>
+
+  {{ bionetmap|safe }}
+
+  <h2>Adding a buffer, and adding the rivers to it</h2>
+
+  {{ bionet_rivermap|safe }}
+
+  <h2>And then doing a cutout to see which river segments are highest priority</h2>
+
+  {{ river_segment_map|safe }}
+
+{% endblock %}

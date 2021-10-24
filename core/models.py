@@ -115,6 +115,7 @@ class ReferenceSpace(models.Model):
     photo = models.ForeignKey("Photo", on_delete=models.CASCADE, null=True, blank=True, related_name="referencespace")
     source = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True, related_name="spaces")
     temp_source_id = models.IntegerField(null=True, blank=True, help_text="Only used when importing data")
+    meta_data = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} ({self.source.name})"

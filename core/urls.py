@@ -49,4 +49,6 @@ urlpatterns = [
     path("fynbos-rehabilitation/work-plan/", views.rehabilitation_assessment, {"title": "Make a work plan"}, name="rehabilitation_workplan"),
     path("fynbos-rehabilitation/monitoring/", views.rehabilitation_assessment, {"title": "Monitor"}, name="rehabilitation_monitoring"),
     path("fynbos-rehabilitation/plant-selection/", views.profile, name="rehabilitation_plant_selection"),
+
+    path("maps/prioritymap/", views.priority_map, name="priority_map"),
 ]
