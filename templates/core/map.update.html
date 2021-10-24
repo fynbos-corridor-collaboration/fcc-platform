@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <ul>
+    <li><a href="?new_rivers=true">If you have marked new rivers, click here</a></li>
+    <li><a href="?update=true">Click here to re-run the bionet, bionet buffer, and river buffer layers</a></li>
+    <li><a href="?calculate_difference=true">Click here to remove the bits of the river where bionet+buffer overlap</a></li>
+  </ul>
+
+{% endblock %}

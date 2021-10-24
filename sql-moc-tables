@@ -16,3 +16,5 @@ CREATE TABLE "public"."stafdb_referencespace" (
     "geometry" geometry(Geometry,4326),
     "source_id" integer,
 ) WITH (oids = false);
+
+SELECT setval('core_referencespace_id_seq', (SELECT MAX(id) FROM core_referencespace)+1);

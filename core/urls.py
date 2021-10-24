@@ -51,4 +51,5 @@ urlpatterns = [
     path("fynbos-rehabilitation/plant-selection/", views.profile, name="rehabilitation_plant_selection"),
 
     path("maps/prioritymap/", views.priority_map, name="priority_map"),
+    path("maps/update/", views.update_map),
 ]
