@@ -1465,6 +1465,7 @@ def update_map(request):
 
     if "update" in request.GET:
         from django.contrib.gis.db.models import Union
+        from django.contrib.gis.db.models.functions import MakeValid
         combined = rivers.aggregate(union=Union("geometry"))
         geo = combined["union"]
 
@@ -1486,6 +1487,7 @@ def update_map(request):
         spaces = bionet_flat.spaces.all()
         spaces.delete()
 
+        bionet.spaces.all().update(geometry=MakeValid("geometry"))
         combined = bionet.spaces.all().aggregate(union=Union("geometry"))
         geo = combined["union"]
 
