@@ -1372,7 +1372,7 @@ def priority_map(request):
             bionet = Document.objects.get(pk=983134)
 
             # Only locally for now as I deleted bionet... ohhhh nooooo
-            bionet = Document.objects.get(pk=983097)
+            # bionet = Document.objects.get(pk=983097)
 
             spaces = bionet_flat.spaces.all()
             spaces.delete()
