@@ -40,14 +40,10 @@
   // define the download button's details
   L.Control.Download = L.Control.extend({
     onAdd: function(map) {
-
       var downloadButtonWrapper = L.DomUtil.create("div", "download-map-wrapper");
-
       var downloadButton = L.DomUtil.create("div", "download-map");
       downloadButton.innerHTML = "<i class='fas fa-fw fa-save'></i>";
-
       downloadButtonWrapper.appendChild(downloadButton);
-
       return downloadButtonWrapper;
     }
   });
