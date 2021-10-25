@@ -991,6 +991,24 @@ def rehabilitation_assessment(request, title="Assess and imagine"):
     }
     return render(request, "core/assessment.html", context)
 
+def rehabilitation_design(request):
+    context = {
+        "info": Page.objects.get(slug="design-your-garden"),
+    }
+    return render(request, "core/design.html", context)
+
+def rehabilitation_workplan(request):
+    context = {
+        "info": Page.objects.get(slug="workplan"),
+    }
+    return render(request, "core/workplan.html", context)
+
+def rehabilitation_monitoring(request):
+    context = {
+        "info": Page.objects.get(slug="monitoring"),
+    }
+    return render(request, "core/monitoring.html", context)
+
 def rehabilitation_plant_selection(request):
     context = {
     }

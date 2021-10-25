@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <h1>{{ info }}</h1>
+
+  {{ info.get_content }}
+
+  <a href="{% url "rehabilitation_monitoring" %}" class="btn btn-success">Go to the next step (Monitoring) &raquo;</a>
+
+{% endblock %}
