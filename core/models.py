@@ -122,7 +122,10 @@ class ReferenceSpace(models.Model):
 
     @property
     def get_absolute_url(self):
-        return "/space/" + str(self.id)
+        if hasattr(self, "garden"):
+            return f"/gardens/{self.id}/"
+        else:
+            return f"/space/{self.id}/"
 
     @property
     def get_lat(self):
@@ -161,10 +164,16 @@ class ReferenceSpace(models.Model):
             return suburb[0].name.title()
         else:
             return None
+    
+    def get_popup(self):
+        content = f"<h4>{self.name}</h4>"
+        if self.photo:
+            content = content + f"<a class='d-block' href='{self.get_absolute_url}'><img alt='{self.name}' src='{self.photo.image.thumbnail.url}' /></a><hr>"
+        content = content + f"<a href='{self.get_absolute_url}'>View details</a>"
+        return mark_safe(content)
 
     class Meta:
         ordering = ["name"]
-
 
 class Garden(ReferenceSpace):
     active = models.BooleanField(default=True, db_index=True)

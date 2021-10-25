@@ -1,9 +1,17 @@
 {% extends "_base.html" %}
 
+{% block css %}
+<style type="text/css">
+#map{height:80vh}
+</style>
+{% endblock %}
+
 {% block content %}
 
   <h1>{{ page }}</h1>
   {{ page.get_content }}
+
+  <div id="map" class="mb-4"></div>
 
   <div class="row">
     {% for each in all %}
@@ -38,4 +46,20 @@
     </tbody>
   </table>
 
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript">
+
+  var geojsonlayer = L.geoJSON().addTo(map);
+  {% for each in all %}
+    {% if each.geometry %}
+    var garden_{{ each.id }} = {{ each.geometry.geojson|safe }};
+    var g_{{ each.id }} = L.geoJSON(garden_{{ each.id }}).addTo(map).bindPopup("{{ each.get_popup }}");
+    {% endif %}
+  {% endfor %}
+  var all_geojson = new L.featureGroup([{% for each in all %}{% if each.geometry %}g_{{ each.id }},{% endif %}{% endfor %}]);
+  map.fitBounds(all_geojson.getBounds());
+
+</script>
 {% endblock %}

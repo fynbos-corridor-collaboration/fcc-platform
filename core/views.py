@@ -1007,6 +1007,15 @@ def gardens(request):
     }
     return render(request, "core/gardens.html", context)
 
+def gardens_map(request):
+    all = Garden.objects.filter(active=True)
+    context = {
+        "all": all,
+        "page": Page.objects.get(pk=2),
+        "load_map": True,
+    }
+    return render(request, "core/gardens.html", context)
+
 def garden(request, id):
     vegetation = get_object_or_404(Document, pk=983172)
     info = get_object_or_404(Garden, pk=id)
@@ -1436,6 +1445,34 @@ def page(request, slug):
         "page": info,
     }
     return render(request, "core/page.html", context)
+
+def corridors_rivers(request):
+    context = {
+        "corridors": {
+            "1": "Diep River",
+            "2": "Lotus Canal",
+            "3": "Eerste River",
+            "4": "Kuils River",
+        },
+    }
+    return render(request, "core/corridor.html", context)
+
+def corridors_overview(request):
+    context = {
+        "corridors": {
+            "1": "Diep River",
+            "2": "Lotus Canal",
+            "3": "Eerste River",
+            "4": "Kuils River",
+        },
+    }
+    return render(request, "core/corridor.html", context)
+
+def corridors(request):
+    context = {
+        "info": Page.objects.get(slug="fynbos-corridors"),
+    }
+    return render(request, "core/corridors.introduction.html", context)
 
 def user_login(request):
     redirect_url = "index"

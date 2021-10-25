@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("gardens/", views.gardens, name="gardens"),
+    path("gardens/map/", views.gardens_map, name="gardens_map"),
     path("gardens/<int:id>/", views.garden, name="garden"),
     path("gardens/<int:garden>/photos/", views.photos, name="garden_photos"),
     path("maps/", views.maps, name="maps"),
@@ -39,6 +40,7 @@ urlpatterns = [
     path("about/<slug:slug>/", views.page, name="about"),
     path("join/<slug:slug>/", views.page, name="join"),
     path("resources/<slug:slug>/", views.page, name="resources"),
+    path("page/<slug:slug>/", views.page, name="page"),
 
     path("fynbos-rehabilitation/", views.page, {"slug": "fynbos-rehabilitation"}),
     path("fynbos-rehabilitation/site-selection/", views.report, {"site_selection": True}, name="rehabilitation_site_selection"),
@@ -52,4 +54,8 @@ urlpatterns = [
 
     path("maps/prioritymap/", views.priority_map, name="priority_map"),
     path("maps/update/", views.update_map),
+    path("corridors/", views.corridors, name="corridors"),
+    path("corridors/overview/", views.corridors_overview, name="corridors_overview"),
+    path("corridors/rivers/", views.corridors_rivers, name="corridors_rivers"),
+
 ]

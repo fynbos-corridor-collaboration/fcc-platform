@@ -1,5 +1,86 @@
 {% extends "_base.html" %}
+{% load static %}
 
 {% block content %}
-  Content goes here
+
+  {% if not request.GET.id %}
+  <h1>High-impact, strategic river corridors</h1>
+
+  <div class="row">
+    {% for id,name in corridors.items %}
+      <div class="col-3 mb-2">
+        <div class="card">
+          <a href="/corridors/?id={{ id }}/">
+            <img src="/static/img/corridor{{ id }}.png" class="card-img-top fixed-thumb" alt="">
+          </a>
+          <div class="card-body">
+            <h5 class="card-title"><a href="/corridors/?id={{ id }}">{{ name }} Corridor</a></h5>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+
+  <h3>Corridor 1: Diep River corridor</h3>
+
+  <p><img src="{% static "img/corridor1.png" %}" alt="" /></p>
+
+  <h4>Short description</h4>
+
+  {% lorem %}
+
+  <p>What makes this an appealing project?</p>
+
+  <ul>
+    <li>
+      The Diep River is a backbone of this corridor. By following a river, there is 
+      potential to use an existing ecological corridor.
+    </li>
+    <li>
+      The Diep River has poor water quality and is often a liability in social and
+      environmental terms. By working on restoring the vegetation around the river,
+      the actual river receives attention. We recommend linking this project with 
+      additional river cleanup and restoration efforts.
+    </li>
+    <li>
+      The selected area is currently not close to high-quality nature, based on the 
+      Bionet network. By working on gardens in this area, there is an opportunity 
+      to reduce the distance to nature for people living here.
+    </li>
+  </ul>
+
+  <p>To learn more about the method behind selecting this corridor, <a href="http://">click here</a>.</p>
+
+  <h4 class="mt-5">Ward profiles</h4>
+
+  <p>This corridor traverses 2 very distinct wards:
+     <strong>ward 62</strong> and <strong>ward XXX</strong>.
+      We recommend that bridging the social divides between these wards
+      is a fundamental part of corridor building. This can also include
+      using resources from the wealthier parts to support activities
+      in the less affluent parts. 
+     Please find the relevant ward profiles below. 
+  </p>
+
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <h5>Ward 62 - Constantia, Wynberg, Claremont</h5>
+        <iframe id="cr-embed-ward-19100062-demographics-population_group_distribution" class="census-reporter-embed" src="https://wazimap.co.za/embed/iframe.html?geoID=ward-19100062&geoVersion=2016&chartDataID=demographics-population_group_distribution&dataYear=2011&chartType=column&chartHeight=200&chartQualifier=&chartRelease=Census+2011&chartTitle=Population+group&initialSort=&statType=scaled-percentage" frameborder="0" width="100%" height="300" style="margin: 1em; max-width: 720px;"></iframe>
+        <iframe id="cr-embed-ward-19100062-households-annual_income_distribution" class="census-reporter-embed" src="https://wazimap.co.za/embed/iframe.html?geoID=ward-19100062&geoVersion=2016&chartDataID=households-annual_income_distribution&dataYear=2011&chartType=column&chartHeight=200&chartQualifier=&chartRelease=Census+2011&chartTitle=Annual+household+income&initialSort=&statType=scaled-percentage" frameborder="0" width="100%" height="300" style="margin: 1em; max-width: 720px;"></iframe>
+        <iframe id="cr-embed-ward-19100062-households-type_of_dwelling_distribution" class="census-reporter-embed" src="https://wazimap.co.za/embed/iframe.html?geoID=ward-19100062&geoVersion=2016&chartDataID=households-type_of_dwelling_distribution&dataYear=2011&chartType=pie&chartHeight=200&chartQualifier=&chartRelease=Census+2011&chartTitle=Households+by+type+of+dwelling&initialSort=&statType=percentage" frameborder="0" width="100%" height="300" style="margin: 1em; max-width: 300px;"></iframe>
+      </div>
+      <div class="col" style="border-left:2px solid #333">
+        <h5>Ward 72 - Retreat, Heathfield, Puntsville</h5>
+        <iframe id="cr-embed-ward-19100072-demographics-population_group_distribution" class="census-reporter-embed" src="https://wazimap.co.za/embed/iframe.html?geoID=ward-19100072&geoVersion=2016&chartDataID=demographics-population_group_distribution&dataYear=2011&chartType=column&chartHeight=200&chartQualifier=&chartRelease=Census+2011&chartTitle=Population+group&initialSort=&statType=scaled-percentage" frameborder="0" width="100%" height="300" style="margin: 1em; max-width: 720px;"></iframe>
+        <iframe id="cr-embed-ward-19100072-households-annual_income_distribution" class="census-reporter-embed" src="https://wazimap.co.za/embed/iframe.html?geoID=ward-19100072&geoVersion=2016&chartDataID=households-annual_income_distribution&dataYear=2011&chartType=column&chartHeight=200&chartQualifier=&chartRelease=Census+2011&chartTitle=Annual+household+income&initialSort=&statType=scaled-percentage" frameborder="0" width="100%" height="300" style="margin: 1em; max-width: 720px;"></iframe>
+        <iframe id="cr-embed-ward-19100072-households-type_of_dwelling_distribution" class="census-reporter-embed" src="https://wazimap.co.za/embed/iframe.html?geoID=ward-19100072&geoVersion=2016&chartDataID=households-type_of_dwelling_distribution&dataYear=2011&chartType=pie&chartHeight=200&chartQualifier=&chartRelease=Census+2011&chartTitle=Households+by+type+of+dwelling&initialSort=&statType=percentage" frameborder="0" width="100%" height="300" style="margin: 1em; max-width: 300px;"></iframe>
+      </div>
+    </div>
+  </div>
+  <script src="https://wazimap.co.za/static/js/embed.chart.make.js"></script>
+
+  {% endif %}
+
 {% endblock %}

@@ -1,0 +1,42 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <h1>{{ info }}</h1>
+
+  {{ info.get_content }}
+
+  <div class="row">
+    <div class="col-3 mb-2">
+      <div class="card">
+        <a href="/corridors/gardens/map/">
+          <img src="/static/img/corridor{{ id }}.png" class="card-img-top fixed-thumb" alt="">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title"><a href="/corridors/gardens/map/">Stepping-stone garden network</a></h5>
+        </div>
+      </div>
+    </div>
+    <div class="col-3 mb-2">
+      <div class="card">
+        <a href="/corridors/overview/">
+          <img src="/static/img/corridor{{ id }}.png" class="card-img-top fixed-thumb" alt="">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title"><a href="/corridors/overview/">Existing corridor projects</a></h5>
+        </div>
+      </div>
+    </div>
+    <div class="col-3 mb-2">
+      <div class="card">
+        <a href="/corridors/rivers/">
+          <img src="/static/img/corridor{{ id }}.png" class="card-img-top fixed-thumb" alt="">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title"><a href="/corridors/rivers/">High-impact strategic river corridors</a></h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

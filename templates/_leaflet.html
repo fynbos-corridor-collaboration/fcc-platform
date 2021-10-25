@@ -14,6 +14,8 @@
     renderer: L.canvas(),
     {% if lat and lng %}
       center: [{{ lat }}, {{ lng }}],
+    {% else %}
+      center: [-33.9790, 18.5284],
     {% endif %}
   });
 
