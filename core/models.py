@@ -380,3 +380,16 @@ class Photo(models.Model):
     class Meta:
         ordering = ["position", "date"]
 
+class Corridor(models.Model):
+    name = models.CharField(max_length=255)
+    general_description = models.TextField(null=True, blank=True)
+    social_description = models.TextField(null=True, blank=True)
+    image = StdImageField(upload_to="corridors", variations={"thumbnail": (350, 350), "medium": (800, 600), "large": (1280, 1024)}, delete_orphans=True)
+    wards = models.JSONField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
+

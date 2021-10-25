@@ -1304,6 +1304,7 @@ def corridors_rivers_methodology(request):
         "load_map": True,
         "lat": -33.9790,
         "lng": 18.5284,
+        #"final_rivers": [989882, 990004, 990036, 989903, 990127, 989920, 989924, 990032, 990020],
     }
     return render(request, "core/corridors.rivers.methodology.html", context)
 

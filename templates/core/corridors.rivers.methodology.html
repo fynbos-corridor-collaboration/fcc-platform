@@ -6,7 +6,7 @@
 </style>
 {% endblock %}
 
-{% block title %}Priority map{% endblock %}
+{% block title %}Methodology - High-impact strategic river corridors{% endblock %}
 
 {% block content %}
 
@@ -227,9 +227,16 @@
     "opacity": 0.65
   };
 
-  var river_segment = {{ river_segments.geojson|safe }};
-  var feature = L.geoJson(river_segment).addTo(map);
-  map.fitBounds(feature.getBounds());
+  var purple = {
+    "color": "purple",
+    "weight": 2,
+    "opacity": 0.65
+  };
+
+  var blue = {
+    "color": "blue",
+    "weight": 5,
+  };
 
   // RIVER BUFFERMAP
   var river_buffermap = L.map("river_buffermap", {
@@ -388,6 +395,14 @@
   L.geoJson(river_buffer).addTo(overlaymap);
   overlaymap.fitBounds(river_buffer_feature.getBounds());
   // END OF OVERLAY MAP
+
+  var river_segment = {{ river_segments.geojson|safe }};
+  var feature = L.geoJson(river_segment, {style:purple}).addTo(map);
+  map.fitBounds(feature.getBounds());
+
+  {% for each in final_rivers %}
+    L.geoJson(river_{{ each }}, {style:blue}).addTo(map);
+  {% endfor %}
 
 </script>
 {% endblock %}
