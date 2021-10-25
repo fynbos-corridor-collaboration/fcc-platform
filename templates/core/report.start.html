@@ -5,13 +5,16 @@
 
 {% block css %}
 <style type="text/css">
+.changelog {
+  display: none;
+}
 .card-cover {
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 }
 .rounded-5 {
-    border-radius: 1rem;
+  border-radius: 1rem;
 }
 </style>
 {% endblock %}
@@ -29,10 +32,10 @@
         {% if site_selection %}
           <h1>Select a site</h1>
           <p class="lead mb-4">
-            The first step in starting a stepping stone garden is finding a suitable site. 
-            Through this tool, you can review the suitability of a site that you might be considering.
-            All you have to do is select the location on a map, and the system will give you insights
-            into the suitability of your site.
+            The first step in starting a stepping stone garden is finding a suitable site.
+            Through this tool, you can review the suitability of a site that you might be
+            considering. All you have to do is select the location on a map, and the system
+            will give you insights into the suitability of your site.
           </p>
         {% else %}
           <h1>Instant site analysis</h1>
@@ -46,19 +49,37 @@
 
         <div class="d-flex flex-column flex-md-row">
           <a href="map/" class="btn btn-lg btn-primary mb-3 me-md-3">Start</a>
-          <a href="/docs/5.1/getting-started/download/" class="btn btn-lg btn-outline-secondary mb-3">How this works</a>
+          <a href="{% url "site_selection_how_this_works" %}" class="btn btn-lg btn-outline-secondary mb-3">How this works</a>
         </div>
         <p class="text-muted mb-0">
           Currently <strong>v1.1</strong>
           <span class="px-1">·</span>
-          <a href="/docs/versions/" class="link-secondary">View changelog</a>
-          <span class="px-1">·</span>
-          <a href="/docs/versions/" class="link-secondary">Acknowledgements</a>
+          <a href="#" id="changelog" class="link-secondary">View changelog</a>
+          {% if False %}
+            <span class="px-1">·</span>
+            <a href="/docs/versions/" class="link-secondary">Acknowledgements</a>
+          {% endif %}
           <br>
           <br>
-          This tool has been developed by <a href="http://">Communitree</a> in collaboration with
-          <a href="http://">Sjirk Geerts</a>.
+          This tool has been developed by <a href="https://communitree.in">Communitree</a> in collaboration with
+          <a href="https://www.cput.ac.za/academic/faculties/appliedsciences/departments/biodiversity/researchers/geerts">Sjirk Geerts</a>.
         </p>
+
+        <section class="changelog mt-5">
+          <h3>Changelog</h3>
+
+          <p><strong>Oct 14, 2021</strong>
+          <br>
+          v1.0 - First version of the site analysis.
+          </p>
+
+          <p><strong>Oct 22, 2021</strong>
+          <br>
+          v1.1 - Instead of showing all maps individually on the page, the mapping system
+          uses a single map with individual layers that can be turned on or off.
+          </p>
+
+        </section>
       </div>
     </div>
 
@@ -122,4 +143,15 @@
 
   {% endif %}
 
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript">
+$(function(){
+  $("#changelog").click(function(e){
+    e.preventDefault();
+    $(".changelog").toggle("fast");
+  });
+});
+</script>
 {% endblock %}

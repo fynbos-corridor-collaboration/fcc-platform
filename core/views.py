@@ -985,6 +985,9 @@ def rehabilitation_assessment(request, title="Assess and imagine"):
             return redirect("rehabilitation_monitoring")
     context = {
         "title": title,
+        "social": Page.objects.get(slug="social-assessment"),
+        "ecological": Page.objects.get(slug="ecological-assessment"),
+        "vision": Page.objects.get(slug="vision-and-mission"),
     }
     return render(request, "core/assessment.html", context)
 
@@ -1106,13 +1109,15 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
         lng = float(lng)
         center = geos.Point(lng, lat)
         veg = vegetation.spaces.get(geometry__intersects=center)
-        veg = VegetationType.objects.get(pk=6)
+        veg = VegetationType.objects.get(spaces=veg)
         suburb = ReferenceSpace.objects.filter(source_id=334434, geometry__intersects=center)
+        species = Species.objects.filter(vegetation_types=veg)
         if suburb:
             suburb = suburb[0].name.title()
     except:
         messages.error(request, f"We are unable to locate the relevant vegetation type.")
         suburb = None
+        species = None
 
     context = {
         "lat": lat,
@@ -1122,10 +1127,11 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
         "section": section,
         "subsection": subsection,
         "suburb": suburb,
+        "page": Page.objects.get(slug="plant-selection"),
+        "species": species,
     }
 
     if section == "plants":
-        species = Species.objects.filter(vegetation_types=veg)
 
         if subsection == "pioneers":
             context["title"] = "Pioneer species"

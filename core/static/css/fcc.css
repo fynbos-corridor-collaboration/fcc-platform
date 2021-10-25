@@ -109,3 +109,4 @@
   .pagebreak { page-break-before: always; }
   .printhide {display:none}
 }
+img{max-width:100%}

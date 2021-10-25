@@ -2,7 +2,7 @@
 
   {% block title %}
     {% if title %}{{ title }} - {% endif %}
-    Plot profiler
+    Choose plants
   {% endblock %}
 
 {% block head %}
@@ -61,7 +61,7 @@
 
         <form method="post" class="mt-5">
           <input type="hidden" name="next" value="true" />
-          <button type="submit" class="btn btn-success">Go to the next step &raquo;</button>
+          <button type="submit" class="btn btn-success"><strong>Go to the next step  &raquo;</strong><br>(Design your garden)</button>
           {% csrf_token %}
         </form>
             
@@ -183,20 +183,29 @@
         {% else %}
           <h1>Choose plants</h1>
 
-          {% if lat %}
-          <p class="alert alert-warning">
-            This is the species profile based on the following coordinates:
-            <strong>{{ lat }}, {{ lng }}</strong>. 
-            <br>
-            This location is in <strong>{{ suburb }}</strong>.
-            If you want to change this, please go to
-            <a href="../site-selection/">Site Selection</a>.
-          </p>
+          {% if suburb %}
+            <p class="alert alert-warning">
+              This is the species profile based on the following coordinates:
+              <strong>{{ lat }}, {{ lng }}</strong>. 
+              <br>
+              This location is in <strong>{{ suburb }}</strong>.
+              If you want to change this, please go to
+              <a href="../site-selection/">Site Selection</a>.
+            </p>
+
+            {% if species.count < 15 %}
+              <div class="alert alert-danger">
+                Please note: unfortunately we do not have many plant species
+                indexed for {{ info }}. We are working hard to expand our database and we hopefully have 
+                more species suggestions for you soon. 
+                If you know of any reference studies that were done on your vegetation type, which can help
+                us build a species list, please <a href="/contact">get in touch</a>.
+              </div>
+            {% endif %}
+
           {% endif %}
 
-          <p>Welcome! Here we explain how you can select the right kinds of plants...</p>
-          <p>Start by reading more about the vegetation type.</p>
-          <p>And then browse the recommended plant lists for your vegetation type.</p>
+          {{ page.get_content }}
 
         {% endif %}
 
