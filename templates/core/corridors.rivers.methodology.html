@@ -1,0 +1,393 @@
+{% extends "_base.html" %}
+
+{% block css %}
+<style type="text/css">
+.map{height:80vh}
+</style>
+{% endblock %}
+
+{% block title %}Priority map{% endblock %}
+
+{% block content %}
+
+  <h1>High-impact strategic river corridors</h1>
+  <h2>Methodology</h2>
+
+  <p>
+    This document describes how we identified potential corridors that 
+    we believe can yield high social and environmental impacts. The 
+    following general concepts lie behind these corridors:
+  </p>
+
+  <ul>
+    <li>
+      A river or canal forms the backbone of the potential corridors.  By
+      following a river, there is an opportunity to use an existing ecological
+      corridor.
+    </li>
+    <li>
+      Rivers were chosen that have poor water quality. These rivers are often a
+      liability in social and environmental terms. By working on restoring the
+      vegetation around the river, the actual river receives attention and 
+      this rehabilitation project can have additional environmental and social impacts.
+    </li>
+    <li>
+      The selected areas are currently <em>not</em> close to high-quality nature, based on the 
+      Bionet network. By working on gardens in this area, there is an opportunity 
+      to reduce the distance to nature for people living here.
+    </li>
+    <li>
+      We prioritised areas that are either generally less affluent (and where fynbos rehabilitation
+      is often most needed), or where the rivers
+      cross both affluent and low-income areas and where there is thus an opportunity
+      to cross these socio-economic divides and roll out a project where people
+      work together across these boundaries.
+    </li>
+  </ul>
+
+  <p>
+    The maps below demonstrate the steps that were taken to identify the
+    high-impact strategic river corridors. We welcome your input and we hope to further
+    refine this project by receiving feedback. If you have any suggestions or comments,
+    please <a href="/contact/">get in touch</a>.
+  </p>
+
+  <h2 class="mt-4">Poor quality rivers</h2>
+
+  <p>
+    In order to assess which rivers have poor water quality - and are thus most in need
+    of our attention - we relied on information from a great river study published
+    by the City of Cape Town: <a href="https://resource.capetown.gov.za/documentcentre/Documents/City%20research%20reports%20and%20review/Inland_Water_Quality_Report_FULL.pdf">Water quality of rivers and open waterbodies in the City of Cape Town: Status and historical trends, with a focus on the period April 2015 to March 2020</a>. An important quote from this
+    document is the following:
+  </p>
+
+  <p>
+  <em>
+  The quality of water in urban watercourses is perhaps one of the best
+  indicators of the efficacy of a range of management activities in a city,
+  reflecting the degree of containment of sources of contamination from both
+  widespread land use and specific activities generating point source  pollution
+  streams.  The implications of poor  water  quality  can  also  be  profound,
+  cutting  across  a  broad  range  of  user  sectors,  including  human health,
+  sewer and stormwater infrastructure, tourism, recreation and biodiversity.</em> (p3)
+  </p>
+
+  <p>
+    We have taken these ideas to heart and therefore start with the selection 
+    of priority areas by looking at river quality data. For this purpose, we primarily 
+    used figure 4.7.3 which included E.coli levels per subcatchment area (which 
+    generally encompasses individual rivers). We did not find a general river
+    quality indicator, but felt that the E.coli levels are a suitable alternative
+    for now. 
+  </p>
+
+  <p>
+    <img src="/media/corridors/ecoli.png" alt="" />
+    <br>
+    <em><small>Comparison of current (April 2019 to March 2020) E. coli data with data from the previous 4 year
+    record per subcatchment, plotted against the thresholds for different levels of risk.
+    </small></em>
+  </p>
+
+  <p>
+    The next step for us was to identify these rivers in our 
+    <a href="/maps/983382/">Open Water Courses</a> shapefile. In this shapefile
+    rivers are sometimes split up in several segments, so we did our best to pick
+    up all the relevant segments. The list below shows the identified rivers:
+  </p>
+
+  <ul>
+  {% for each in rivers %}
+    <li><a href="{{ each.get_absolute_url }}">{{ each }}</a></li>
+  {% endfor %}
+  </ul>
+
+  <p>
+    In the list above, we noticed that the Lotus Canal was missing. However, from experience
+    working along this canal, we feel that the Lotus Canal should also be included. It is not 
+    of a high quality and has a lot of potential. We therefore added it to the list.
+  </p>
+
+  <p>The map below shows the baseline for our low-quality river network.</p>
+
+  <div id="river_map" class="map"></div>
+
+  <h2 class="mt-4">Adding a buffer</h2>
+
+  <p>
+    In order to find suitable areas, we added a 400m buffer on both sides of each river. 
+    We consider this is suitable distance, as it will generally be within an 
+    easy walking distance for most people, and it is furthermore a distance that
+    most birds and insects can cross - especially if you find multiple stepping 
+    stone gardens within this bandwidth.
+  </p>
+
+  <p>The resulting map is displayed below:</p>
+
+  <div id="river_buffermap" class="map"></div>
+
+  <h2 class="mt-4">Bionet</h2>
+
+  <p>
+    The next step was to pull up the Bionet map. This gives us insight into the 
+    accessibility of nature in different areas of the city. The 
+    <a href="/maps/983134/">original shapefile</a>
+    is shown below.
+  </p>
+
+  <div id="bionet_flatmap" class="map"></div>
+
+  <h2 class="mt-4">Buffering Bionet</h2>
+
+  <p>
+    We are wanting to <em>exclude</em> areas that already have access to high-quality
+    nature by using the Bionet map. However, in order to do that we need to figure 
+    out who lives close to these areas within the shapefile. We do that by again
+    buffering the outline, and we add 400 meters around the bionet network. 
+    The result can be seen below.
+  </p>
+
+  <div id="bionet_buffermap" class="map"></div>
+
+  <h2 class="mt-4">Overlaying the rivers onto that map</h2>
+  <p>We can now start combining the two maps. Here we show what the buffered Bionet
+  and the buffered river network look like...</p>
+  <div id="overlaymap" class="map"></div>
+
+  <h2 class="mt-4">Cropping the river network</h2>
+  <p>
+    The last step is to crop the river network, and remove those segments
+    that are already covered by Bionet. This results in the map that is displayed
+    below.
+  </p>
+  <div id="map" class="map"></div>
+
+  <p>
+    Based on this map, we then identified five different river segments that we
+    consider the most strategic elements. We excluded the northern river
+    system from the list because this is much less urbanised than the other
+    river catchment areas. There might very well be a lot of value in focusing
+    on the northern part, where agricultural impacts certainly threaten
+    Fynbos just as urbanisation does in the south. However, our initial focus 
+    is on stepping-stone corridor creation in an urban setting, and we thus
+    focused on the other river systems.
+  </p>
+
+  <p>
+    Of the remaining six larger river systems that are identified, we eliminated
+    the eastern-most river. This too is in a much less urbanised area than 
+    the other rivers, and it is for that reason less interesting as a starting
+    point from our perspective. What remains are the five corridors that 
+    are listed on our <a href="/corridors/rivers/">overview page</a>.
+  </p>
+
+  <h2 class="mt-4">Room for improvement</h2>
+
+  <p>
+    We don't consider this a final verdict, but instead hope for this map to 
+    start a more in-depth conversation. There are already a few elements which
+    we hope to refine as more data and information become available. These include:
+  </p>
+
+  <ul>
+    <li>
+      Instead of basing the river quality on E.coli measurements, we hope that a
+      more general river quality assessment might help us to better pinpoint the 
+      rivers to target. Ideally that includes a longer list of rivers than the ones
+      currently reported.
+    </li>
+    <li>
+      The vleis and other open water bodies such as wetlands are also very interesting
+      to take into account. However, we still need to cross-link the data from 
+      the Cape Town study with the shapefiles that we have. Any help here is 
+      most welcome.
+    </li>
+    <li>
+      We are aware that taking Bionet as a basic layer to identify access to nature
+      might not be the most accurate assessment. There might be potential or future
+      natural elements in Bionet which are not actually representative of 'access to 
+      high-quality nature'. We might need to refine this. 
+    </li>
+    <li>
+      When the green infrastructure plan from the city is released, we might be able
+      to use some of their insights to further improve our mapping.
+    </li>
+  </ul>
+
+  <p>Suggestions or comments? <a href="/contact">Get in touch</a></p>
+
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript">
+
+  var green = {
+    "color": "green",
+    "weight": 2,
+    "opacity": 0.65
+  };
+
+  var river_segment = {{ river_segments.geojson|safe }};
+  var feature = L.geoJson(river_segment).addTo(map);
+  map.fitBounds(feature.getBounds());
+
+  // RIVER BUFFERMAP
+  var river_buffermap = L.map("river_buffermap", {
+    zoom: 11,
+    scrollWheelZoom: false,
+    fullscreenControl: true,
+    renderer: L.canvas(),
+    center: [{{ lat }}, {{ lng }}],
+  });
+  // add tile layer
+  var ttt = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={{ MAPBOX_API_KEY }}", {
+    attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
+    id: "{% if leaflet.style %}{{ leaflet.style }}{% elif properties.map_layer_style %}mapbox/{{ properties.map_layer_style }}{% else %}mapbox/streets-v11{% endif %}",
+    tileSize: 512,
+    zoomOffset: -1,
+    layer: "tiles",
+  })
+  ttt.addTo(river_buffermap);
+  L.control.Download({ position: "topleft" }).addTo(river_buffermap);
+  // toggle scrollwheel zoom when entering/exiting fullscreen
+  river_buffermap.on("fullscreenchange", function () {
+    if (river_buffermap.isFullscreen()) {
+      river_buffermap.scrollWheelZoom.enable()
+    } else {
+      river_buffermap.scrollWheelZoom.disable()
+    }
+  });
+  var river_buffer = {{ river_buffer.geojson|safe }};
+  var river_buffer_feature = L.geoJson(river_buffer).addTo(river_buffermap);
+  river_buffermap.fitBounds(river_buffer_feature.getBounds());
+  // END OF RIVER BUFFER MAP
+
+  // RIVER MAP
+  var river_map = L.map("river_map", {
+    zoom: 11,
+    scrollWheelZoom: false,
+    fullscreenControl: true,
+    renderer: L.canvas(),
+    center: [{{ lat }}, {{ lng }}],
+  });
+  // add tile layer
+  var ttt = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={{ MAPBOX_API_KEY }}", {
+    attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
+    id: "{% if leaflet.style %}{{ leaflet.style }}{% elif properties.map_layer_style %}mapbox/{{ properties.map_layer_style }}{% else %}mapbox/streets-v11{% endif %}",
+    tileSize: 512,
+    zoomOffset: -1,
+    layer: "tiles",
+  })
+  ttt.addTo(river_map);
+  L.control.Download({ position: "topleft" }).addTo(river_map);
+  // toggle scrollwheel zoom when entering/exiting fullscreen
+  river_map.on("fullscreenchange", function () {
+    if (river_map.isFullscreen()) {
+      river_map.scrollWheelZoom.enable()
+    } else {
+      river_map.scrollWheelZoom.disable()
+    }
+  });
+  {% for each in rivers %}
+    var river_{{ each.id }} = {{ each.geometry.geojson|safe }};
+    var river_{{ each.id }}_feature = L.geoJson(river_{{ each.id }}).addTo(river_map);
+  {% endfor %}
+  river_map.fitBounds(river_buffer_feature.getBounds());
+  // END OF RIVER MAP
+
+
+  // BIONET FLATMAP
+  var bionet_flatmap = L.map("bionet_flatmap", {
+    zoom: 11,
+    scrollWheelZoom: false,
+    fullscreenControl: true,
+    renderer: L.canvas(),
+    center: [{{ lat }}, {{ lng }}],
+  });
+  // add tile layer
+  var ttt = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={{ MAPBOX_API_KEY }}", {
+    attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
+    id: "{% if leaflet.style %}{{ leaflet.style }}{% elif properties.map_layer_style %}mapbox/{{ properties.map_layer_style }}{% else %}mapbox/streets-v11{% endif %}",
+    tileSize: 512,
+    zoomOffset: -1,
+    layer: "tiles",
+  })
+  ttt.addTo(bionet_flatmap);
+  L.control.Download({ position: "topleft" }).addTo(bionet_flatmap);
+  // toggle scrollwheel zoom when entering/exiting fullscreen
+  bionet_flatmap.on("fullscreenchange", function () {
+    if (bionet_flatmap.isFullscreen()) {
+      bionet_flatmap.scrollWheelZoom.enable()
+    } else {
+      bionet_flatmap.scrollWheelZoom.disable()
+    }
+  });
+  var bionet_flat = {{ bionet_flat.geojson|safe }};
+  var bionet_flat_feature = L.geoJson(bionet_flat, {style:green}).addTo(bionet_flatmap);
+  bionet_flatmap.fitBounds(river_buffer_feature.getBounds());
+  // END OF BIONET FLATMAP
+
+  // BIONET BUFFERMAP
+  var bionet_buffermap = L.map("bionet_buffermap", {
+    zoom: 11,
+    scrollWheelZoom: false,
+    fullscreenControl: true,
+    renderer: L.canvas(),
+    center: [{{ lat }}, {{ lng }}],
+  });
+  // add tile layer
+  var ttt = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={{ MAPBOX_API_KEY }}", {
+    attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
+    id: "{% if leaflet.style %}{{ leaflet.style }}{% elif properties.map_layer_style %}mapbox/{{ properties.map_layer_style }}{% else %}mapbox/streets-v11{% endif %}",
+    tileSize: 512,
+    zoomOffset: -1,
+    layer: "tiles",
+  })
+  ttt.addTo(bionet_buffermap);
+  L.control.Download({ position: "topleft" }).addTo(bionet_buffermap);
+  // toggle scrollwheel zoom when entering/exiting fullscreen
+  bionet_buffermap.on("fullscreenchange", function () {
+    if (bionet_buffermap.isFullscreen()) {
+      bionet_buffermap.scrollWheelZoom.enable()
+    } else {
+      bionet_buffermap.scrollWheelZoom.disable()
+    }
+  });
+  var bionet_buffer = {{ bionet_buffer.geojson|safe }};
+  var bionet_buffer_feature = L.geoJson(bionet_buffer, {style:green}).addTo(bionet_buffermap);
+  bionet_buffermap.fitBounds(river_buffer_feature.getBounds());
+  // END OF BIONET BUFFERMAP
+
+  // OVERLAY MAP
+  var overlaymap = L.map("overlaymap", {
+    zoom: 11,
+    scrollWheelZoom: false,
+    fullscreenControl: true,
+    renderer: L.canvas(),
+    center: [{{ lat }}, {{ lng }}],
+  });
+  // add tile layer
+  var ttt = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={{ MAPBOX_API_KEY }}", {
+    attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
+    id: "{% if leaflet.style %}{{ leaflet.style }}{% elif properties.map_layer_style %}mapbox/{{ properties.map_layer_style }}{% else %}mapbox/streets-v11{% endif %}",
+    tileSize: 512,
+    zoomOffset: -1,
+    layer: "tiles",
+  })
+  ttt.addTo(overlaymap);
+  L.control.Download({ position: "topleft" }).addTo(overlaymap);
+  // toggle scrollwheel zoom when entering/exiting fullscreen
+  overlaymap.on("fullscreenchange", function () {
+    if (overlaymap.isFullscreen()) {
+      overlaymap.scrollWheelZoom.enable()
+    } else {
+      overlaymap.scrollWheelZoom.disable()
+    }
+  });
+  L.geoJson(bionet_buffer, {style:green}).addTo(overlaymap);
+  L.geoJson(river_buffer).addTo(overlaymap);
+  overlaymap.fitBounds(river_buffer_feature.getBounds());
+  // END OF OVERLAY MAP
+
+</script>
+{% endblock %}

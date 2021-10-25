@@ -1263,7 +1263,7 @@ def photos(request, garden=None):
     }
     return render(request, "core/photos.html", context)
 
-def priority_map(request):
+def corridors_rivers_methodology(request):
 
     rivers = ReferenceSpace.objects.filter(source_id=983382, meta_data__poor_quality_river=True)
     river_segments = Document.objects.get(pk=5)
@@ -1281,7 +1281,7 @@ def priority_map(request):
         "lat": -33.9790,
         "lng": 18.5284,
     }
-    return render(request, "core/prioritymap.html", context)
+    return render(request, "core/corridors.rivers.methodology.html", context)
 
 def update_map(request):
 
@@ -1454,19 +1454,13 @@ def corridors_rivers(request):
             "3": "Eerste River",
             "4": "Kuils River",
         },
+        "info": Page.objects.get(slug="high-impact-strategic-river-corridors"),
     }
-    return render(request, "core/corridor.html", context)
+    return render(request, "core/corridors.rivers.html", context)
 
 def corridors_overview(request):
-    context = {
-        "corridors": {
-            "1": "Diep River",
-            "2": "Lotus Canal",
-            "3": "Eerste River",
-            "4": "Kuils River",
-        },
-    }
-    return render(request, "core/corridor.html", context)
+    context = {}
+    return render(request, "core/corridors.overview.html", context)
 
 def corridors(request):
     context = {

@@ -50,6 +50,7 @@ admin_site.register(Genus, SearchAdmin)
 admin_site.register(Species, SearchAdmin)
 admin_site.register(SpeciesFeatures, SearchAdmin)
 admin_site.register(Redlist, SearchAdmin)
+admin_site.register(Organization, SearchAdmin)
 admin_site.register(VegetationType, VegTypeAdmin)
 
 admin_site.register(User, UserAdmin)
