@@ -1458,6 +1458,18 @@ def corridors_rivers(request):
     }
     return render(request, "core/corridors.rivers.html", context)
 
+def corridor_rivers(request, id):
+    context = {
+        "corridors": {
+            "1": "Diep River",
+            "2": "Lotus Canal",
+            "3": "Eerste River",
+            "4": "Kuils River",
+        },
+        "id": id,
+    }
+    return render(request, "core/corridor.rivers.html", context)
+
 def corridors_overview(request):
     context = {}
     return render(request, "core/corridors.overview.html", context)

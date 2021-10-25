@@ -11,11 +11,11 @@
     {% for id,name in corridors.items %}
       <div class="col-3 mb-2">
         <div class="card">
-          <a href="/corridors/?id={{ id }}/">
+          <a href="{% url "corridor_rivers" id %}">
             <img src="/media/corridors/corridor{{ id }}.png" class="card-img-top fixed-thumb" alt="">
           </a>
           <div class="card-body">
-            <h5 class="card-title"><a href="/corridors/?id={{ id }}">{{ name }} Corridor</a></h5>
+            <h5 class="card-title"><a href="{% url "corridor_rivers" id %}">{{ name }} Corridor</a></h5>
           </div>
         </div>
       </div>

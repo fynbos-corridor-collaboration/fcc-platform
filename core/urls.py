@@ -52,10 +52,11 @@ urlpatterns = [
     path("fynbos-rehabilitation/monitoring/", views.rehabilitation_assessment, {"title": "Monitor"}, name="rehabilitation_monitoring"),
     path("fynbos-rehabilitation/plant-selection/", views.profile, name="rehabilitation_plant_selection"),
 
-    path("corridors/rivers/methodology/", views.corridors_rivers_methodology, name="corridors_rivers_methodology"),
     path("maps/update/", views.update_map),
     path("corridors/", views.corridors, name="corridors"),
     path("corridors/overview/", views.corridors_overview, name="corridors_overview"),
     path("corridors/rivers/", views.corridors_rivers, name="corridors_rivers"),
+    path("corridors/rivers/methodology/", views.corridors_rivers_methodology, name="corridors_rivers_methodology"),
+    path("corridors/rivers/<int:id>/", views.corridor_rivers, name="corridor_rivers"),
 
 ]
