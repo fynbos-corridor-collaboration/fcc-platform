@@ -1304,6 +1304,9 @@ def corridors_rivers_methodology(request):
         "load_map": True,
         "lat": -33.9790,
         "lng": 18.5284,
+        "corridors": Corridor.objects.all(),
+        "page": "methodology",
+        # Run this if the rivers should show, e.g. for screenshotting
         #"final_rivers": [989882, 990004, 990036, 989903, 990127, 989920, 989924, 990032, 990020],
     }
     return render(request, "core/corridors.rivers.methodology.html", context)
@@ -1473,25 +1476,15 @@ def page(request, slug):
 
 def corridors_rivers(request):
     context = {
-        "corridors": {
-            "1": "Diep River",
-            "2": "Lotus Canal",
-            "3": "Eerste River",
-            "4": "Kuils River",
-        },
         "info": Page.objects.get(slug="high-impact-strategic-river-corridors"),
+        "corridors": Corridor.objects.all(),
     }
     return render(request, "core/corridors.rivers.html", context)
 
 def corridor_rivers(request, id):
     context = {
-        "corridors": {
-            "1": "Diep River",
-            "2": "Lotus Canal",
-            "3": "Eerste River",
-            "4": "Kuils River",
-        },
-        "id": id,
+        "info": get_object_or_404(Corridor, pk=id),
+        "corridors": Corridor.objects.all(),
     }
     return render(request, "core/corridor.rivers.html", context)
 

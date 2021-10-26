@@ -8,18 +8,35 @@
   {{ info.get_content }}
 
   <div class="row">
-    {% for id,name in corridors.items %}
+    {% for each in corridors %}
       <div class="col-3 mb-2">
         <div class="card">
-          <a href="{% url "corridor_rivers" id %}">
-            <img src="/media/corridors/corridor{{ id }}.png" class="card-img-top fixed-thumb" alt="">
+          <a href="{% url "corridor_rivers" each.id %}">
+            <img src="{{ each.image.medium.url }}" class="card-img-top fixed-thumb" alt="{{ each }}">
           </a>
           <div class="card-body">
-            <h5 class="card-title"><a href="{% url "corridor_rivers" id %}">{{ name }} Corridor</a></h5>
+            <h5 class="card-title"><a href="{% url "corridor_rivers" each.id %}">{{ each }} Corridor</a></h5>
           </div>
         </div>
       </div>
     {% endfor %}
   </div>
+
+{% if False %}
+REMOVE AFTER NOV 15
+Just for screenshotting purposes
+<div class="row row-cols-md-3 g-4">
+    {% for each in corridors %}
+  <div class="col">
+    <div class="card">
+      <img src="{{ each.image.url }}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{ each }}</h5>
+      </div>
+    </div>
+  </div>
+    {% endfor %}
+    </div>
+{% endif %}
 
 {% endblock %}

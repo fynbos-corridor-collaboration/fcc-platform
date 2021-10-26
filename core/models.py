@@ -393,3 +393,9 @@ class Corridor(models.Model):
     class Meta:
         ordering = ["name"]
 
+    @property
+    def get_absolute_url(self):
+        return f"/corridors/rivers/{self.id}/"
+
+    def get_image_size(self):
+        return self.image.size/1024
