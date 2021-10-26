@@ -78,8 +78,8 @@
 </div>
 
 <div class="mt-2 alert alert-success text-center">
-  {% if veg and veg.get_vegetation_type %}
-  The original vegetation type at this location is:<br> <strong><a href="{% url "vegetation_type" veg.get_vegetation_type.slug %}">{{ veg.name }}</a></strong><br>
+  {% if veg %}
+  The original vegetation type at this location is:<br> <strong><a href="{% url "vegetation_type" veg.slug %}">{{ veg.name }}</a></strong><br>
   {% endif %}
   <br>
   <i class="fa fa-map-marker-alt"></i>

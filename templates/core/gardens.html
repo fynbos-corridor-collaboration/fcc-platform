@@ -11,6 +11,10 @@
   <h1>{{ page }}</h1>
   {{ page.get_content }}
 
+  <div class="alert alert-info">
+    We currently have <strong>{{ all.count }}</strong> gardens in our network.
+  </div>
+
   <div id="map" class="mb-4"></div>
 
   <div class="row">

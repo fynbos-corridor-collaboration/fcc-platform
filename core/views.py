@@ -623,34 +623,6 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     parks = get_object_or_404(Document, pk=983479)
     rivers = get_object_or_404(Document, pk=983382)
     
-    if "update" in request.GET:
-        badrivers = [
-            "DIEP RIVER",
-            "DIEPRIVIER",
-            "EERSTE RIVER",
-            "EERSTERIVIER",
-            "ELSIESKRAAL",
-            "ELSIESKRAAL CANAL",
-            "extension of channel into Salt",
-            "extension of Liesbeek into Salt",
-            "KUILS RIVER",
-            "KUILSRIVIER CHANNEL",
-            "MOSSELBANK RIVER",
-            "MOSSELBANKRIVIER",
-            "SALT RIVER",
-            "SAND RIVER",
-            "SANDRIVIER",
-            "SIR LOWRY'S PASS RIVER",
-            "stream extension to Eerste River",
-            "ZEEKOEVLEI",
-            "ZEEKOEVLEI CANAL",
-        ]
-        a = []
-        for each in rivers.spaces.all():
-            if each.name in badrivers:
-                each.meta_data = {"poor_quality_river": True}
-                each.save()
-
     railway = get_object_or_404(Document, pk=2)
     centers = get_object_or_404(Document, pk=983491)
     remnants = get_object_or_404(Document, pk=983097)
@@ -660,20 +632,6 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
 
     # These are the layers we open by default on the map
     open_these_layers = [schools.id, cemeteries.id, parks.id, rivers.id, railway.id, remnants.id, gardens.id, boundaries.id, centers.id]
-
-    if "update_color" in request.GET:
-        rivers.color = "blue"
-        rivers.save()
-        remnants.color = "green"
-        remnants.save()
-        parks.color = "#9DC209"
-        parks.save()
-        schools.color = "purple"
-        schools.save()
-        cemeteries.color = "#CC0101"
-        cemeteries.save()
-        centers.color = "orange"
-        centers.save()
 
     if "lat" in request.GET:
         lat = float(request.GET["lat"])
@@ -695,8 +653,9 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     circle.transform(4326) # Transform back to WGS84 to create geojson
 
     try:
-        veg = vegetation.spaces.filter(Q(geometry__within=circle)|Q(geometry__intersects=circle))
-        veg = veg[0]
+        point = geos.Point(x=lng, y=lat)
+        veg = vegetation.spaces.get(geometry__intersects=point)
+        veg = veg.get_vegetation_type()
     except:
         veg = None
 
@@ -1022,13 +981,12 @@ def species(request, id):
     return render(request, "core/species.html", context)
 
 def gardens(request):
-    gardens = Garden.objects.filter(active=True)
-    for each in gardens:
-        each.save()
+    gardens = Garden.objects.prefetch_related("organizations").filter(active=True)
     context = {
         "all": gardens,
         "page": Page.objects.get(pk=2),
         "load_map": True,
+        "load_datatables": True,
     }
     return render(request, "core/gardens.html", context)
 
@@ -1039,6 +997,7 @@ def garden(request, id):
     map = folium.Map(
         zoom_start=14,
         scrollWheelZoom=False,
+        location=[info.geometry.centroid[1],info.geometry.centroid[0]],
         tiles=STREET_TILES,
         attr="Mapbox",
     )
@@ -1049,7 +1008,6 @@ def garden(request, id):
     ).add_to(map)
 
     Fullscreen().add_to(map)
-    map.fit_bounds(map.get_bounds())
 
     context = {
         "map": map._repr_html_(),
