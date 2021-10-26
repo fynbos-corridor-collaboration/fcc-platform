@@ -57,6 +57,8 @@ class Organization(models.Model):
     name = models.CharField(max_length=255, db_index=True)
     description = models.TextField(null=True, blank=True)
     logo = StdImageField(upload_to="pages", variations={"thumbnail": (350, 350), "medium": (800, 600), "large": (1280, 1024)}, delete_orphans=True)
+    url = models.CharField(max_length=255, null=True, blank=True)
+    part_of_fcc = models.BooleanField(default=True, db_index=True)
 
     def __str__(self):
         return self.name

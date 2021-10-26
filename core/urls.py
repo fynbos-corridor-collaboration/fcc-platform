@@ -37,6 +37,7 @@ urlpatterns = [
     path("accounts/login/", views.user_login, name="login"),
     path("accounts/logout/", views.user_logout, name="logout"),
 
+    path("about/our-organisations/", views.organizations, name="organizations"),
     path("about/<slug:slug>/", views.page, name="about"),
     path("join/<slug:slug>/", views.page, name="join"),
     path("resources/<slug:slug>/", views.page, name="resources"),

@@ -1543,3 +1543,9 @@ def newsletter(request):
     else:
         return redirect("index")
 
+def organizations(request):
+    context = {
+        "organizations": Organization.objects.filter(part_of_fcc=True),
+    }
+    return render(request, "core/organizations.html", context)
+
