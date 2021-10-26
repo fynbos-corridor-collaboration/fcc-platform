@@ -399,3 +399,13 @@ class Corridor(models.Model):
 
     def get_image_size(self):
         return self.image.size/1024
+
+class Newsletter(models.Model):
+    email = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
+
+    class Meta:
+        ordering = ["email"]

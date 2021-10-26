@@ -60,4 +60,5 @@ urlpatterns = [
     path("corridors/rivers/methodology/", views.corridors_rivers_methodology, name="corridors_rivers_methodology"),
     path("corridors/rivers/<int:id>/", views.corridor_rivers, name="corridor_rivers"),
 
+    path("newsletter/", views.newsletter, name="newsletter"),
 ]

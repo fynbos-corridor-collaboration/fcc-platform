@@ -1531,3 +1531,15 @@ def user_logout(request):
     else:
         return redirect("index")
 
+def newsletter(request):
+    if request.POST and "email" in request.POST:
+        Newsletter.objects.create(email=request.POST.get("email"))
+        messages.success(request, "Thank you! You have been registered for our newsletter.")
+    else:
+        messages.warning(request, "We could not register you for our newsletter - please ensure you enter a valid email address. Try again in the footer below.")
+
+    if "next" in request.POST:
+        return redirect(request.POST.get("next"))
+    else:
+        return redirect("index")
+
