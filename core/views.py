@@ -564,7 +564,7 @@ def maps(request):
         hits[e] = []
         type_list[e] = each.label
 
-    documents = Document.objects.filter(active=True).order_by("type")
+    documents = Document.objects.filter(active=True).order_by("type").exclude(type=0)
     for each in documents:
         t = each.type
         hits[t].append(each)
