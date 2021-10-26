@@ -13,10 +13,10 @@
     <div class="row mb-3">
       <label class="col-sm-2 col-form-label">Coordinates</label>
       <div class="col-sm-5">
-        <input type="text" name="lng" value="{{ info.geometry.centroid.0 }}" maxlength="10" class="form-control" placeholder="Longitude">
+        <input type="text" name="lat" value="{{ info.geometry.centroid.1 }}" maxlength="10" class="form-control" placeholder="Latitude">
       </div>
       <div class="col-sm-5">
-        <input type="text" name="lat" value="{{ info.geometry.centroid.1 }}" maxlength="10" class="form-control" placeholder="Latitude">
+        <input type="text" name="lng" value="{{ info.geometry.centroid.0 }}" maxlength="10" class="form-control" placeholder="Longitude">
       </div>
     </div>
 

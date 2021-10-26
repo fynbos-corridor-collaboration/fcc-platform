@@ -41,17 +41,8 @@
         </ul>
       {% endif %}
 
-      {% if info.vegetation_types.all %}
-        <h3>Vegetation types</h3>
-        <ul>
-          {% for each in info.vegetation_types.all %}
-            <li><a href="{{ each.get_absolute_url }}">{{ each }}</a></li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-
         <h3>Vegetation type</h3>
-        <p><a href="{{ veg.get_absolute_url }}">{{ veg }}</a></p>
+        <p><a href="{{ info.vegetation_type.get_absolute_url }}">{{ info.vegetation_type }}</a></p>
 
         <h3>Location analysis</h3>
         <p><a href="{% url "profile" info.get_lat info.get_lng %}">View location profile</a></p>

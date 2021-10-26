@@ -1022,29 +1022,18 @@ def species(request, id):
     return render(request, "core/species.html", context)
 
 def gardens(request):
-    all = Garden.objects.filter(active=True)
+    gardens = Garden.objects.filter(active=True)
+    for each in gardens:
+        each.save()
     context = {
-        "all": all,
-        "page": Page.objects.get(pk=2),
-    }
-    return render(request, "core/gardens.html", context)
-
-def gardens_map(request):
-    all = Garden.objects.filter(active=True)
-    context = {
-        "all": all,
+        "all": gardens,
         "page": Page.objects.get(pk=2),
         "load_map": True,
     }
     return render(request, "core/gardens.html", context)
 
 def garden(request, id):
-    vegetation = get_object_or_404(Document, pk=983172)
     info = get_object_or_404(Garden, pk=id)
-    try:
-        veg = vegetation.spaces.get(geometry__intersects=info.geometry.centroid)
-    except:
-        veg = None
     photos = Photo.objects.filter(garden=info).exclude(id=info.photo.id).order_by("-date")[:12]
 
     map = folium.Map(
@@ -1065,7 +1054,6 @@ def garden(request, id):
     context = {
         "map": map._repr_html_(),
         "info": info,
-        "veg": veg,
         "photos": photos,
     }
     return render(request, "core/garden.html", context)

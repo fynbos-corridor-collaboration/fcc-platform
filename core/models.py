@@ -194,9 +194,22 @@ class Garden(ReferenceSpace):
     phase_specialists = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
     phase_placemaking = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
     organizations = models.ManyToManyField(Organization, blank=True)
+    vegetation_type = models.ForeignKey("VegetationType", on_delete=models.CASCADE, null=True, blank=True, related_name="gardens")
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        vegetation = Document.objects.get(pk=983172)
+        veg = None
+        if self.geometry:
+            try:
+                veg = vegetation.spaces.get(geometry__intersects=self.geometry.centroid)
+                veg = veg.get_vegetation_type()
+            except:
+                veg = None
+            self.vegetation_type = veg
+        super().save(*args, **kwargs)
 
 class Event(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -323,6 +336,13 @@ class Species(models.Model):
         else:
             return settings.MEDIA_URL + "/placeholder.png"
 
+    @property
+    def get_photo_thumbnail(self):
+        if self.photo:
+            return self.photo.image.thumbnail.url
+        else:
+            return settings.MEDIA_URL + "/placeholder.png"
+
     def old(self):
         return self.meta_data.get("original")
 
@@ -378,6 +398,10 @@ class Photo(models.Model):
     @property
     def get_photo_medium(self):
         return self.image.medium.url
+
+    @property
+    def get_photo_thumbnail(self):
+        return self.image.thumbnail.url
 
     class Meta:
         ordering = ["position", "date"]

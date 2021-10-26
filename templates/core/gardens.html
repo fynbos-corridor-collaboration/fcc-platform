@@ -15,10 +15,10 @@
 
   <div class="row">
     {% for each in all %}
-      <div class="col-3 mb-2">
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
         <div class="card">
           <a href="{% url "garden" each.id %}">
-            <img src="{{ each.get_photo_medium }}" class="card-img-top fixed-thumb" alt="{{ each }}">
+            <img src="{{ each.get_photo_medium }}?" class="card-img-top fixed-thumb" alt="{{ each }}">
           </a>
           <div class="card-body">
             <h5 class="card-title"><a href="{% url "garden" each.id %}">{{ each.name }}</a></h5>
@@ -34,6 +34,8 @@
       <tr>
         <th>Name</th>
         <th>Suburb</th>
+        <th>Vegetation type</th>
+        <th>Organisation(s)</th>
       </tr>
     </thead>
     <tbody>
@@ -41,6 +43,18 @@
       <tr>
         <td><a href="{% url "garden" each.id %}">{{ each }}</a></td>
         <td>{{ each.suburb }}</td>
+        <td>{{ each.vegetation_type }}</td>
+        <td>
+          <ul class="list-unstyled">
+          {% for org in each.organizations.all %}
+            <li>
+            <span class="badge bg-secondary">
+              {{ org }}
+            </span>
+            </li>
+          {% endfor %}
+          </ul>
+        </td>
       </tr>
     {% endfor %}
     </tbody>
