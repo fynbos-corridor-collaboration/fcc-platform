@@ -12,6 +12,7 @@ from django.db.models import Q, Count
 from django.contrib.gis import geos
 from django.contrib.gis.measure import D
 from django.core.paginator import Paginator
+from django.forms import modelform_factory
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -1040,7 +1041,10 @@ def gardens_map(request):
 def garden(request, id):
     vegetation = get_object_or_404(Document, pk=983172)
     info = get_object_or_404(Garden, pk=id)
-    veg = vegetation.spaces.get(geometry__intersects=info.geometry.centroid)
+    try:
+        veg = vegetation.spaces.get(geometry__intersects=info.geometry.centroid)
+    except:
+        veg = None
     photos = Photo.objects.filter(garden=info).exclude(id=info.photo.id).order_by("-date")[:12]
 
     map = folium.Map(
@@ -1065,6 +1069,36 @@ def garden(request, id):
         "photos": photos,
     }
     return render(request, "core/garden.html", context)
+
+@login_required
+def garden_form(request, id=None):
+
+    info = None
+    ModelForm = modelform_factory(Garden, fields=["name", "content", "phase_assessment", "phase_alienremoval", "phase_landscaping", "phase_pioneers", "phase_birdsinsects", "phase_specialists", "phase_placemaking", "organizations"])
+    if id:
+        info = get_object_or_404(Garden, pk=id)
+        form = ModelForm(request.POST or None, instance=info)
+    else:
+        form = ModelForm(request.POST or None)
+
+    if request.method == "POST":
+        if form.is_valid():
+            info = form.save()
+            if request.POST.get("lat") and request.POST.get("lng"):
+                lat = float(request.POST.get("lat"))
+                lng = float(request.POST.get("lng"))
+                info.geometry = geos.Point(lng, lat)
+                info.save()
+            messages.success(request, "Information was saved.")
+            return redirect(info.get_absolute_url)
+        else:
+            messages.error(request, "We could not save your form, please fill out all fields")
+    context = {
+        "info": info,
+        "form": form,
+    }
+    return render(request, "core/garden.form.html", context)
+
 
 def vegetation_types(request):
     context = {

@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+
+  <h1>{% block title %}Edit garden{% if info %} -- {{ info }}{% endif %}{% endblock %}</h1>
+
+  <form method="post">
+      
+    {% csrf_token %}
+    {% bootstrap_form form layout="horizontal" %}
+
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label">Coordinates</label>
+      <div class="col-sm-5">
+        <input type="text" name="lng" value="{{ info.geometry.centroid.0 }}" maxlength="10" class="form-control" placeholder="Longitude">
+      </div>
+      <div class="col-sm-5">
+        <input type="text" name="lat" value="{{ info.geometry.centroid.1 }}" maxlength="10" class="form-control" placeholder="Latitude">
+      </div>
+    </div>
+
+    {% bootstrap_button button_type="submit" content="Save" %}
+
+  </form>
+
+{% endblock %}

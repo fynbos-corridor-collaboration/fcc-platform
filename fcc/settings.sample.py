@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'core.apps.CoreConfig',
+    'django_bootstrap5',
 ]
 
 STATICFILES_FINDERS = [

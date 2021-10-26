@@ -11,3 +11,4 @@ pandas
 geopandas
 folium
 bleach
+django-bootstrap5
