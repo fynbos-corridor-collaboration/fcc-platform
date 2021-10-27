@@ -269,13 +269,15 @@ def maps(request):
     hits = {}
     type_list = {}
     getcolors = {}
+    relevant_types = [1,2,3,4,5]
     for each in types:
         e = int(each)
-        parents.append(e)
-        hits[e] = []
-        type_list[e] = each.label
+        if e in relevant_types:
+            parents.append(e)
+            hits[e] = []
+            type_list[e] = each.label
 
-    documents = Document.objects.filter(active=True).order_by("type").exclude(type=0)
+    documents = Document.objects.filter(active=True, type__in=relevant_types).order_by("type")
     for each in documents:
         t = each.type
         hits[t].append(each)
@@ -692,11 +694,6 @@ def species(request, id):
 
 def gardens(request):
     gardens = Garden.objects.prefetch_related("organizations").filter(active=True)
-    if "update" in request.GET:
-        g = Garden.objects.filter(active=False)
-        d = Document.objects.create(name="Stepping-stone garden network - potential gardens", content="This document is used to store records of potential gardens that have been identified by people, but which are not yet being worked on.")
-        g.update(source=d)
-        e = Document.objects.create(name="Stepping-stone garden network - new garden submissions", content="These are gardens that are submitted by our visitors for review.")
     context = {
         "all": gardens,
         "page": Page.objects.get(pk=2),

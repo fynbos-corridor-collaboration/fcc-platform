@@ -71,11 +71,13 @@ class Document(models.Model):
 
     class Type(models.IntegerChoices):
         UNKNOWN = 0, "Unknown"
-        NATURE = 1, "Nature"
-        CONNECTOR = 2, "Connector layers"
+        NATURE = 1, "Existing stepping-stones"
+        CONNECTOR = 2, "Corridor connectors"
         TRANSPORT = 3, "Transport"
-        POTENTIAL = 4, "Potential sites"
+        POTENTIAL = 4, "Possible stepping-stones"
         CONTEXT = 5, "Context"
+        TEACHING = 6, "Teaching resources"
+        GENERAL = 7, "General document repository"
 
     type = models.IntegerField(choices=Type.choices, db_index=True, default=0)
     author = models.CharField(max_length=255, null=True, blank=True)
@@ -85,6 +87,7 @@ class Document(models.Model):
     meta_data = models.JSONField(null=True, blank=True, help_text="Only to be edited if you know what this does - otherwise, please do not change")
     active = models.BooleanField(default=True, db_index=True)
     include_in_site_analysis = models.BooleanField(default=False, db_index=True)
+    file = models.FileField(null=True, blank=True, upload_to="files")
 
     def __str__(self):
         return self.name

@@ -22,14 +22,21 @@
 
   <h3>Browse maps</h3>
 
-  {% for each in maps %}
-    {% ifchanged each.type %}
-      </ul>
-      <h4>{{ each.get_type_display }}</h4>
-      <ul>
-    {% endifchanged %}
-    <li><a href="{% url "map" each.id %}">{{ each }}</a></li>
-  {% endfor %}
+  <div class="row">
+      {% for each in maps %}
+        {% ifchanged each.type %}
+          {% if each.type != 1 %}
+          </div>
+          {% endif %}
+          <div class="col col-lg-3 col-md-4 col-sm-6">
+          </ul>
+          <h4>{{ each.get_type_display }}</h4>
+          <ul>
+        {% endifchanged %}
+        <li><a href="{% url "map" each.id %}">{{ each }}</a></li>
+      {% endfor %}
+    </div>
+  </div>
 
 {% endblock %}
 
