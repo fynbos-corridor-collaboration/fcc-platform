@@ -728,27 +728,47 @@ def garden(request, id):
     }
     return render(request, "core/garden.html", context)
 
-@login_required
 def garden_form(request, id=None):
 
     info = None
-    ModelForm = modelform_factory(Garden, fields=["name", "content", "phase_assessment", "phase_alienremoval", "phase_landscaping", "phase_pioneers", "phase_birdsinsects", "phase_specialists", "phase_placemaking", "organizations"])
+    new_garden = True
     if id:
+        if not request.user.is_authenticated:
+            messages.warning(request, "You must be logged in to access that page.")
+            return redirect("index")
+        new_garden = False
+        ModelForm = modelform_factory(Garden, fields=["name", "content", "phase_assessment", "phase_alienremoval", "phase_landscaping", "phase_pioneers", "phase_birdsinsects", "phase_specialists", "phase_placemaking", "organizations"])
         info = get_object_or_404(Garden, pk=id)
         form = ModelForm(request.POST or None, instance=info)
     else:
+        labels = {
+            "name": "Garden name",
+            "content": "Description",
+        }
+        ModelForm = modelform_factory(Garden, fields=["name", "content", "phase_assessment", "phase_alienremoval", "phase_landscaping", "phase_pioneers", "phase_birdsinsects", "phase_specialists", "phase_placemaking"], labels=labels)
         form = ModelForm(request.POST or None)
 
     if request.method == "POST":
         if form.is_valid():
             info = form.save()
             if request.POST.get("lat") and request.POST.get("lng"):
-                lat = float(request.POST.get("lat"))
-                lng = float(request.POST.get("lng"))
-                info.geometry = geos.Point(lng, lat)
+                try:
+                    lat = float(request.POST.get("lat"))
+                    lng = float(request.POST.get("lng"))
+                    info.geometry = geos.Point(lng, lat)
+                except:
+                    pass
                 info.save()
-            messages.success(request, "Information was saved.")
-            return redirect(info.get_absolute_url)
+            if new_garden:
+                info.active = False
+                info.source_id = 8
+                info.original = request.POST
+                info.save()
+                messages.success(request, "Thanks! We have received your garden details. We will review this and get back to you (might take a week or so, please stay tuned).")
+                return redirect("index")
+            else:
+                messages.success(request, "Information was saved.")
+                return redirect(info.get_absolute_url)
         else:
             messages.error(request, "We could not save your form, please fill out all fields")
     context = {

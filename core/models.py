@@ -195,13 +195,13 @@ class Garden(ReferenceSpace):
         IN_PROGRESS = 2, "In progress"
         COMPLETED = 3, "Completed"
 
-    phase_assessment = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_alienremoval = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_landscaping = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_pioneers = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_birdsinsects = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_specialists = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
-    phase_placemaking = models.IntegerField(choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_assessment = models.IntegerField("Initial ecological and social assessment", choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_alienremoval = models.IntegerField("Alien removal", choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_landscaping = models.IntegerField("Landscaping", choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_pioneers = models.IntegerField("Planting of pioneer species", choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_birdsinsects = models.IntegerField("Planting of bird and insect species", choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_specialists = models.IntegerField("Planting of specialist species", choices=PhaseStatus.choices, db_index=True, null=True)
+    phase_placemaking = models.IntegerField("Placemaking", choices=PhaseStatus.choices, db_index=True, null=True)
     organizations = models.ManyToManyField(Organization, blank=True)
     vegetation_type = models.ForeignKey("VegetationType", on_delete=models.CASCADE, null=True, blank=True, related_name="gardens")
 

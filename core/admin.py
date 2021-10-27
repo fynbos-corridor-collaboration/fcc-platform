@@ -33,7 +33,7 @@ class SpaceAdmin(SearchAdmin):
 
 class GardenAdmin(SearchAdmin):
     list_display = ["name", "active"]
-    list_filter = ["active", "organizations"]
+    list_filter = ["active", "organizations", "source"]
 
 class UserAdmin(admin.ModelAdmin):
      list_display = ["username", "email", "first_name", "date_joined", "is_staff", "is_active"]
