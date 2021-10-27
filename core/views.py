@@ -444,17 +444,15 @@ def report(request, show_map=False, lat=False, lng=False, site_selection=False):
     hits = {}
     type_list = {}
     getcolors = {}
+    relevant_types = [1,2,3,4,5]
     for each in types:
         e = int(each)
-        parents.append(e)
-        hits[e] = []
-        type_list[e] = each.label
+        if e in relevant_types:
+            parents.append(e)
+            hits[e] = []
+            type_list[e] = each.label
 
     documents = Document.objects.filter(active=True, include_in_site_analysis=True).order_by("type")
-    if not documents:
-        d = Document.objects.filter(id__in=[983409, 983426, 983479, 983382, 983097, 983172, 983157])
-        d.update(include_in_site_analysis=True)
-        documents = Document.objects.filter(active=True, include_in_site_analysis=True).order_by("type")
     for each in documents:
         t = each.type
         hits[t].append(each)
