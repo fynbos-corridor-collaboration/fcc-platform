@@ -692,6 +692,11 @@ def species(request, id):
 
 def gardens(request):
     gardens = Garden.objects.prefetch_related("organizations").filter(active=True)
+    if "update" in request.GET:
+        g = Garden.objects.filter(active=False)
+        d = Document.objects.create(name="Stepping-stone garden network - potential gardens", content="This document is used to store records of potential gardens that have been identified by people, but which are not yet being worked on.")
+        g.update(source=d)
+        e = Document.objects.create(name="Stepping-stone garden network - new garden submissions", content="These are gardens that are submitted by our visitors for review.")
     context = {
         "all": gardens,
         "page": Page.objects.get(pk=2),
