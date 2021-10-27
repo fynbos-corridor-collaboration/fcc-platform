@@ -110,3 +110,9 @@
   .printhide {display:none}
 }
 img{max-width:100%}
+.fcc-box{
+  background: #99386E;
+}
+.fcc-box i.fa-file-alt {
+  font-size:50px;
+}
