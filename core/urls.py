@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic.base import RedirectView
 
 from . import views
 
@@ -39,6 +40,7 @@ urlpatterns = [
     path("accounts/logout/", views.user_logout, name="logout"),
 
     path("about/our-organisations/", views.organizations, name="organizations"),
+    path("about/", RedirectView.as_view(url="/about/introduction", permanent=True)),
     path("about/<slug:slug>/", views.page, name="about"),
     path("join/<slug:slug>/", views.page, name="join"),
     path("resources/<slug:slug>/", views.page, name="resources"),
@@ -63,4 +65,6 @@ urlpatterns = [
     path("corridors/rivers/<int:id>/", views.corridor_rivers, name="corridor_rivers"),
 
     path("newsletter/", views.newsletter, name="newsletter"),
+
+    path("contact/", views.page, {"slug": "contact-form"}),
 ]
