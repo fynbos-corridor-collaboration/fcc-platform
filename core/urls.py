@@ -65,6 +65,7 @@ urlpatterns = [
     path("corridors/rivers/<int:id>/", views.corridor_rivers, name="corridor_rivers"),
 
     path("newsletter/", views.newsletter, name="newsletter"),
+    path("documents/", views.documents, name="documents"),
 
     path("contact/", views.page, {"slug": "contact-form"}),
 ]

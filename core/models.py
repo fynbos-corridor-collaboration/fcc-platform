@@ -92,6 +92,12 @@ class Document(models.Model):
     def __str__(self):
         return self.name
 
+    def get_file_size(self):    
+        if self.file:
+            return self.file.size/1024/1024
+        else:
+            return None
+
     @property
     def get_dataviz(self):
         if self.meta_data and "dataviz" in self.meta_data:

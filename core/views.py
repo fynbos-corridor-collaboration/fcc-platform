@@ -1241,3 +1241,9 @@ def organizations(request):
     }
     return render(request, "core/organizations.html", context)
 
+def documents(request):
+    context = {
+        "documents": Document.objects.filter(active=True, type__in=[6,7]).order_by("name"),
+    }
+    return render(request, "core/documents.html", context)
+

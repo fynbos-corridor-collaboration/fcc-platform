@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+{% load humanize %}
+
+{% block content %}
+  <h1>{% block title %}Documents{% endblock %}</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {% for each in documents %}
+    {% if each.file %}
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ each }}</h5>
+            <p class="card-text">
+              <span class="badge bg-primary mb-3">{{ each.author }}</span><br>
+              {{ each.content|linebreaksbr }}
+            </p>
+          </div>
+          <div class="card-footer">
+            <a href="{{ each.file.url }}">Download (PDF, {{ each.get_file_size|floatformat:1 }} Mb)</a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+{% endblock %}
