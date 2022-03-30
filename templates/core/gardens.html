@@ -1,8 +1,18 @@
 {% extends "_base.html" %}
 
 {% block css %}
-<style type="text/css">
-#map{height:80vh}
+<style>
+  #map {
+    height: 80vh;
+    position: sticky !important;
+    top: 1rem;
+  }
+
+  .single-garden img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+  }
 </style>
 {% endblock %}
 
@@ -11,58 +21,61 @@
   <h1>{{ page }}</h1>
   {{ page.get_content }}
 
-  <div class="alert alert-info">
-    We currently have <strong>{{ all.count }}</strong> gardens in our network.
+  <div class="border rounded bg-white shadow-sm p-3 d-inline-block mb-4">
+    <i class="fal fa-fw fa-info-circle me-1"></i> We currently have <strong>{{ all.count }}</strong> gardens in our network.
   </div>
 
-  <div id="map" class="mb-4"></div>
-
-  <div class="row">
-    {% for each in all %}
-      <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
-        <div class="card">
-          <a href="{% url "garden" each.id %}">
-            <img src="{{ each.get_photo_medium }}?" class="card-img-top fixed-thumb" alt="{{ each }}">
-          </a>
-          <div class="card-body">
-            <h5 class="card-title"><a href="{% url "garden" each.id %}">{{ each.name }}</a></h5>
-            <p><em>{{ each.suburb }}</em></p>
+  <div class="row mb-4">
+    <div class="col-lg-8">
+      <div id="map" class="rounded shadow-sm"></div>
+    </div>
+    <div class="col-lg-4">
+      {% for each in all %}
+        <a class="row single-garden mb-3 text-dark text-decoration-none align-items-center" href="{% url 'garden' each.id %}">
+          <div class="col-4">
+            <img class="rounded shadow-sm" src="{{ each.get_photo_medium }}?" alt="{{ each }}">
           </div>
-        </div>
-      </div>
-    {% endfor %}
+          <div class="col-8">
+            <h6 class="mb-0">{{ each.name }}</h6>
+            <div class="text-muted">{{ each.suburb }}</div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
   </div>
 
-  <table class="table table-striped datatable">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Suburb</th>
-        <th>Vegetation type</th>
-        <th>Organisation(s)</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for each in all %}
-      <tr>
-        <td><a href="{% url "garden" each.id %}">{{ each }}</a></td>
-        <td>{{ each.suburb }}</td>
-        <td>{{ each.vegetation_type }}</td>
-        <td>
-          <ul class="list-unstyled">
-          {% for org in each.organizations.all %}
-            <li>
-            <span class="badge bg-secondary">
-              {{ org }}
-            </span>
-            </li>
-          {% endfor %}
-          </ul>
-        </td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+  <div class="mt-4 pt-5">
+    <table class="table datatable mt-4">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Suburb</th>
+          <th>Vegetation type</th>
+          <th>Organisation(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for each in all %}
+        <tr>
+          <td><a class="text-decoration-none" href="{% url 'garden' each.id %}">{{ each }}</a></td>
+          <td>{{ each.suburb }}</td>
+          <td>{{ each.vegetation_type }}</td>
+          <td>
+            <ul class="list-unstyled">
+            {% for org in each.organizations.all %}
+              <li>
+              <span class="badge bg-secondary">
+                {{ org }}
+              </span>
+              </li>
+            {% endfor %}
+            </ul>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
 {% endblock %}
 
