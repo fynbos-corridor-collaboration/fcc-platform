@@ -33,7 +33,7 @@
       {% for each in all %}
         <a class="row single-garden mb-3 text-dark text-decoration-none align-items-center" href="{% url 'garden' each.id %}">
           <div class="col-4">
-            <img class="rounded shadow-sm" src="{{ each.get_photo_medium }}?" alt="{{ each }}">
+            <img class="rounded shadow-sm" src="{{ each.get_photo_medium }}" alt="{{ each }}">
           </div>
           <div class="col-8">
             <h6 class="mb-0">{{ each.name }}</h6>

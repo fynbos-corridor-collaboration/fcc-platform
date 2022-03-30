@@ -1,64 +1,60 @@
 {% extends "_base.html" %}
 
 {% block css %}
-<style type="text/css">
-#databox h3 {
-  font-size: 16px;
-  text-transform: uppercase;
-  opacity: 0.7;
-}
-#databox .box {
-  border-top: 1px dotted #999;
-}
-.box:nth-child(odd) {
-  background: #f4f4f4;
-}
-.box a {
-  font-size: 150%;
-  color: #3573aa;
-}
-.box .large {
-  font-size: 150%;
+<style>
+  #databox h3 {
+    font-size: 16px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  #databox .box {
+    border-top: 1px dotted #999;
+  }
+  .box:nth-child(odd) {
+    background: #f4f4f4;
+  }
+  .box a {
+    font-size: 150%;
+    color: #3573aa;
+  }
+  .box .large {
+    font-size: 150%;
 }
 </style>
 {% endblock %}
 
 {% block content %}
 
-  <h1>
-    {% block title %}{{ info }}{% endblock %}
-  </h1>
+  <h1>{% block title %}{{ info }}{% endblock %}</h1>
 
-  <div class="row">
+  <div class="row my-4">
     <div class="col-6">
 
-      <figure class="mb-3">
-        <img src="{{ info.get_photo_medium }}" alt="" class="img-thumbnail" />
-        
-        {% if info.meta_data.original.image_credit %}
-          <em>Image: <a href="{{ info.meta_data.original.image_link }}">{{ info.meta_data.original.image_credit }}</a></em>
-        {% endif %}
-      </figure>
+      <!-- <img src="{{ info.get_photo_medium }}" alt="" class="img-thumbnail" /> -->
+      <img src="https://www.fynboscorridors.org/media/photos/106_ktsPrk3.medium.jpg" alt="" class="rounded shadow-sm main-image">
+
+      {% if info.meta_data.original.image_credit %}
+        <em>Image: <a href="{{ info.meta_data.original.image_link }}">{{ info.meta_data.original.image_credit }}</a></em>
+      {% endif %}
 
     </div>
 
     <div class="col-6">
-      <div class="img-thumbnail">
-        <div id="map">
+      <div id="map" class="rounded shadow-sm">
         {{ map|safe }}
-        </div>
       </div>
 
-      <small class="text-center d-block">
-      Coordinates: {{ info.geometry.centroid.0 }}, {{ info.geometry.centroid.0 }}
-      </small>
+      <div class="mt-2">
+        <small>
+          Coordinates: <code>{{ info.geometry.centroid.0 }}, {{ info.geometry.centroid.0 }}</code>
+        </small>
+      </div>
 
     </div>
   
   </div>
 
   <div class="row">
-
     <div class="col-6">
       {% if info.content %}
         <h3>Description</h3>
@@ -67,24 +63,37 @@
 
       <div>
         <h3 class="mt-4">Support</h3>
-        <a href="/contact/" class="btn btn-warning mr-2 mb-2"><i class="fa fa-handshake fa-fw"></i> I would like to link my nearby garden to this one</a>
-        <a href="/contact/" class="btn btn-warning mr-2 mb-2"><i class="fa fa-heart-circle fa-fw"></i> I would like to support this garden</a>
-        <a href="/contact/" class="btn btn-warning mr-2 mb-2"><i class="fa fa-edit fa-fw"></i> I would like to register my own garden</a>
+
+        <ul class="list-group list-group-horizontal">
+          <a href="/contact/" class="list-group-item list-group-item-action flex-fill text-center border-purple bg-pink action">
+            <i class="fal fa-handshake fa-2x fa-fw my-2"></i> <br>
+            I would like to link my nearby garden to this one
+          </a>
+          <a href="/contact/" class="list-group-item list-group-item-action flex-fill text-center border-purple bg-pink action">
+            <i class="fal fa-heart-circle fa-2x fa-fw my-2"></i> <br>
+            I would like to support this garden
+          </a>
+          <a href="/contact/" class="list-group-item list-group-item-action flex-fill text-center border-purple bg-pink action">
+            <i class="fal fa-edit fa-2x fa-fw my-2"></i> <br>
+            I would like to register my own garden
+          </a>
+        </ul>
+
       </div>
 
     {% if photos.count > 1 %}
     <div class="row">
-      <h4 class="mt-3"><a href="{% url "garden_photos" info.id %}">Photos</a></h4>
+      <h4 class="mt-3"><a href="{% url 'garden_photos' info.id %}">Photos</a></h4>
       {% for each in photos %}
         <div class="col-3 mb-2">
           <div class="card">
-            <a href="{% url "garden" each.id %}">
+            <a href="{% url 'garden' each.id %}">
               <img src="{{ each.get_photo_medium }}" class="card-img-top fixed-thumb" alt="{{ each }}">
             </a>
           </div>
         </div>
       {% endfor %}
-      <p><a href="{% url "garden_photos" info.id %}">View all photos ({{ info.photos.count }})</a></p>
+      <p><a href="{% url 'garden_photos' info.id %}">View all photos ({{ info.photos.count }})</a></p>
     </div>
     {% endif %}
 
@@ -114,13 +123,13 @@
 
       <div class="box p-3">
         <h3><i class="float-end fa fa-clipboard-list"></i> Species list analysis</h3>
-        <p><a href="{% url "profile" info.get_lat info.get_lng %}">View location plant profile</a><br>
+        <p><a href="{% url 'profile' info.get_lat info.get_lng %}">View location plant profile</a><br>
         <em>This lists the plants that are most appropriate for this location.</em></p>
       </div>
 
       <div class="box p-3">
         <h3><i class="float-end fa fa-bullseye"></i> Site analysis</h3>
-        <p><a href="{% url "report" info.get_lat info.get_lng %}">View site analysis profile</a><br>
+        <p><a href="{% url 'report' info.get_lat info.get_lng %}">View site analysis profile</a><br>
         <em>This provides an overview of this location, including nearby features and corridor building opportunities.</em></p>
       </div>
 
@@ -128,7 +137,7 @@
   </div>
 
   {% if request.user.is_staff %}
-    <a class="btn btn-warning" href="{% url "garden_form" info.id %}" style="position:fixed;bottom:10px;right:10px">
+    <a class="btn btn-warning" href="{% url 'garden_form' info.id %}" style="position:fixed;bottom:10px;right:10px">
       <i class="fa fa-pencil"></i>
       Edit garden
     </a>
