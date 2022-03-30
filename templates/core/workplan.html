@@ -6,7 +6,10 @@
 
   {{ info.get_content }}
 
-  <a href="{% url "rehabilitation_monitoring" %}" class="btn btn-success">Go to the next step (Monitoring) &raquo;</a>
+  <h5 class="mb-1">Ready to start monitoring?</h5>
+  <a href="{% url 'rehabilitation_monitoring' %}" class="btn btn-purple btn-lg">
+    Go to the next step <i class="fal fa-arrow-right fa-fw ms-1"></i>
+  </a>
 
   {% include "core/_strategy.box.html" %}
 

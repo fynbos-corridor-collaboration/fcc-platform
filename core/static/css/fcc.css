@@ -121,7 +121,7 @@ img{max-width:100%}
 }
 
 .border-purple {
-  border-color: #9D7E91 !important;
+  border-color: #99386E !important;
 }
 
 .btn-pink {
@@ -143,17 +143,17 @@ img{max-width:100%}
 
 .btn-purple {
   color: #fff;
-  background-color: #9D7E91;
-  border-color: #9D7E91;
+  background-color: #99386E;
+  border-color: #99386E;
 }
 
 .btn-purple:hover {
   color: #fff;
-  background-color: #775b6c;
-  border-color: #775b6c;
+  background-color: #71214d;
+  border-color: #71214d;
 }
 
 .btn-purple:focus,
 .btn-purple:active:focus {
-  box-shadow: 0 0 0 .25rem #9D7E9180;
+  box-shadow: 0 0 0 .25rem #99386E80;
 }

@@ -1,15 +1,15 @@
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link" aria-current="page" href="../">
-        <i class="fa fa-home"></i>
-      </a>
-    </li>
-    {% for each in corridors %}
-    <li class="nav-item">
-      <a class="nav-link {% if info == each %}active{% endif %}" aria-current="page" href="{{ each.get_absolute_url }}">{{ each }}</a>
-    </li>
-    {% endfor %}
-    <li class="nav-item">
-      <a class="nav-link {% if page == "methodology" %}active{% endif %}" aria-current="page" href="{% url "corridors_rivers_methodology" %}">Methodology</a>
-    </li>
-  </ul>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="../">
+      <i class="fal fa-home"></i>
+    </a>
+  </li>
+  {% for each in corridors %}
+  <li class="nav-item">
+    <a class="nav-link {% if info == each %}active{% endif %}" aria-current="page" href="{{ each.get_absolute_url }}">{{ each }}</a>
+  </li>
+  {% endfor %}
+  <li class="nav-item">
+    <a class="nav-link {% if page == 'methodology' %}active{% endif %}" aria-current="page" href="{% url "corridors_rivers_methodology" %}">Methodology</a>
+  </li>
+</ul>

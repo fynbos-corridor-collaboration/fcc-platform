@@ -6,7 +6,10 @@
 
   {{ info.get_content }}
 
-  <a href="{% url "rehabilitation_workplan" %}" class="btn btn-success">Go to the next step (Make a work plan) &raquo;</a>
+  <h5 class="mb-1">Ready to make a work plan?</h5>
+  <a href="{% url 'rehabilitation_workplan' %}" class="btn btn-purple btn-lg">
+    Go to the next step <i class="fal fa-arrow-right fa-fw ms-1"></i>
+  </a>
 
   {% include "core/_strategy.box.html" %}
 

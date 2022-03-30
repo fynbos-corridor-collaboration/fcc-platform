@@ -1,10 +1,23 @@
 {% extends "_base.html" %}
 
+{% block css %}
+<style>
+  .steps .nav-link {
+    color: #775b6c !important;
+  }
+
+  .steps .nav-link.active {
+    color: #fff !important;
+    background-color: #9D7E91 !important;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 
   <main class="px-3" style="min-height:50vh">
     <h1>Step 2: {% block title %}Assess and imagine{% endblock %}</h1>
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <ul class="nav nav-pills mb-3 steps" id="pills-tab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Social needs</button>
       </li>
@@ -31,8 +44,11 @@
     </div>
 
     <form method="post">
+      <h5 class="mb-1">Ready to choose plants?</h5>
       <input type="hidden" name="next" value="true" />
-      <button type="submit" class="btn btn-success">Go to the next step (Choose Plants) &raquo;</button>
+      <button type="submit" class="btn btn-purple btn-lg">
+        Go to the next step <i class="fal fa-arrow-right fa-fw ms-1"></i>
+      </button>
       {% csrf_token %}
     </form>
 

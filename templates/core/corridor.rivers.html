@@ -9,41 +9,48 @@
 
   <h3 class="mt-4">{{ info }} Corridor</h3>
 
-  <div class="mb-2"><img src="{{ info.image.large.url }}" alt="" class="img-thumbnail" /></div>
-  <a href="{{ info.image.url }}" class="btn btn-primary"><i class="fa fa-download"></i> Download (PNG, {{ info.get_image_size|floatformat:0 }} kb)</a>
+  <div class="row mb-4">
+    <div class="col-lg">
+      <img src="{{ info.image.large.url }}" alt="" class="rounded shadow-sm mb-4">
+      <a href="{{ info.image.url }}" class="btn btn-pink">
+        <i class="fal fa-fw fa-download me-1"></i> Download (PNG, {{ info.get_image_size|floatformat:0 }} kb)
+      </a>
+    </div>
+    <div class="col-lg">
+      <h4 class="mt-3">Description</h4>
 
-  <h4 class="mt-3">Description</h4>
+      <div>
+      {{ info.general_description|linebreaksbr }}
+      </div>
 
-  <div>
-  {{ info.general_description|linebreaksbr }}
-  </div>
+      <h4 class="mt-3">What makes this an appealing project?</h4>
 
-  <h4 class="mt-3">What makes this an appealing project?</h4>
+      <ul>
+        <li>
+          The {{ info }} is a backbone of this corridor. By following a river, there is
+          potential to use an existing ecological corridor.
+        </li>
+        <li>
+          The {{ info }} has poor water quality and is often a liability in social and
+          environmental terms. By working on restoring the vegetation around the river,
+          the actual river receives attention. We recommend linking this project with
+          additional river cleanup and restoration efforts.
+        </li>
+        <li>
+          The selected area is currently not close to high-quality nature, based on the
+          Bionet network. By working on gardens in this area, there is an opportunity
+          to reduce the distance to nature for people living here.
+        </li>
+      </ul>
 
-  <ul>
-    <li>
-      The {{ info }} is a backbone of this corridor. By following a river, there is 
-      potential to use an existing ecological corridor.
-    </li>
-    <li>
-      The {{ info }} has poor water quality and is often a liability in social and
-      environmental terms. By working on restoring the vegetation around the river,
-      the actual river receives attention. We recommend linking this project with 
-      additional river cleanup and restoration efforts.
-    </li>
-    <li>
-      The selected area is currently not close to high-quality nature, based on the 
-      Bionet network. By working on gardens in this area, there is an opportunity 
-      to reduce the distance to nature for people living here.
-    </li>
-  </ul>
+      <p>To learn more about the method behind selecting this corridor, <a href="/corridors/rivers/methodology/">click here</a>.</p>
 
-  <p>To learn more about the method behind selecting this corridor, <a href="/corridors/rivers/methodology/">click here</a>.</p>
+      <h4 class="mt-5">Social description</h4>
 
-  <h4 class="mt-5">Social description</h4>
-
-  <div>
-  {{ info.social_description|linebreaksbr }}
+      <div>
+      {{ info.social_description|linebreaksbr }}
+      </div>
+    </div>
   </div>
 
   <h4 class="mt-5">Ward profiles</h4>

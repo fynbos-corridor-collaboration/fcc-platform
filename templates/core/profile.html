@@ -6,68 +6,56 @@
   {% endblock %}
 
 {% block head %}
-<style type="text/css">
-.col-3 > ul > li > a {
-  font-size:20px;
-  font-weight:bold;
-  color:#333;
-  margin-top:20px;
-  text-decoration: none;
-  display: block;
-}
-</style>
 {% endblock %}
 
 {% block content %}
 
   <div class="container">
     <div class="row">
-      <div class="col-3 bg-light p-3">
-        <h4><i class="fa fa-leaf fa-fw"></i> Vegetation type</h4>
-        <a href="{{ link }}vegetation-type/">{{ info.name }}</a>
+      <div class="col-3">
+        <div class="border rounded p-3 bg-white shadow-sm mb-4">
+          <div><i class="fal fa-fw me-1 fa-leaf fa-fw"></i> Vegetation type</div>
+          <a href="{{ link }}vegetation-type/">{{ info.name }}</a>
 
-        <ul class="list-unstyled">
-          <li class="mt-5"><h4><i class="fa fa-users fa-fw"></i> Species for social value</h4>
-            <ul>
-              <li><a href="{{ link }}plants/edible/">Edible plants</a></li>
-              <li><a href="{{ link }}plants/medicinal/">Medicinal plants</a></li>
-            </ul>
-          </li>
-          <li class="mt-5"><h4><i class="fa fa-leaf fa-fw"></i> Ecological function</h4>
-            <ul>
-              <li><a href="{{ link }}plants/pioneers/">Pioneer species</a></li>
-              <li><a href="{{ link }}plants/birds/">Bird-friendly plants</a></li>
-              <li><a href="{{ link }}plants/insects/">Insect-friendly plants</a></li>
-            </ul>
-          </li>
-          <li hidden>
-            <a href="{{ link }}nearby/"><i class="fa fa-map-signs fa-fw"></i> Nearby</a>
-            <ul>
-              <li><a href="{{ link }}nearby/remnants/">Natural remnants</a></li>
-              <li><a href="{{ link }}nearby/rivers/">Rivers</a></li>
-              <li><a href="{{ link }}nearby/parks/">Parks</a></li>
-              <li><a href="{{ link }}nearby/schools/">Schools</a></li>
-              <li><a href="{{ link }}nearby/cemeteries/">Cemeteries</a></li>
-            </ul>
-          </li>
-          <li hidden>
-            <a href="{{ link }}biodiversity/"><i class="fa fa-fw fa-crow"></i> Biodiversity</a>
-            <ul>
-              <li><a href="{{ link }}biodiversity/map/">View map</a></li>
-              <li><a href="{{ link }}biodiversity/animals/">Animals</a></li>
-            </ul>
-          </li>
-        </ul>
+          <div class="mt-4"><i class="fal fa-fw me-1 fa-users fa-fw"></i> Species for social value</div>
+          <ul class="list-unstyled mt-0">
+            <li><a href="{{ link }}plants/edible/">Edible plants</a></li>
+            <li><a href="{{ link }}plants/medicinal/">Medicinal plants</a></li>
+          </ul>
 
-        <form method="post" class="mt-5">
+          <div class="mt-4"><i class="fal fa-fw me-1 fa-leaf fa-fw"></i> Ecological function</div>
+          <ul class="list-unstyled my-0">
+            <li><a href="{{ link }}plants/pioneers/">Pioneer species</a></li>
+            <li><a href="{{ link }}plants/birds/">Bird-friendly plants</a></li>
+            <li><a href="{{ link }}plants/insects/">Insect-friendly plants</a></li>
+          </ul>
+
+          <div class="mt-4" hidden><i class="fal fa-fw me-1 fa-map-signs fa-fw"></i> <a href="{{ link nearby/">Nearby</a></div>
+          <ul class="list-unstyled my-0" hidden>
+            <li><a href="{{ link }}nearby/remnants/">Natural remnants</a></li>
+            <li><a href="{{ link }}nearby/rivers/">Rivers</a></li>
+            <li><a href="{{ link }}nearby/parks/">Parks</a></li>
+            <li><a href="{{ link }}nearby/schools/">Schools</a></li>
+            <li><a href="{{ link }}nearby/cemeteries/">Cemeteries</a></li>
+          </ul>
+
+          <div class="mt-4" hidden><i class="fal fa-fw me-1 fa-crow fa-fw"></i> <a href="{{ link biodiversity/">Biodiversity</a></div>
+          <ul class="list-unstyled my-0" hidden>
+            <li><a href="{{ link }}biodiversity/map/">View map</a></li>
+            <li><a href="{{ link }}biodiversity/animals/">Animals</a></li>
+          </ul>
+        </div>
+
+        <form method="post">
+          <h5 class="mb-1">Ready to design your garden?</h5>
           <input type="hidden" name="next" value="true" />
-          <button type="submit" class="btn btn-success"><strong>Go to the next step  &raquo;</strong><br>(Design your garden)</button>
+          <button type="submit" class="btn btn-purple btn-lg">
+            Go to the next step <i class="fal fa-arrow-right fa-fw ms-1"></i>
+          </button>
           {% csrf_token %}
         </form>
-            
       </div>
       <div class="col-9">
-
         {% if title %}
           <h2>{{ title }}</h2>
         {% endif %}
