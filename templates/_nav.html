@@ -1,23 +1,23 @@
 {% load static %}
 
-<nav class="navbar navbar-expand navbar-light bg-pink printhide">
+<nav class="navbar navbar-expand navbar-light bg-pink border-bottom border-purple border-2 printhide">
   <div class="container">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a href="/" class="nav-link"><i class="fa fa-home fa-fw"></i></a>
+          <a href="/" class="nav-link me-lg-2"><i class="fal fa-home me-1 fa-fw"></i> Home</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">About us</a>
+          <a class="nav-link dropdown-toggle mx-lg-2" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">About us</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url "about" "introduction" %}">Introduction</a></li>
-            <li><a class="dropdown-item" href="{% url "about" "history" %}">History</a></li>
-            <li><a class="dropdown-item" href="{% url "about" "our-organisations" %}">Our organisations</a></li>
-            <li><a class="dropdown-item" href="{% url "about" "contact-form" %}">Contact</a></li>
+            <li><a class="dropdown-item" href="{% url 'about' 'introduction' %}">Introduction</a></li>
+            <li><a class="dropdown-item" href="{% url 'about' 'history' %}">History</a></li>
+            <li><a class="dropdown-item" href="{% url 'about' 'our-organisations' %}">Our organisations</a></li>
+            <li><a class="dropdown-item" href="{% url 'about' 'contact-form' %}">Contact</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fynbos rehabilitation</a>
+          <a class="nav-link dropdown-toggle mx-lg-2" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fynbos rehabilitation</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/fynbos-rehabilitation/">Introduction</a></li>
             <li><a class="dropdown-item" href="/fynbos-rehabilitation/site-selection/">1. Select a site</a></li>
@@ -29,47 +29,49 @@
           </ul>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fynbos corridors</a>
+          <a class="nav-link dropdown-toggle mx-lg-2" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fynbos corridors</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url "corridors" %}">Introduction</a></li>
-            <li><a class="dropdown-item" href="{% url "gardens" %}">Stepping-stone garden network</a></li>
-            <li><a class="dropdown-item" href="{% url "corridors_overview" %}">Existing corridor projects</a></li>
-            <li><a class="dropdown-item" href="{% url "corridors_rivers" %}">High-impact strategic river corridors</a></li>
-            <li><a class="dropdown-item" href="{% url "garden_form" %}">Add your garden</a></li>
+            <li><a class="dropdown-item" href="{% url 'corridors' %}">Introduction</a></li>
+            <li><a class="dropdown-item" href="{% url 'gardens' %}">Stepping-stone garden network</a></li>
+            <li><a class="dropdown-item" href="{% url 'corridors_overview' %}">Existing corridor projects</a></li>
+            <li><a class="dropdown-item" href="{% url 'corridors_rivers' %}">High-impact strategic river corridors</a></li>
+            <li><a class="dropdown-item" href="{% url 'garden_form' %}">Add your garden</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Join us</a>
+          <a class="nav-link dropdown-toggle mx-lg-2" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Join us</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url "join" "whatsapp-groups" %}">Whatsapp groups</a></li>
-            <li><a class="dropdown-item" href="{% url "join" "trainings-and-workshops" %}">Trainings and workshops</a></li>
-            <li><a class="dropdown-item" href="{% url "join" "online-course" %}">Online course</a></li>
+            <li><a class="dropdown-item" href="{% url 'join' 'whatsapp-groups' %}">Whatsapp groups</a></li>
+            <li><a class="dropdown-item" href="{% url 'join' 'trainings-and-workshops' %}">Trainings and workshops</a></li>
+            <li><a class="dropdown-item" href="{% url 'join' 'online-course' %}">Online course</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Resources</a>
+          <a class="nav-link dropdown-toggle ms-lg-2" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Resources</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/maps/">Maps</a></li>
             <li><a class="dropdown-item" href="/vegetation-types/">Vegetation types</a></li>
             <li><a class="dropdown-item" href="/species/">Species list</a></li>
-            <li><a class="dropdown-item" href="{% url "documents" %}">Documents</a></li>
-            <li><a class="dropdown-item" href="{% url "report" %}">Instant site analysis</a></li>
+            <li><a class="dropdown-item" href="{% url 'documents' %}">Documents</a></li>
+            <li><a class="dropdown-item" href="{% url 'report' %}">Instant site analysis</a></li>
             <li hidden><a class="dropdown-item" href="http://">Numato</a></li>
           </ul>
         </li>
+      </ul>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item dropdown">
           {% if request.user.is_authenticated %}
           <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
             <i class="fa fa-user"></i>
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url "logout" %}?next={{ request.get_full_path }}">Logout</a></li>
-            <li><a class="dropdown-item" href="{% url "admin:index" %}">Site administration</a></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}?next={{ request.get_full_path }}">Logout</a></li>
+            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Site administration</a></li>
           </ul>
           {% else %}
-          <a class="nav-link" href="{% url "login" %}?next={{ request.get_full_path }}">
-            <i class="fa fa-user"></i>
-          </a>
+            <a class="nav-link" href="{% url 'login' %}?next={{ request.get_full_path }}">
+              <i class="fal fa-fw fa-sign-in me-1"></i> Sign in
+            </a>
           {% endif %}
         </li>
       </ul>
@@ -77,11 +79,11 @@
   </div>
 </nav>
 
-<nav class="navbar navbar-expand-lg navbar-light load-bg">
+<div class="load-bg">
   <div class="container">
     <a class="navbar-brand" href="/"><img class="p-4" src="{% static 'img/logo.png' %}" alt="" /></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
   </div>
-</nav>
+</div>

@@ -1,4 +1,3 @@
-
 .leaflet-map {
   box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, 0.2);
   border-radius: .25rem;
@@ -115,4 +114,46 @@ img{max-width:100%}
 }
 .fcc-box i.fa-file-alt {
   font-size:50px;
+}
+
+.bg-pink {
+  background-color: #FCF1F1 !important;
+}
+
+.border-purple {
+  border-color: #9D7E91 !important;
+}
+
+.btn-pink {
+  color: #000;
+  background-color: #fcf1f1;
+  border-color: #fcf1f1;
+}
+
+.btn-pink:hover {
+  color: #000;
+  background-color: #e3d3d3;
+  border-color: #e3d3d3;
+}
+
+.btn-pink:focus,
+.btn-pink:active:focus {
+  box-shadow: 0 0 0 .25rem #fcf1f180;
+}
+
+.btn-purple {
+  color: #fff;
+  background-color: #9D7E91;
+  border-color: #9D7E91;
+}
+
+.btn-purple:hover {
+  color: #fff;
+  background-color: #775b6c;
+  border-color: #775b6c;
+}
+
+.btn-purple:focus,
+.btn-purple:active:focus {
+  box-shadow: 0 0 0 .25rem #9D7E9180;
 }

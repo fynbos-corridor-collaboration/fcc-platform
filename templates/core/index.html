@@ -3,102 +3,109 @@
 {% block title %}Homepage{% endblock %}
 
 {% block css %}
-<style type="text/css">
-.fa-file-alt{font-size:50px;}
-</style>
+  <style>
+  </style>
 {% endblock %}
 
 {% block content %}
-  <div style="min-height:50vh">
-    <h1>Fynbos Corridor Collaboration</h1>
+  <div class="row py-4">
+    <div class="col-sm-6 mb-2">
+      <h3 class="mb-4">
+        Despite its immense ecological and social value, the fynbos
+        biome is one of the world’s most threatened ecosystems.
+      </h3>
+      <p>
+        In addition to the ecological pressures facing the city, Cape Town also
+        continues to battle numerous social challenges.
+        In response to these ecological and social challenges, the need for
+        community-led fynbos rehabilitation in Cape Town is gaining traction.
+        However, while well-intentioned, these numerous fynbos rehabilitation
+        projects tend to be isolated and uncoordinated and, as a result, are
+        limited in their impact.
+        As a response to this situation, the Fynbos Corridor Collaboration was
+        established in 2018.
+      </p>
 
-    <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-6 mb-2">
-        <p>
-          In spite of its immense ecological and social value, the <strong>fynbos
-          biome</strong> is one of the world’s most threatened ecosystems. 
-          In addition to the ecological pressures facing the city, Cape Town also
-          continues to battle numerous social challenges. 
-          In response to these ecological and social challenges, the need for
-          community-led fynbos rehabilitation in Cape Town is gaining traction.
-          However, while well-intentioned, these numerous fynbos rehabilitation
-          projects tend to be isolated and uncoordinated and, as a result, are
-          limited in their impact.
-          As a response to this situation, the Fynbos Corridor Collaboration was
-          established in 2018. 
-          <a href="/about/">Read more...</a>
-        </p>
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-6 mb-2">
+      <a class="btn btn-pink" href="/about/">
+        Read more <i class="fal fa-arrow-right fa-fw ms-1"></i>
+      </a>
+    </div>
+
+    <div class="col-sm-6 mb-2">
+      <div class="border rounded p-3 bg-white shadow-sm">
         <h2>Our strategy document</h2>
-        <i class="fal fa-file-alt float-end ms-3"></i>
         <p>
           This strategy takes you from the basics of understanding what Fynbos is
           to prioritising where to work. It includes a step-by-step guide towards
           rehabilitation of stepping-stone gardens.
         </p>
-        <a href="/media/files/FCC_-_Fynbos_Stepping-Stone_Corridor_Strategy.pdf" class="btn btn-success">
-          <i class="fa fa-download fa-fw"></i>
+        <a href="/media/files/FCC_-_Fynbos_Stepping-Stone_Corridor_Strategy.pdf" class="btn btn-purple">
+          <i class="fal fa-download fa-fw me-1"></i>
           Download document (PDF)
         </a>
-        
       </div>
     </div>
-    <div class="row">
-
-      <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
-        <div class="card">
-          <a href="/fynbos-rehabilitation/">
-            <img src="/media/guide/overview.png" class="card-img-top fixed-thumb" alt="">
+  </div>
+  <div class="row py-4">
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+      <div class="card border-0">
+        <a href="/fynbos-rehabilitation/">
+          <img src="/media/guide/overview.png" class="card-img-top fixed-thumb" alt="">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">Fynbos rehabilitation guide</h5>
+          <p><em>Use our 6-step guide to develop your own stepping-stone fynbos rehabilitation garden</em></p>
+          <a href="/fynbos-rehabilitation/" class="btn btn-pink stretched-link">
+            Start now <i class="fal fa-arrow-right fa-fw ms-1"></i>
           </a>
-          <div class="card-body">
-            <h5 class="card-title"><a href="/fynbos-rehabilitation/">Fynbos rehabilitation guide</a></h5>
-            <p><em>Use our 6-step guide to develop your own stepping-stone fynbos rehabilitation garden</em></p>
-            <p><a href="/fynbos-rehabilitation/" class="btn btn-primary">Start now</a></p>
-          </div>
         </div>
       </div>
+    </div>
 
-      <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
-        <div class="card">
-          <a href="/report/">
-            <img src="/media/siteanalysis.png" class="card-img-top fixed-thumb" alt="">
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+      <div class="card border-0">
+        <a href="/report/">
+          <img src="/media/siteanalysis.png" class="card-img-top fixed-thumb" alt="">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">Instant site analysis</h5>
+          <p><em>Find out how to identify a suitable location for your fynbos garden!</em></p>
+          <a href="/report/" class="btn btn-pink stretched-link">
+            Use our tool <i class="fal fa-arrow-right fa-fw ms-1"></i>
           </a>
-          <div class="card-body">
-            <h5 class="card-title"><a href="/report/">Instant site analysis</a></h5>
-            <p><em>Find out how to identify a suitable location for your fynbos garden!</em></p>
-            <p><a href="/report/" class="btn btn-primary">Use our tool</a></p>
-          </div>
         </div>
       </div>
+    </div>
 
-      <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
-        <div class="card">
-          <a href="/corridors/rivers/">
-            <img src="/media/corridors/rivers.png" class="card-img-top fixed-thumb" alt="">
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+      <div class="card border-0">
+        <a href="/corridors/rivers/">
+          <img src="/media/corridors/rivers.png" class="card-img-top fixed-thumb" alt="">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">High-impact strategic river corridors</h5>
+          <p><em>View our approach to identifying high-impact strategic corridors in the city.</em></p>
+          <a href="/corridors/rivers/" class="btn btn-pink stretched-link">
+            Read more <i class="fal fa-arrow-right fa-fw ms-1"></i>
           </a>
-          <div class="card-body">
-            <h5 class="card-title"><a href="/corridors/rivers/">High-impact strategic river corridors</a></h5>
-            <p><em>View our approach to identifying high-impact strategic corridors in the city.</em></p>
-            <p><a href="/corridors/rivers/" class="btn btn-primary">Read more</a></p>
-          </div>
         </div>
       </div>
+    </div>
 
-      <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
-        <div class="card">
-          <a href="{% url "garden" garden.id %}">
-            <img src="{{ garden.get_photo_medium }}?" class="card-img-top fixed-thumb" alt="{{ garden }}">
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+      <div class="card border-0">
+        <a href="{% url 'garden' garden.id %}">
+          <img src="{{ garden.get_photo_medium }}?" class="card-img-top fixed-thumb" alt="{{ garden }}">
+        </a>
+        <div class="card-body">
+          <h4 class="card-title"><i class="fa fa-star fa-fw"></i> Spotlight garden</h4>
+          <h5 class="card-title">{{ garden.name }}</a>
+          <p><em>{{ garden.suburb }}</em></p>
+          <a href="/gardens/" class="btn btn-pink stretched-link">
+            Stepping-stone gardens <i class="fal fa-arrow-right fa-fw ms-1"></i>
           </a>
-          <div class="card-body">
-            <h4 class="card-title"><i class="fa fa-star fa-fw"></i> Spotlight garden</h4>
-            <h5 class="card-title"><a href="{% url "garden" garden.id %}">{{ garden.name }}</a></h5>
-            <p><em>{{ garden.suburb }}</em></p>
-            <p><a href="/gardens/" class="btn btn-primary">Stepping-stone garden network</a></p>
-          </div>
         </div>
       </div>
-
     </div>
 
   </div>
