@@ -2,24 +2,6 @@
 
 {% block css %}
 <style>
-  #databox h3 {
-    font-size: 16px;
-    text-transform: uppercase;
-    opacity: 0.7;
-  }
-  #databox .box {
-    border-top: 1px dotted #999;
-  }
-  .box:nth-child(odd) {
-    background: #f4f4f4;
-  }
-  .box a {
-    font-size: 150%;
-    color: #3573aa;
-  }
-  .box .large {
-    font-size: 150%;
-}
 </style>
 {% endblock %}
 
@@ -50,6 +32,9 @@
         </small>
       </div>
 
+      <a href="/gardens/" class="btn btn-pink mt-3">
+        <i class="fal fa-arrow-left fa-fw me-1"></i> All gardens
+      </a>
     </div>
   
   </div>
@@ -98,41 +83,54 @@
     {% endif %}
 
     </div>
-    <div class="col-6" id="databox">
+    <div class="col-6">
+      <div class="row">
+        <div class="col-sm">
+          <div class="border rounded shadow-sm bg-white p-3 text-center mb-3">
+            <i class="fal fa-fw fa-map me-2"></i> Suburb
+            <h5 class="mt-2 mb-0 fw-bold">{{ info.suburb }}</h5>
+          </div>
 
-      <div class="box p-3">
-        <h3><i class="float-end fa fa-map"></i> Suburb</h3>
-        <p class="large">{{ info.suburb }}</p>
+          <div class="border rounded shadow-sm bg-white p-3 text-center position-relative mb-3">
+            <i class="fal fa-fw fa-leaf me-2"></i> Vegetation type
+            <a class="text-decoration-none stretched-link" href="{{ info.vegetation_type.get_absolute_url }}">
+              <h5 class="mt-2 mb-0 fw-bold">{{ info.vegetation_type }}</h5>
+            </a>
+          </div>
+
+          {% if info.organizations.count %}
+            <div class="border rounded shadow-sm bg-white p-3 text-center mb-3">
+              <i class="fal fa-fw fa-users-class me-2"></i> Involved organisations
+              <ul class="list-unstyled mb-0 mt-2">
+              {% for each in info.organizations.all %}
+                <li>
+                  <h5 class="mt-2 fw-bold">
+                    <a class="text-decoration-none" href="{{ each.url }}"> {{ each }}</a> <i class="fal fa-external-link-alt fa-fw ms-2"></i>
+                  </h5>
+                </li>
+              {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+        <div class="col-sm">
+          <div class="border rounded shadow-sm bg-white p-3 text-center mb-3 position-relative">
+            <i class="fal fa-fw fa-clipboard-list me-2"></i> Species list analysis
+            <h5 class="my-2 fw-bold">
+              <a class="stretched-link text-decoration-none" href="{% url 'profile' info.get_lat info.get_lng %}">Location plant profile</a>
+            </h5>
+            <small>Lists the plants that are most appropriate for this location</small>
+          </div>
+
+          <div class="border rounded shadow-sm bg-white p-3 text-center mb-3 position-relative">
+            <i class="fal fa-fw fa-bullseye me-2"></i> Site analysis
+            <h5 class="my-2 fw-bold">
+              <a class="stretched-link text-decoration-none" href="{% url 'report' info.get_lat info.get_lng %}">Site analysis profile</a>
+            </h5>
+            <small>provides an overview of this location, including nearby features and corridor building opportunities</small>
+          </div>
+        </div>
       </div>
-
-      {% if info.organizations.count %}
-      <div class="box p-3">
-        <h3><i class="float-end fa fa-users-class"></i> Involved organisations</h3>
-        <ul class="list-unstyled">
-        {% for each in info.organizations.all %}
-          <li><a href="{{ each.url }}">{{ each }}</a> <i class="fa fa-external-link-alt fa-fw ms-2"></i></li>
-        {% endfor %}
-        </ul>
-      </div>
-      {% endif %}
-
-      <div class="box p-3">
-        <h3><i class="float-end fa fa-leaf"></i>Vegetation type</h3>
-        <p><a href="{{ info.vegetation_type.get_absolute_url }}">{{ info.vegetation_type }}</a></p>
-      </div>
-
-      <div class="box p-3">
-        <h3><i class="float-end fa fa-clipboard-list"></i> Species list analysis</h3>
-        <p><a href="{% url 'profile' info.get_lat info.get_lng %}">View location plant profile</a><br>
-        <em>This lists the plants that are most appropriate for this location.</em></p>
-      </div>
-
-      <div class="box p-3">
-        <h3><i class="float-end fa fa-bullseye"></i> Site analysis</h3>
-        <p><a href="{% url 'report' info.get_lat info.get_lng %}">View site analysis profile</a><br>
-        <em>This provides an overview of this location, including nearby features and corridor building opportunities.</em></p>
-      </div>
-
     </div>
   </div>
 
