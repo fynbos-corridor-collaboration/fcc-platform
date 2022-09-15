@@ -738,23 +738,24 @@ def garden(request, id):
     except:
         photos = None
 
-    map = folium.Map(
-        zoom_start=14,
-        scrollWheelZoom=False,
-        location=[info.geometry.centroid[1],info.geometry.centroid[0]],
-        tiles=STREET_TILES,
-        attr="Mapbox",
-    )
+    if info.geometry:
+        map = folium.Map(
+            zoom_start=14,
+            scrollWheelZoom=False,
+            location=[info.geometry.centroid[1],info.geometry.centroid[0]],
+            tiles=STREET_TILES,
+            attr="Mapbox",
+        )
 
-    folium.GeoJson(
-        info.geometry.geojson,
-        name="geojson",
-    ).add_to(map)
+        folium.GeoJson(
+            info.geometry.geojson,
+            name="geojson",
+        ).add_to(map)
 
-    Fullscreen().add_to(map)
+        Fullscreen().add_to(map)
 
     context = {
-        "map": map._repr_html_(),
+        "map": map._repr_html_() if info.geometry else None,
         "info": info,
         "photos": photos,
     }
