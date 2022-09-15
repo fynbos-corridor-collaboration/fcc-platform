@@ -1,10 +1,5 @@
 {% extends "_base.html" %}
 
-{% block css %}
-<style>
-</style>
-{% endblock %}
-
 {% block content %}
 
   <h1>{% block title %}{{ info }}{% endblock %}</h1>
@@ -40,7 +35,7 @@
 
         <div class="mt-2">
           <small>
-            Coordinates: <code>{{ info.geometry.centroid.0 }}, {{ info.geometry.centroid.0 }}</code>
+            Coordinates: <code>{{ info.geometry.centroid.1 }}, {{ info.geometry.centroid.0 }}</code>
           </small>
         </div>
       {% endif %}
@@ -148,6 +143,11 @@
   </div>
 
   {% if request.user.is_staff %}
+    <pre class="mt-5 alert alert-warning">ORIGINAL SUBMISSION
+
+{% for key,value in info.original.items %}
+{{ key }}: {{ value }}
+{% endfor %}</pre>
     <a class="btn btn-warning" href="{% url 'garden_form' info.id %}" style="position:fixed;bottom:10px;right:10px">
       <i class="fa fa-pencil"></i>
       Edit garden

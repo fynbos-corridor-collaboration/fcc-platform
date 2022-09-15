@@ -30,9 +30,11 @@ Where these plants grown from plants occurring locally within Cape Town?</li>
       
     {% csrf_token %}
 
-    <div class="row mb-3"><label class="col-sm-2 col-form-label">Your name</label><div class="col-sm-10"><input type="text" name="your_name" maxlength="255" class="form-control" placeholder="Your name" required></div></div>
-    <div class="row mb-3"><label class="col-sm-2 col-form-label">E-mail</label><div class="col-sm-10"><input type="email" name="email" maxlength="255" class="form-control" placeholder="E-mail" required></div></div>
-    <div class="row mb-3"><label class="col-sm-2 col-form-label">Phone</label><div class="col-sm-10"><input type="text" name="phone" maxlength="255" class="form-control" placeholder="Phone"></div></div>
+    {% if not info %}
+      <div class="row mb-3"><label class="col-sm-2 col-form-label">Your name</label><div class="col-sm-10"><input type="text" name="your_name" maxlength="255" class="form-control" placeholder="Your name" required></div></div>
+      <div class="row mb-3"><label class="col-sm-2 col-form-label">E-mail</label><div class="col-sm-10"><input type="email" name="email" maxlength="255" class="form-control" placeholder="E-mail" required></div></div>
+      <div class="row mb-3"><label class="col-sm-2 col-form-label">Phone</label><div class="col-sm-10"><input type="text" name="phone" maxlength="255" class="form-control" placeholder="Phone"></div></div>
+    {% endif %}
 
     {% bootstrap_form form layout="horizontal" %}
 
