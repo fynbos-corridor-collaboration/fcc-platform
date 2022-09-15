@@ -724,6 +724,12 @@ def garden(request, id):
         elif "uuid" in request.GET and request.GET.get("uuid") == str(info.uuid):
             show_garden = True
 
+    if request.user.is_staff:
+        if "delete" in request.POST:
+            info.delete()
+            messages.success(request, "The garden was removed.")
+            return redirect("gardens")
+
     if not show_garden:
         raise Http404("This garden was not found.")
 

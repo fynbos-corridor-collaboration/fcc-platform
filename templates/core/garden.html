@@ -149,6 +149,11 @@
       <i class="fa fa-pencil"></i>
       Edit garden
     </a>
+    <form method="post" style="position:fixed;bottom:10px;right:150px">
+      <button type="submit" class="btn btn-danger" onclick="javascript:return confirm('Are you sure?')">Delete this garden</button>
+      <input type="hidden" name="delete" value="true" />
+      {% csrf_token %}
+    </form>
   {% endif %}
 
   {% if false %}
