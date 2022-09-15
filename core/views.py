@@ -805,7 +805,7 @@ def garden_form(request, id=None):
                     "phone": request.POST.get("phone"),
                     "link": reverse("garden", args=[info.id]) + "?uuid=" + str(info.uuid),
                 }
-                msg_html = render_to_string("mailbody/newgarden.txt", mailcontext)
+                msg_html = render_to_string("mailbody/newgarden.html", mailcontext)
                 msg_plain = render_to_string("mailbody/newgarden.txt", mailcontext)
 
                 sender = '"Fynbos Corridor Collaboration Website" <info@fynboscorridors.org>'
