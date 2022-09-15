@@ -36,11 +36,13 @@
         {{ map|safe }}
       </div>
 
-      <div class="mt-2">
-        <small>
-          Coordinates: <code>{{ info.geometry.centroid.0 }}, {{ info.geometry.centroid.0 }}</code>
-        </small>
-      </div>
+      {% if info.geometry %}
+        <div class="mt-2">
+          <small>
+            Coordinates: <code>{{ info.geometry.centroid.0 }}, {{ info.geometry.centroid.0 }}</code>
+          </small>
+        </div>
+      {% endif %}
 
       <a href="/gardens/" class="btn btn-pink mt-3">
         <i class="fal fa-arrow-left fa-fw me-1"></i> All gardens
