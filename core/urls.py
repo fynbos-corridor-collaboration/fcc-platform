@@ -57,7 +57,6 @@ urlpatterns = [
     path("fynbos-rehabilitation/monitoring/", views.rehabilitation_monitoring, name="rehabilitation_monitoring"),
     path("fynbos-rehabilitation/plant-selection/", views.profile, name="rehabilitation_plant_selection"),
 
-    path("maps/update/", views.update_map),
     path("corridors/", views.corridors, name="corridors"),
     path("corridors/overview/", views.corridors_overview, name="corridors_overview"),
     path("corridors/rivers/", views.corridors_rivers, name="corridors_rivers"),

@@ -1,0 +1,9 @@
+A new garden was uploaded to the FCC website. The details follow below:
+
+- Garden name: {{ info.name }}
+- Uploaded by: {{ uploader }}
+- Uploader e-mail: {{ email }}
+- Uploader phone: {{ phone }}
+- Temporary link: {{ link }}
+
+Please review this garden, and if this looks good, activate the profile and then write to the uploader to let them know their garden is online. Request photos to add as well. 

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.conf import settings
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, Http404
 import urllib.request, json 
 from django.contrib import messages
 from django.utils.safestring import mark_safe
@@ -16,6 +16,10 @@ from django.forms import modelform_factory
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+
+# These are used so that we can send mail
+from django.core.mail import send_mail
+from django.template.loader import render_to_string, get_template
 
 # Quick debugging, sometimes it's tricky to locate the PRINT in all the Django 
 # output in the console, so just using a simply function to highlight it better
@@ -701,8 +705,23 @@ def gardens(request):
     return render(request, "core/gardens.html", context)
 
 def garden(request, id):
-    info = get_object_or_404(Garden, pk=id)
-    photos = Photo.objects.filter(garden=info).exclude(id=info.photo.id).order_by("-date")[:12]
+    info = Garden.objects_unfiltered.get(pk=id)
+    show_garden = True
+
+    if not info.active:
+        show_garden = False
+        if "uuid" in request.GET and request.GET.get("uuid") == str(info.uuid):
+            show_garden = True
+        elif request.user.is_authenticated:
+            show_garden = True
+
+    if not show_garden:
+        raise Http404("This garden was not found.")
+
+    try:
+        photos = Photo.objects.filter(garden=info).exclude(id=info.photo.id).order_by("-date")[:12]
+    except:
+        photos = None
 
     map = folium.Map(
         zoom_start=14,
@@ -736,7 +755,7 @@ def garden_form(request, id=None):
             return redirect("index")
         new_garden = False
         ModelForm = modelform_factory(Garden, fields=["name", "content", "phase_assessment", "phase_alienremoval", "phase_landscaping", "phase_pioneers", "phase_birdsinsects", "phase_specialists", "phase_placemaking", "organizations"])
-        info = get_object_or_404(Garden, pk=id)
+        info = Garden.objects_unfiltered.get(pk=id)
         form = ModelForm(request.POST or None, instance=info)
     else:
         labels = {
@@ -762,6 +781,28 @@ def garden_form(request, id=None):
                 info.source_id = 8
                 info.original = request.POST
                 info.save()
+
+                mailcontext = {
+                    "info": info,
+                    "uploader": request.POST.get("your_name"),
+                    "email": request.POST.get("email"),
+                    "phone": request.POST.get("phone"),
+                    "link": reverse("garden", args=[info.id]) + "?uuid=" + str(info.uuid),
+                }
+                msg_html = render_to_string("mailbody/newgarden.txt", mailcontext)
+                msg_plain = render_to_string("mailbody/newgarden.txt", mailcontext)
+
+                sender = '"Fynbos Corridor Collaboration Website" <info@fynboscorridors.org>'
+                recipient = sender
+
+                send_mail(
+                    "New garden added: " + info.name,
+                    msg_plain,
+                    sender,
+                    [recipient],
+                    html_message=msg_html,
+                )
+
                 messages.success(request, "Thanks! We have received your garden details. We will review this and get back to you (might take a week or so, please stay tuned).")
                 return redirect("index")
             else:

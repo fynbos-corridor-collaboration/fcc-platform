@@ -8,6 +8,7 @@ from django.conf import settings
 import bleach
 from unidecode import unidecode
 from django.urls import reverse
+import uuid
 
 class Page(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -186,6 +187,10 @@ class ReferenceSpace(models.Model):
     class Meta:
         ordering = ["name"]
 
+class ActiveRecordManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(active=True)
+
 class Garden(ReferenceSpace):
     active = models.BooleanField(default=True, db_index=True)
     original = models.JSONField(null=True, blank=True)
@@ -204,6 +209,10 @@ class Garden(ReferenceSpace):
     phase_placemaking = models.IntegerField("Placemaking", choices=PhaseStatus.choices, db_index=True, null=True)
     organizations = models.ManyToManyField(Organization, blank=True)
     vegetation_type = models.ForeignKey("VegetationType", on_delete=models.CASCADE, null=True, blank=True, related_name="gardens")
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, null=True, blank=True)
+
+    objects = ActiveRecordManager()
+    objects_unfiltered = models.Manager()
 
     def __str__(self):
         return self.name

@@ -9,3 +9,4 @@ fcc/settings.py
 theme/*
 shapefiles/*
 fcc.sql
+docs/*

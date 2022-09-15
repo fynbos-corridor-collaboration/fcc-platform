@@ -9,11 +9,17 @@
 
   <h1>{% block title %}{{ info }}{% endblock %}</h1>
 
+  {% if not info.active %}
+    <div class="alert alert-warning">
+      <i class="fa fa-info-circle"></i>
+      Please note: this garden is not yet publicly active. You can review and edit this garden before activating.
+    </div>
+  {% endif %}
+
   <div class="row my-4">
     <div class="col-6">
 
-      <!-- <img src="{{ info.get_photo_medium }}" alt="" class="img-thumbnail" /> -->
-      <img src="https://www.fynboscorridors.org/media/photos/106_ktsPrk3.medium.jpg" alt="" class="rounded shadow-sm main-image">
+      <img src="{{ info.get_photo_medium }}" alt="" class="rounded shadow-sm main-image" />
 
       {% if info.meta_data.original.image_credit %}
         <em>Image: <a href="{{ info.meta_data.original.image_link }}">{{ info.meta_data.original.image_credit }}</a></em>
