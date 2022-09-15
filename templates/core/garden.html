@@ -13,6 +13,10 @@
     <div class="alert alert-warning">
       <i class="fa fa-info-circle"></i>
       Please note: this garden is not yet publicly active. You can review and edit this garden before activating.
+      <form method="post">
+        <button type="submit" name="activate" value="true" class="btn btn-success mt-3">Activate this garden</button>
+        {% csrf_token %}
+      </form>
     </div>
   {% endif %}
 

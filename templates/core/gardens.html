@@ -77,6 +77,19 @@
     </table>
   </div>
 
+  {% if request.user.is_authenticated %}
+    <h3 class="mt-4">Inactive gardens (not publicly visible)</h3>
+    {% if inactive_gardens %}
+    <ul>
+      {% for each in inactive_gardens %}      
+        <li><a href="{% url "garden" each.id %}?uuid={{ each.uuid }}">{{ each }}</a></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <div class="alert alert-warning">No inactive gardens found</div>
+    {% endif %}
+  {% endif %}
+
 {% endblock %}
 
 {% block footer %}

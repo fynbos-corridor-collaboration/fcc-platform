@@ -696,11 +696,15 @@ def species(request, id):
 
 def gardens(request):
     gardens = Garden.objects.prefetch_related("organizations").filter(active=True)
+    inactive_gardens = None
+    if request.user.is_authenticated:
+        inactive_gardens = Garden.objects_unfiltered.filter(active=False)
     context = {
         "all": gardens,
         "page": Page.objects.get(pk=2),
         "load_map": True,
         "load_datatables": True,
+        "inactive_gardens": inactive_gardens,
     }
     return render(request, "core/gardens.html", context)
 
@@ -710,9 +714,14 @@ def garden(request, id):
 
     if not info.active:
         show_garden = False
-        if "uuid" in request.GET and request.GET.get("uuid") == str(info.uuid):
+        if request.user.is_authenticated:
             show_garden = True
-        elif request.user.is_authenticated:
+            if "activate" in request.POST:
+                info.active = True
+                info.save()
+                messages.success(request, "Garden has been activated.")
+                return redirect(reverse("garden", args=[info.id]))
+        elif "uuid" in request.GET and request.GET.get("uuid") == str(info.uuid):
             show_garden = True
 
     if not show_garden:
