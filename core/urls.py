@@ -8,6 +8,7 @@ urlpatterns = [
     path("gardens/", views.gardens, name="gardens"),
     path("gardens/<int:id>/", views.garden, name="garden"),
     path("gardens/<int:garden>/photos/", views.photos, name="garden_photos"),
+    path("gardens/<int:garden>/photos/<int:photo>/", views.photos, name="garden_photo"),
     path("gardens/<int:id>/edit/", views.garden_form, name="garden_form"),
     path("gardens/create/", views.garden_form, name="garden_form"),
     path("maps/", views.maps, name="maps"),

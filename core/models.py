@@ -414,6 +414,10 @@ class Photo(models.Model):
             return f"Photo {self.id}"
 
     @property
+    def get_photo_large(self):
+        return self.image.large.url
+
+    @property
     def get_photo_medium(self):
         return self.image.medium.url
 

@@ -1,5 +1,17 @@
 {% extends "_base.html" %}
 
+{% block footer %}
+  {% if request.user.is_staff %}
+    <script type="text/javascript">
+    $(function(){
+    $(".original-submission").click(function(){
+      $(".openup").toggle();
+    });
+    });
+    </script>
+  {% endif %}
+{% endblock %}
+
 {% block content %}
 
   <h1>{% block title %}{{ info }}{% endblock %}</h1>
@@ -80,7 +92,7 @@
       {% for each in photos %}
         <div class="col-3 mb-2">
           <div class="card">
-            <a href="{% url 'garden' each.id %}">
+            <a href="{% url 'garden_photo' info.id each.id %}">
               <img src="{{ each.get_photo_medium }}" class="card-img-top fixed-thumb" alt="{{ each }}">
             </a>
           </div>
@@ -143,11 +155,11 @@
   </div>
 
   {% if request.user.is_staff %}
-    <pre class="mt-5 alert alert-warning">ORIGINAL SUBMISSION
+    <pre class="mt-5 alert alert-warning"><h5 style="cursor:pointer" class="original-submission">ORIGINAL SUBMISSION</h5><div class="openup" style="display:none">
 
 {% for key,value in info.original.items %}
 {{ key }}: {{ value }}
-{% endfor %}</pre>
+{% endfor %}</div></pre>
     <a class="btn btn-warning" href="{% url 'garden_form' info.id %}" style="position:fixed;bottom:10px;right:10px">
       <i class="fa fa-pencil"></i>
       Edit garden

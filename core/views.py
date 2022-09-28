@@ -1041,16 +1041,22 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
 
     return render(request, "core/profile.html", context)
 
-def photos(request, garden=None):
+def photos(request, garden=None, photo=None):
     photos = Photo.objects.filter(garden__isnull=False)
     if garden:
         photos = photos.filter(garden_id=garden)
+        garden = Garden.objects.get(pk=garden)
     paginator = Paginator(photos, 60)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    if photo:
+        photo = photos.get(pk=photo)
+
     context = {
         "photos": page_obj,
+        "photo": photo,
+        "garden": garden,
     }
     return render(request, "core/photos.html", context)
 

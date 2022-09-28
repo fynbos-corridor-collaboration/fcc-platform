@@ -2,12 +2,24 @@
 
 {% block content %}
 
+<h1>
+{% if garden %}
+  <a href="{% url "garden" garden.id %}">{{ garden }}</a> &raquo;
+{% endif %}
+Photos</h1>
+
+{% if photo %}
+  <div class="text-center mt-4 mb-5">
+    <img src="{{ photo.get_photo_large }}" class="img" alt="">
+  </div>
+{% endif %}
+
 <div class="row">
   {% for each in photos %}
-    <div class="col-3 mb-2">
+    <div class="col-2 mb-2">
       <div class="card">
-        <a href="{% url "garden" each.id %}">
-          <img src="{{ each.get_photo_medium }}" class="card-img-top fixed-thumb" alt="{{ each }}">
+        <a href="{% url "garden_photo" garden.id each.id %}">
+          <img src="{{ each.get_photo_thumbnail }}" class="card-img-top fixed-thumb" alt="{{ each }}">
         </a>
       </div>
     </div>
@@ -33,5 +45,9 @@
     {% endif %}
   </span>
 </div>
+
+{% if garden %}
+<a href="{% url "garden" garden.id %}">Back to {{ garden }}</a>
+{% endif %}
 
 {% endblock %}
