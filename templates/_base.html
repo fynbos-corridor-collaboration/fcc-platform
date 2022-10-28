@@ -115,16 +115,15 @@
         </div>
 
         <div class="col-4 offset-1">
-          <form method="post" action="{% url "newsletter" %}">
+          <form action="https://fynboscorridors.us14.list-manage.com/subscribe/post?u=08c6c4723005809646721bac1&amp;id=4bab085f4d&amp;f_id=009184e0f0" method="post" name="mc-embedded-subscribe-form">
             <h5>Subscribe to our newsletter</h5>
             <p>Are you keen to hear from us? We send a periodic newsletter with updates from the Fynbos Corridor Collaboration. Subscribe below!</p>
             <div class="d-flex w-100 gap-2">
               <label for="newsletter1" class="visually-hidden">Email address</label>
-              <input name="email" id="newsletter1" type="email" class="form-control" placeholder="Email address" required>
+              <input name="EMAIL" id="newsletter1" type="email" class="form-control" placeholder="Email address" required>
               <button class="btn btn-primary" type="submit">Subscribe</button>
-              {% csrf_token %}
-              <input type="hidden" name="next" value="{{ request.get_full_path }}" />
             </div>
+            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_08c6c4723005809646721bac1_4bab085f4d" tabindex="-1" value=""></div>
           </form>
         </div>
       </div>
