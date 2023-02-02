@@ -902,7 +902,7 @@ def garden_manager(request, id):
             msg_plain = render_to_string("mailbody/managegarden.txt", mailcontext)
 
             sender = '"Fynbos Corridor Collaboration Website" <info@fynboscorridors.org>'
-            recipient = sender
+            recipient = f"{manager.name} <{manager.email}>"
 
             send_mail(
                 "Manage garden information: " + info.name,
