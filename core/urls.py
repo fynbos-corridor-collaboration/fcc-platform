@@ -9,7 +9,9 @@ urlpatterns = [
     path("gardens/<int:id>/", views.garden, name="garden"),
     path("gardens/<int:garden>/photos/", views.photos, name="garden_photos"),
     path("gardens/<int:garden>/photos/<int:photo>/", views.photos, name="garden_photo"),
+    path("gardens/<int:id>/manager/", views.garden_manager, name="garden_manager"),
     path("gardens/<int:id>/edit/", views.garden_form, name="garden_form"),
+    path("gardens/edit/<uuid:uuid>/<str:token>/", views.garden_form, name="garden_form"),
     path("gardens/create/", views.garden_form, name="garden_form"),
     path("maps/", views.maps, name="maps"),
     path("maps/<int:id>/", views.map, name="map"),
@@ -67,5 +69,5 @@ urlpatterns = [
     path("newsletter/", views.newsletter, name="newsletter"),
     path("documents/", views.documents, name="documents"),
 
-    path("contact/", views.page, {"slug": "contact-form"}),
+    path("contact/", views.page, {"slug": "contact-form"}, name="contact"),
 ]

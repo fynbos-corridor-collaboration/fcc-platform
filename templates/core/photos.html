@@ -10,7 +10,13 @@ Photos</h1>
 
 {% if photo %}
   <div class="text-center mt-4 mb-5">
-    <img src="{{ photo.get_photo_large }}" class="img" alt="">
+    <img src="{{ photo.get_photo_large }}" class="img img-thumbnail" alt="">
+  {% if photo.description %}
+    <div class="mb-2">{{ photo.description }}</div>
+  {% endif %}
+  {% if photo.author %}
+    <div class="mb-2">Photographer: {{ photo.author }}</div>
+  {% endif %}
   </div>
 {% endif %}
 

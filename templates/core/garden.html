@@ -15,6 +15,7 @@
 {% block content %}
 
   <h1>{% block title %}{{ info }}{% endblock %}</h1>
+  <a href="{% url "gardens" %}">&laquo; Back to stepping-stone garden network</a>
 
   {% if not info.active %}
     <div class="alert alert-warning">
@@ -83,7 +84,6 @@
             I would like to register my own garden
           </a>
         </ul>
-
       </div>
 
     {% if photos.count > 1 %}
@@ -152,6 +152,15 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="mt-4">
+    <h4>Update information</h4>
+      <p>
+        Do you want to update information on this page? 
+        <a href="{% url "garden_manager" info.id %}">Click here</a>.
+      </p>
+    </form>
   </div>
 
   {% if request.user.is_staff %}

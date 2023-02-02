@@ -13,6 +13,7 @@
   <div class="container">
     <div class="row">
       <div class="col-3">
+        {% if info %}
         <div class="border rounded p-3 bg-white shadow-sm mb-4">
           <div><i class="fal fa-fw me-1 fa-leaf fa-fw"></i> Vegetation type</div>
           <a href="{{ link }}vegetation-type/">{{ info.name }}</a>
@@ -45,6 +46,7 @@
             <li><a href="{{ link }}biodiversity/animals/">Animals</a></li>
           </ul>
         </div>
+        {% endif %}
 
         <form method="post">
           <h5 class="mb-1">Ready to design your garden?</h5>
@@ -58,10 +60,6 @@
       <div class="col-9">
         {% if title %}
           <h2>{{ title }}</h2>
-        {% endif %}
-
-        {% if not info %}
-          <p><em>Please go to the SELECT A SITE section to try selecting a place from the map.</em></p>
         {% endif %}
 
         {% if section == "vegetation-type" %}

@@ -3,7 +3,7 @@
 
 {% block content %}
 
-  <h1>{% block title %}Add your garden{% if info %} Edit garden-- {{ info }}{% endif %}{% endblock %}</h1>
+  <h1>{% block title %}{% if info %} Edit garden: {{ info }}{% else %}Add your garden{% endif %}{% endblock %}</h1>
 
   {% if not info %}
     <p>
@@ -50,6 +50,15 @@ Where these plants grown from plants occurring locally within Cape Town?</li>
 
     {% bootstrap_button button_type="submit" content="Save" %}
 
+  </form>
+
+  <form class="mt-5" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h2>Add new photos</h2>
+    <div class="row mb-3"><label class="col-sm-2 col-form-label">Photo</label><div class="col-sm-10"><input type="file" name="photo"class="form-control" placeholder="Your name" required></div></div>
+    <div class="row mb-3"><label class="col-sm-2 col-form-label">Photographer</label><div class="col-sm-10"><input type="text" name="photographer" maxlength="255" class="form-control" required></div></div>
+    <div class="row mb-3"><label class="col-sm-2 col-form-label">Description</label><div class="col-sm-10"><input type="text" name="description" class="form-control" required></div></div>
+    {% bootstrap_button button_type="submit" content="Add photo" %}
   </form>
 
 {% endblock %}

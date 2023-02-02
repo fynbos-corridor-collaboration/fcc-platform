@@ -1,0 +1,6 @@
+An existing garden was updated by a collaborator.
+
+- Garden name: {{ info.name }}
+- Updated by: {{ manager.name }}
+
+Please review this garden to see how the updates look. You might want to get in touch with {{ manager.name }} ({{ manager.email }}) to confirm any details and/or to thank them for their input. Please note that this e-mail alert is triggered every time the collaborator submits the form, which might be a few times in a row as the garden is being edited.

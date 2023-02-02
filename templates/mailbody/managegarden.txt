@@ -1,0 +1,14 @@
+Dear {{ name }},
+
+Below you can find the link to edit the garden information on the Fynbos Corridor Collaboration website. This link can be used for 30 days. When the link expires you can simply request a new link by entering your own e-mail address on the "Update garden information" page (see the link on your garden profile).
+
+Garden: {{ garden }}
+Link: {{ link }}
+
+It would be great to receive new photos every now and then that we can add to the photo archive of your garden. It is inspiring to all visitors to see how the garden changes and grows! Also please feel free to add or modify details about the garden such as the description and ways for people to get involved. 
+
+Thanks for your participation in greening Cape Town - together!
+
+The Fynbos Corridor Collaboration
+https://fynboscorridors.org/
+info@fynboscorridors.org

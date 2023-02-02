@@ -53,6 +53,7 @@ admin_site.register(Corridor, SearchAdmin)
 admin_site.register(Redlist, SearchAdmin)
 admin_site.register(Organization, SearchAdmin)
 admin_site.register(VegetationType, VegTypeAdmin)
+admin_site.register(GardenManager, SearchAdmin)
 
 admin_site.register(Newsletter)
 admin_site.register(User, UserAdmin)

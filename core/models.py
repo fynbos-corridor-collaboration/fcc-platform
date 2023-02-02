@@ -457,3 +457,18 @@ class Newsletter(models.Model):
 
     class Meta:
         ordering = ["email"]
+
+class GardenManager(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
+    garden = models.ForeignKey(Garden, on_delete=models.CASCADE, related_name="managers")
+    creation_date = models.DateTimeField(auto_now_add=True)
+    token = models.CharField(max_length=255, null=True, blank=True)
+    token_expiration_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name} manages {self.garden}"
+
+    class Meta:
+        ordering = ["garden", "name"]
+

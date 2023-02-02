@@ -16,10 +16,15 @@ from django.forms import modelform_factory
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
 # These are used so that we can send mail
 from django.core.mail import send_mail
 from django.template.loader import render_to_string, get_template
+
+# For token generation
+import secrets
 
 # Quick debugging, sometimes it's tricky to locate the PRINT in all the Django 
 # output in the console, so just using a simply function to highlight it better
@@ -761,7 +766,7 @@ def garden(request, id):
     }
     return render(request, "core/garden.html", context)
 
-def garden_form(request, id=None):
+def garden_form(request, id=None, token=None, uuid=None):
 
     info = None
     new_garden = True
@@ -773,6 +778,19 @@ def garden_form(request, id=None):
         ModelForm = modelform_factory(Garden, fields=["name", "content", "phase_assessment", "phase_alienremoval", "phase_landscaping", "phase_pioneers", "phase_birdsinsects", "phase_specialists", "phase_placemaking", "organizations"])
         info = Garden.objects_unfiltered.get(pk=id)
         form = ModelForm(request.POST or None, instance=info)
+    elif uuid:
+        manager = GardenManager.objects.filter(garden__uuid=uuid, token=token)
+        if not manager.exists():
+            messages.error(request, "The link is invalid. Please select a garden and re-request a link or contact us if in doubt.")
+            return redirect("gardens")
+        elif manager[0].token_expiration_date < timezone.now():
+            messages.error(request, "The link has expired. Please re-request a link a new below contact us if in doubt.")
+            return redirect("garden_manager", manager[0].garden.id)
+        else:
+            info = manager[0].garden
+            new_garden = False
+            ModelForm = modelform_factory(Garden, fields=["name", "content", "phase_assessment", "phase_alienremoval", "phase_landscaping", "phase_pioneers", "phase_birdsinsects", "phase_specialists", "phase_placemaking"])
+            form = ModelForm(request.POST or None, instance=info)
     else:
         labels = {
             "name": "Garden name",
@@ -782,7 +800,16 @@ def garden_form(request, id=None):
         form = ModelForm(request.POST or None)
 
     if request.method == "POST":
-        if form.is_valid():
+        if "photographer" in request.POST:
+            Photo.objects.create(
+                description = request.POST.get("description"),
+                author = request.POST.get("photographer"),
+                image = request.FILES.get("photo"),
+                garden = info,
+            )
+            messages.success(request, "The new photo has been added.")
+            return redirect(request.get_full_path())
+        elif form.is_valid():
             info = form.save()
             if request.POST.get("lat") and request.POST.get("lng"):
                 try:
@@ -822,6 +849,26 @@ def garden_form(request, id=None):
                 messages.success(request, "Thanks! We have received your garden details. We will review this and get back to you (might take a week or so, please stay tuned).")
                 return redirect("index")
             else:
+
+                if uuid:
+                    mailcontext = {
+                        "info": info,
+                        "manager": manager[0],
+                    }
+                    msg_html = render_to_string("mailbody/gardenupdate.html", mailcontext)
+                    msg_plain = render_to_string("mailbody/gardenupdate.txt", mailcontext)
+
+                    sender = '"Fynbos Corridor Collaboration Website" <info@fynboscorridors.org>'
+                    recipient = sender
+
+                    send_mail(
+                        "Garden updated: " + info.name,
+                        msg_plain,
+                        sender,
+                        [recipient],
+                        html_message=msg_html,
+                    )
+
                 messages.success(request, "Information was saved.")
                 return redirect(info.get_absolute_url)
         else:
@@ -831,6 +878,48 @@ def garden_form(request, id=None):
         "form": form,
     }
     return render(request, "core/garden.form.html", context)
+
+def garden_manager(request, id):
+    info = Garden.objects.get(pk=id)
+    if "email" in request.POST:
+        email = request.POST.get("email").lower().strip()
+        manager = info.managers.filter(email=email)
+        if manager:
+            manager = manager[0]
+            token = secrets.token_urlsafe()
+            manager.token = token
+            manager.token_expiration_date = timezone.now() + relativedelta(days=30)
+            manager.save()
+            link = reverse("garden_form", args=[info.uuid, token])
+            link = request.build_absolute_uri(link)
+
+            mailcontext = {
+                "name": manager.name,
+                "garden": info.name,
+                "link": link,
+            }
+            msg_html = render_to_string("mailbody/managegarden.html", mailcontext)
+            msg_plain = render_to_string("mailbody/managegarden.txt", mailcontext)
+
+            sender = '"Fynbos Corridor Collaboration Website" <info@fynboscorridors.org>'
+            recipient = sender
+
+            send_mail(
+                "Manage garden information: " + info.name,
+                msg_plain,
+                sender,
+                [recipient],
+                html_message=msg_html,
+            )
+            messages.success(request, f"We have send you an e-mail link to modify the garden information. Please check your Notifications or Spam folder if you don't see this.")
+        else:
+            messages.error(request, f"Your e-mail address was not found. Are you sure this was registered? If so, please <a href='contact'>contact us</a> and we will correct this.")
+
+    context = {
+        "no_index": True,
+        "info": info,
+    }
+    return render(request, "core/garden.manager.html", context)
 
 
 def vegetation_types(request):
@@ -900,7 +989,7 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
         if suburb:
             suburb = suburb[0].name.title()
     except:
-        messages.error(request, f"We are unable to locate the relevant vegetation type.")
+        messages.warning(request, f"We are unable to locate the relevant vegetation type. Please make sure to <a href='/fynbos-rehabilitation/site-selection/'>select a site on the map</a> first, so that we can load the relevant plant species for your chosen location.")
         suburb = None
         species = None
 
@@ -1032,7 +1121,6 @@ def profile(request, section=None, lat=None, lng=None, id=None, subsection=None)
                 geom.geojson,
                 name="geojson",
             ).add_to(satmap)
-
 
         context["map"] = map._repr_html_()
         context["satmap"] = satmap._repr_html_()
