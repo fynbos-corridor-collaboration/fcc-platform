@@ -35,12 +35,16 @@ class GardenAdmin(SearchAdmin):
     list_display = ["name", "active"]
     list_filter = ["active", "organizations", "source"]
 
+class PhotoAdmin(SearchAdmin):
+    list_display = ["id", "garden", "author", "date"]
+    list_filter = ["garden"]
+
 class UserAdmin(admin.ModelAdmin):
      list_display = ["username", "email", "first_name", "date_joined", "is_staff", "is_active"]
      list_filter = ["is_staff", "is_active"]
      search_fields = ["username", "email"]
 
-admin_site.register(Photo, SearchAdmin)
+admin_site.register(Photo, PhotoAdmin)
 admin_site.register(Page, SearchAdmin)
 admin_site.register(Garden, GardenAdmin)
 admin_site.register(Document, DocAdmin)
