@@ -25,11 +25,17 @@
       {% if info.old.propagation_cutting %}
         <h3 class="mt-3">Propagation instructions - cuttings</h3>
         <p>{{ info.old.propagation_cutting|safe }}</p>
+      {% elif info.propagation_cutting %}
+        <h3 class="mt-3">Propagation instructions - cuttings</h3>
+        <p>{{ info.propagation_cutting|safe }}</p>
       {% endif %}
 
       {% if info.old.propagation_seed %}
         <h3 class="mt-3">Propagation instructions - seeds</h3>
         <p>{{ info.old.propagation_seed|safe }}</p>
+      {% elif info.propagation_seed %}
+        <h3 class="mt-3">Propagation instructions - seeds</h3>
+        <p>{{ info.propagation_seed|safe }}</p>
       {% endif %}
 
       {% if info.get_links %}
@@ -37,6 +43,9 @@
         <ul>
         {% for key,value in info.get_links.items %}
           <li><a href="{{ value }}">{{ key }}</a></li>          
+        {% endfor %}
+        {% for each in info.links %}
+          <li><a href="{{ each }}">{{ each }}</a></li>          
         {% endfor %}
         </ul>
       {% endif %}
